@@ -15,6 +15,10 @@
   <link rel="icon" type="image/svg+xml" href="icon.svg" />
   <link rel="apple-touch-icon" href="icon.svg" />
 
+  <!-- FIREBASE SDK COMPAT (SINCRONIZAÇÃO EM NUVEM MULTI-DISPOSITIVOS EM TEMPO REAL) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -80,7 +84,13 @@
             <span class="text-xs bg-vibraYellow text-vibraDark px-2 py-0.5 rounded font-black tracking-normal uppercase">App</span>
           </div>
           <div class="border-l border-emerald-400 pl-3">
-            <h1 class="text-base md:text-xl font-bold tracking-tight leading-tight">SSMA BAVGRU</h1>
+            <div class="flex items-center gap-2">
+              <h1 class="text-base md:text-xl font-bold tracking-tight leading-tight">SSMA BAVGRU</h1>
+              <span id="badge-status-nuvem" class="text-[10px] bg-emerald-900/90 text-emerald-200 border border-emerald-400/80 px-2 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-sm">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="texto-status-nuvem">Nuvem Conectada</span>
+              </span>
+            </div>
             <p class="text-[11px] text-emerald-100">Gestão EPIs & Inspeção Trava-Quedas</p>
           </div>
         </div>
@@ -835,6 +845,28 @@
       { id: "e44", nome: "Camisa RF P Feminina", ca: "50427", validade: "2029-12-31", qtd: 15, min: 5 }
     ];
 
+    // 0. CONFIGURAÇÃO DA NUVEM FIREBASE (SINCRONIZAÇÃO EM TEMPO REAL)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDTMDXAbh2zx7d55kwjV1LTMCZ9eNIz4hs",
+      authDomain: "ssma-bavgru.firebaseapp.com",
+      databaseURL: "https://ssma-bavgru-default-rtdb.firebaseio.com",
+      projectId: "ssma-bavgru",
+      storageBucket: "ssma-bavgru.firebasestorage.app",
+      messagingSenderId: "702268702528",
+      appId: "1:702268702528:web:4d753fbae2372b550404a5"
+    };
+
+    let dbNuvem = null;
+    try {
+      if (typeof firebase !== 'undefined') {
+        firebase.initializeApp(firebaseConfig);
+        dbNuvem = firebase.database();
+        console.log("Firebase conectado com sucesso à base BAVGRU!");
+      }
+    } catch (e) {
+      console.warn("Erro ao iniciar Firebase:", e);
+    }
+
     // ATUALIZAÇÃO AUTOMÁTICA DA BASE PARA 116 COLABORADORES
     const VERSAO_BASE = 'bavgru_efetivo_116_oficial_v2';
     if (localStorage.getItem('bavgru_versao_instalada') !== VERSAO_BASE) {
@@ -842,7 +874,7 @@
       localStorage.setItem('bavgru_versao_instalada', VERSAO_BASE);
     }
 
-    // ESTADO LOCAL
+    // ESTADO LOCAL E NUVEM
     let colaboradores = JSON.parse(localStorage.getItem('bavgru_colaboradores')) || INITIAL_COLABORADORES;
     let estoque = JSON.parse(localStorage.getItem('bavgru_estoque')) || INITIAL_ESTOQUE;
     let auditoria = JSON.parse(localStorage.getItem('bavgru_auditoria')) || [];
@@ -852,14 +884,85 @@
     let fotosCapturadas = { disp: null, insp: null };
     let streamsCamera = { disp: null, insp: null };
     let cameraFacing = { disp: 'user', insp: 'environment' };
+    let primeiraCargaNuvem = true;
 
     function salvarBancoLocal() {
+      // 1. Salva localmente como backup e suporte offline
       localStorage.setItem('bavgru_colaboradores', JSON.stringify(colaboradores));
       localStorage.setItem('bavgru_estoque', JSON.stringify(estoque));
       localStorage.setItem('bavgru_auditoria', JSON.stringify(auditoria));
       localStorage.setItem('bavgru_log_exclusoes', JSON.stringify(logExclusoes));
       localStorage.setItem('bavgru_senha_admin', senhaAdmin);
+
+      // 2. Transmite em tempo real para todos os outros computadores e celulares
+      if (dbNuvem) {
+        dbNuvem.ref('bavgru/auditoria').set(auditoria).catch(e => console.warn('Sync auditoria:', e));
+        dbNuvem.ref('bavgru/estoque').set(estoque).catch(e => console.warn('Sync estoque:', e));
+        dbNuvem.ref('bavgru/colaboradores').set(colaboradores).catch(e => console.warn('Sync colaboradores:', e));
+        dbNuvem.ref('bavgru/logExclusoes').set(logExclusoes).catch(e => console.warn('Sync log:', e));
+      }
       atualizarTudo();
+    }
+
+    function iniciarSincronizacaoNuvem() {
+      if (!dbNuvem) return;
+
+      const textoBadge = document.getElementById('texto-status-nuvem');
+
+      // Monitor de conexão com a nuvem
+      dbNuvem.ref('.info/connected').on('value', (snap) => {
+        if (snap.val() === true) {
+          if (textoBadge) textoBadge.textContent = 'Nuvem Conectada';
+        } else {
+          if (textoBadge) textoBadge.textContent = 'Reconectando...';
+        }
+      });
+
+      // 1. Escuta Auditoria (Dispensações NR-06 e Inspeções Anexo C)
+      dbNuvem.ref('bavgru/auditoria').on('value', (snapshot) => {
+        const val = snapshot.val();
+        if (val) {
+          auditoria = Array.isArray(val) ? val : Object.values(val);
+          localStorage.setItem('bavgru_auditoria', JSON.stringify(auditoria));
+          atualizarTudo();
+        }
+      });
+
+      // 2. Escuta Estoque em Tempo Real
+      dbNuvem.ref('bavgru/estoque').on('value', (snapshot) => {
+        const val = snapshot.val();
+        if (val && Array.isArray(val) && val.length > 0) {
+          estoque = val;
+          localStorage.setItem('bavgru_estoque', JSON.stringify(estoque));
+          atualizarTudo();
+        } else if (primeiraCargaNuvem) {
+          dbNuvem.ref('bavgru/estoque').set(INITIAL_ESTOQUE);
+        }
+      });
+
+      // 3. Escuta Colaboradores em Tempo Real
+      dbNuvem.ref('bavgru/colaboradores').on('value', (snapshot) => {
+        const val = snapshot.val();
+        if (val && Array.isArray(val) && val.length > 0) {
+          colaboradores = val;
+          localStorage.setItem('bavgru_colaboradores', JSON.stringify(colaboradores));
+          atualizarTudo();
+        } else if (primeiraCargaNuvem) {
+          dbNuvem.ref('bavgru/colaboradores').set(INITIAL_COLABORADORES);
+        }
+      });
+
+      // 4. Escuta Log de Exclusões
+      dbNuvem.ref('bavgru/logExclusoes').on('value', (snapshot) => {
+        const val = snapshot.val();
+        if (val) {
+          logExclusoes = Array.isArray(val) ? val : Object.values(val);
+          localStorage.setItem('bavgru_log_exclusoes', JSON.stringify(logExclusoes));
+          atualizarTudo();
+        }
+      });
+
+      primeiraCargaNuvem = false;
     }
 
     // NAVEGAÇÃO
@@ -1696,6 +1799,7 @@
       configurarCanvasAssinatura('canvas-disp');
       configurarCanvasAssinatura('canvas-insp');
       atualizarTudo();
+      iniciarSincronizacaoNuvem();
       window.addEventListener('resize', redimensionarCanvas);
       redimensionarCanvas();
     };

@@ -1,5 +1,5 @@
 // Service Worker para Portal SSMA BAVGRU
-const CACHE_NAME = 'ssma-bavgru-v2';
+const CACHE_NAME = 'ssma-bavgru-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

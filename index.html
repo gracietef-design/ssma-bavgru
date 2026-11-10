@@ -81,7 +81,7 @@
     </div>
   </div>
 
-  <!-- CABEÇALHO PADRÃO VIBRA -->
+  <!-- CABEÇALHO PADRÃO VIBRA (LETRAS BRANCAS SEM FUNDO AMARELO) -->
   <header class="bg-vibraGreen text-white shadow-lg border-b-4 border-vibraYellow no-print">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
       <div class="flex items-center justify-between w-full md:w-auto">
@@ -130,12 +130,12 @@
         <div onclick="switchTab('colaboradores')" class="bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-vibraGreen cursor-pointer hover:shadow-md transition-shadow">
           <p class="text-[10px] md:text-xs text-slate-500 uppercase font-bold">Colaboradores</p>
           <p id="kpi-colaboradores" class="text-2xl md:text-3xl font-extrabold text-slate-800 mt-1">0</p>
-          <p class="text-[10px] md:text-xs text-emerald-600 mt-1">Base BAVGRU</p>
+          <p class="text-[10px] md:text-xs text-emerald-600 mt-1">Base ativa BAVGRU</p>
         </div>
         <div onclick="switchTab('dashboard')" class="bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-blue-600 cursor-pointer hover:shadow-md transition-shadow">
           <p class="text-[10px] md:text-xs text-slate-500 uppercase font-bold">Fichas NR-06</p>
           <p id="kpi-dispensacoes" class="text-2xl md:text-3xl font-extrabold text-slate-800 mt-1">0</p>
-          <p class="text-[10px] md:text-xs text-blue-600 mt-1">Assinadas</p>
+          <p class="text-[10px] md:text-xs text-blue-600 mt-1">100% com assinatura</p>
         </div>
         <div onclick="switchTab('inspecao')" class="bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-emerald-600 cursor-pointer hover:shadow-md transition-shadow">
           <p class="text-[10px] md:text-xs text-slate-500 uppercase font-bold">Inspeções Cinto</p>
@@ -145,7 +145,7 @@
         <div onclick="switchTab('pendencias')" class="bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-amber-500 cursor-pointer hover:shadow-md transition-shadow">
           <p class="text-[10px] md:text-xs text-slate-500 uppercase font-bold">Pendências Mês</p>
           <p id="kpi-pendencias" class="text-2xl md:text-3xl font-extrabold text-amber-600 mt-1">0</p>
-          <p class="text-[10px] md:text-xs text-amber-700 mt-1">Sem visto</p>
+          <p class="text-[10px] md:text-xs text-amber-700 mt-1">Sem visto no período</p>
         </div>
         <div onclick="switchTab('estoque')" class="col-span-2 md:col-span-1 bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-red-600 cursor-pointer hover:shadow-md transition-shadow">
           <p class="text-[10px] md:text-xs text-slate-500 uppercase font-bold">Alertas Estoque</p>
@@ -158,7 +158,7 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
           <div>
             <h2 class="text-base md:text-lg font-bold text-slate-800">🗂️ Arquivo Digital de Auditoria (Fichas NR-06 & Inspeções)</h2>
-            <p class="text-xs text-slate-500">Documentos oficiais com validade jurídica e assinatura digital coletada.</p>
+            <p class="text-xs text-slate-500">Documentos oficiais com validade jurídica, foto facial e assinatura digital coletada.</p>
           </div>
           <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
             <input type="text" id="busca-auditoria" oninput="renderAuditoria()" placeholder="🔎 Filtrar nome ou CA..." class="border rounded-lg px-3 py-2 text-sm w-full md:w-64 bg-slate-50 border-emerald-300 focus:outline-none focus:ring-2 focus:ring-vibraGreen" />
@@ -214,7 +214,7 @@
         </div>
 
         <div class="mt-4 bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs text-slate-700 leading-relaxed">
-          <strong>Termo NR-06 (6.5.1 / 6.7.1):</strong> Declaro ter recebido da Vibra Energia (BAVGRU) o EPI especificado, com CA ativo e em perfeito estado, recebendo orientações sobre uso correto, guarda e obrigatoriedade de conservação.
+          <strong>Termo NR-06 (itens 6.5.1 e 6.7.1):</strong> Declaro ter recebido da Vibra Energia (BAVGRU) o EPI especificado, com CA ativo e em perfeito estado de conservação, bem como as orientações de uso, guarda e manutenção.
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
@@ -262,9 +262,9 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-3 mb-4 gap-2">
           <div>
             <h2 class="text-base md:text-lg font-bold text-vibraDark">🧗 Inspeção Mensal de Cinto e Talabarte (Anexo C)</h2>
-            <p class="text-xs text-slate-500">Padrão Corporativo Vibra <strong>040.010.060.021.PR (Anexo C)</strong> & NR-35.</p>
+            <p class="text-xs text-slate-500">Padrão Corporativo Vibra <strong>040.010.060.021.PR (Anexo C)</strong> e NR-35. Qualquer item "NÃO CONFORME" interdita o cinto.</p>
           </div>
-          <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">CA Padrão: 35191</span>
+          <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">CA Padrão BAVGRU: 35191</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4">
@@ -311,7 +311,7 @@
             <div class="bg-white border-2 border-dashed border-slate-300 rounded-lg overflow-hidden">
               <canvas id="canvas-insp" height="170" class="w-full bg-white cursor-crosshair block"></canvas>
             </div>
-            <p class="text-[11px] text-slate-500 mt-1">Confirmo a veracidade da inspeção visual realizada.</p>
+            <p class="text-[11px] text-slate-500 mt-1">Confirmo a veracidade da inspeção visual realizada antes do uso.</p>
           </div>
         </div>
 
@@ -323,7 +323,7 @@
       </div>
     </section>
 
-    <!-- ABA 4: PENDÊNCIAS DE INSPEÇÃO -->
+    <!-- ABA 4: PENDÊNCIAS DE INSPEÇÃO CINTO TRAVA-QUEDAS -->
     <section id="tab-pendencias" class="hidden space-y-4 md:space-y-6">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-amber-500">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 border-b pb-3">
@@ -331,7 +331,7 @@
             <h2 class="text-base md:text-lg font-bold text-slate-800 flex items-center gap-2">
               <span class="text-amber-500 text-xl">⚠️</span> Pendências Mensais: Trava-Quedas (SPIQ)
             </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Colaboradores que <strong>não realizaram</strong> a inspeção do Anexo C no mês selecionado.</p>
+            <p class="text-xs text-slate-500 mt-0.5">Colaboradores da BAVGRU que <strong>não realizaram</strong> a inspeção do Anexo C no mês selecionado.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
             <input type="month" id="pendencias-mes-ano" onchange="renderPendencias()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs md:text-sm font-semibold bg-slate-50" />
@@ -355,7 +355,7 @@
         </div>
 
         <div class="mb-3">
-          <input type="text" id="busca-pendencias" oninput="renderPendencias()" placeholder="🔎 Filtrar colaborador pendente..." class="w-full border rounded-lg px-3 py-2 text-xs md:text-sm bg-slate-50 border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+          <input type="text" id="busca-pendencias" oninput="renderPendencias()" placeholder="🔎 Filtrar colaborador pendente por nome ou matrícula..." class="w-full border rounded-lg px-3 py-2 text-xs md:text-sm bg-slate-50 border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-500" />
         </div>
 
         <div class="overflow-x-auto">
@@ -379,7 +379,7 @@
     <section id="tab-estoque" class="hidden space-y-4 md:space-y-6">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
         <div class="flex justify-between items-center mb-4 border-b pb-2">
-          <h2 class="text-base md:text-lg font-bold text-vibraDark">📦 Inventário Permanente de EPIs</h2>
+          <h2 class="text-base md:text-lg font-bold text-vibraDark">📦 Inventário Permanente de EPIs (78 Itens Oficiais)</h2>
           <span class="text-xs text-slate-500">Unidade BAVGRU</span>
         </div>
         <div class="overflow-x-auto">
@@ -404,7 +404,7 @@
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-3 border-b pb-3">
           <div>
-            <h2 class="text-base md:text-lg font-bold text-vibraDark">👥 Banco de Colaboradores - BAVGRU</h2>
+            <h2 class="text-base md:text-lg font-bold text-vibraDark">👥 Banco de Colaboradores - BAVGRU (116 Cadastrados)</h2>
             <p class="text-xs text-slate-500">Base oficial para dispensação de EPI e inspeção do SPIQ Anexo C.</p>
           </div>
           <button onclick="abrirModalImportarColaboradores()" class="bg-vibraGreen hover:bg-vibraDark text-white px-3.5 py-2 rounded-lg text-xs md:text-sm font-bold shadow flex items-center gap-2 transition-all">
@@ -413,7 +413,7 @@
         </div>
         <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg mb-4 flex gap-2 items-center">
           <span>🔍</span>
-          <input type="text" id="busca-colab" oninput="renderColaboradores()" placeholder="Pesquise por nome ou matrícula..." class="w-full border-none rounded bg-white px-3 py-2 text-xs md:text-sm shadow-sm focus:ring-2 focus:ring-vibraGreen outline-none" />
+          <input type="text" id="busca-colab" oninput="renderColaboradores()" placeholder="Pesquise por nome ou matrícula... A lista atualiza automaticamente." class="w-full border-none rounded bg-white px-3 py-2 text-xs md:text-sm shadow-sm focus:ring-2 focus:ring-vibraGreen outline-none" />
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[450px]">
@@ -720,7 +720,7 @@
       { id: "t3", grupo: "Talabarte Y / Trava-Quedas", texto: "11. A parte interna do absorvedor de energia não apresenta cortes e/ou furos?" }
     ];
 
-    // 4. BANCO OFICIAL DE COLABORADORES BAVGRU (116 COLABORADORES)
+    // 4. BANCO OFICIAL DE COLABORADORES BAVGRU (116 COLABORADORES ATUALIZADOS)
     const INITIAL_COLABORADORES = [
       { id: "c_128660", matricula: "128660", nome: "ADAUTO RIBEIRO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adautosantos@vibraenergia.com.br" },
       { id: "c_129028", matricula: "129028", nome: "ADILSON MARQUES ESCANHOLATO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adilsonescanholato@vibraenergia.com.br" },
@@ -743,7 +743,7 @@
       { id: "c_71176703", matricula: "71176703", nome: "BRUNA VIEIRA DE SOUZA", funcao: "CONTRATADO", email: "" },
       { id: "c_185131", matricula: "185131", nome: "BRUNO DE ALMEIDA DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "brunoalmeida@vibraenergia.com.br" },
       { id: "c_185813", matricula: "185813", nome: "BRUNO EVANGELISTA CERQUEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "brunocerqueira@vibraenergia.com.br" },
-      { id: "c_179959", matricula: "179959", nome: "CAIO FIALHO DE CASTRO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "caiocastro@vibraenergia.com.br" },
+      { id: "c_179959", matricula: "179959", nome: "CAIO FIALHO DE CASTRO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "caiocastro@vibraenergia.com.br" },
       { id: "c_183727", matricula: "183727", nome: "CARLOS ALBERTO BASTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "carlosbastos@vibraenergia.com.br" },
       { id: "c_131210", matricula: "131210", nome: "CARLOS ALBERTO DE JESUS SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "carlosalberto@vibraenergia.com.br" },
       { id: "c_128449", matricula: "128449", nome: "CARLOS EDUARDO PAVAO", funcao: "ASSISTENTE ADMINISTRATIVO JR", email: "carlospavao@vibraenergia.com.br" },
@@ -776,11 +776,12 @@
       { id: "c_189013", matricula: "189013", nome: "GUSTAVO DA SILVA RODRIGUES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "gustavorodrigues@vibraenergia.com.br" },
       { id: "c_134862", matricula: "134862", nome: "GUSTAVO GOMES DE FARIAS JUNIOR", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "gustavojunior@vibraenergia.com.br" },
       { id: "c_124186", matricula: "124186", nome: "HENRIQUE FLORENTINO ALVES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "henriquealves@vibraenergia.com.br" },
+      { id: "c_202316", matricula: "202316", nome: "HERIK MORAES RIBEIRO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "herikribeiro@vibraenergia.com.br" },
       { id: "c_123442", matricula: "123442", nome: "HUAN CARLOS NASCIMENTO SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "huansantos@vibraenergia.com.br" },
-      { id: "c_150259", matricula: "150259", nome: "IDENILSON PEREIRA COSTA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "idenilsoncosta@vibraenergia.com.br" },
+      { id: "c_150259", matricula: "150259", nome: "IDENILSON PEREIRA COSTA", funcao: "LIDER DE ABASTECIMENTO", email: "idenilsoncosta@vibraenergia.com.br" },
       { id: "c_130377", matricula: "130377", nome: "ILDO LUIZ DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "ildosilva@vibraenergia.com.br" },
       { id: "c_150653", matricula: "150653", nome: "ITAYLON TAVARES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "itaylonsilva@vibraenergia.com.br" },
-      { id: "c_130040", matricula: "130040", nome: "JOAO MARCOS DE JESUS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "joaomarcos@vibraenergia.com.br" },
+      { id: "c_130040", matricula: "130040", nome: "JOAO MARCOS DE JESUS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "joaomarcos@vibraenergia.com.br" },
       { id: "c_128843", matricula: "128843", nome: "JONATAN ALVES DE BARROS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "jonatanbarros@vibraenergia.com.br" },
       { id: "c_134223", matricula: "134223", nome: "JOSE EDSON GONCALVES DIAS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "josedias@vibraenergia.com.br" },
       { id: "c_155151", matricula: "155151", nome: "JOSE RAMOS GALDINO DE ARAUJO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "josearaujo@vibraenergia.com.br" },
@@ -790,8 +791,10 @@
       { id: "c_144787", matricula: "144787", nome: "JULIO CESAR DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "juliooliveira@vibraenergia.com.br" },
       { id: "c_189062", matricula: "189062", nome: "JULIO CESAR MARQUES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "juliomarques@vibraenergia.com.br" },
       { id: "c_128879", matricula: "128879", nome: "JUNIOR TOZETTI DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "juniortozetti@vibraenergia.com.br" },
+      { id: "c_80048881", matricula: "80048881", nome: "KAMILA MORENO VIDAL", funcao: "APRENDIZ", email: "kamilamvidal@vibraenergia.com.br" },
       { id: "c_179610", matricula: "179610", nome: "KLEYSSON LUZ DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "kleyssonoliveira@vibraenergia.com.br" },
       { id: "c_127127", matricula: "127127", nome: "LAERCIO VITAL MARTINS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "laerciomartins@vibraenergia.com.br" },
+      { id: "c_80048900", matricula: "80048900", nome: "LAVINIA SOUZA DE ALMEIDA", funcao: "APRENDIZ", email: "laviniasalmeida@vibraenergia.com.br" },
       { id: "c_128462", matricula: "128462", nome: "LEANDRO ARAUJO DE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "leandrosouza@vibraenergia.com.br" },
       { id: "c_123602", matricula: "123602", nome: "LEONARDO WEBERT DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "leonardosilva@vibraenergia.com.br" },
       { id: "c_158478", matricula: "158478", nome: "LUCAS EVARISTO GOMES DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "lucasevaristo@vibraenergia.com.br" },
@@ -811,6 +814,7 @@
       { id: "c_123417", matricula: "123417", nome: "PETERSON GASPARINI", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "petersongasparini@vibraenergia.com.br" },
       { id: "c_140832", matricula: "140832", nome: "RAFAEL CALAZANS DE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rafaelcalazans@vibraenergia.com.br" },
       { id: "c_134303", matricula: "134303", nome: "RAFAEL MOURA DOS SANTOS ARAUJO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rafaelaraujo@vibraenergia.com.br" },
+      { id: "c_80048912", matricula: "80048912", nome: "RAFAELA RIBEIRO DOS SANTOS", funcao: "APRENDIZ", email: "rafaelarsantos@vibraenergia.com.br" },
       { id: "c_134327", matricula: "134327", nome: "REGIS BRITO DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "regisoliveira@vibraenergia.com.br" },
       { id: "c_157838", matricula: "157838", nome: "RENATA RODRIGUES DOS SANTOS", funcao: "OPERADORA DE ABASTECIMENTO JR", email: "renatarodrigues@vibraenergia.com.br" },
       { id: "c_123454", matricula: "123454", nome: "RENATO LOPES DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "renatosantos@vibraenergia.com.br" },
@@ -827,6 +831,7 @@
       { id: "c_179357", matricula: "179357", nome: "RONALD SILVA LIMA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "ronaldlima@vibraenergia.com.br" },
       { id: "c_908884", matricula: "908884", nome: "RUAN CARLOS BORGES ALVES", funcao: "GERENTE DE OPERACAO DE AEROPORTOS", email: "ruan@vibraenergia.com.br" },
       { id: "c_134710", matricula: "134710", nome: "SANDRO RUIZ BELINI", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "sandrobelini@vibraenergia.com.br" },
+      { id: "c_80048868", matricula: "80048868", nome: "SARA PEREIRA DE SOUZA", funcao: "APRENDIZ", email: "sarapsouza@vibraenergia.com.br" },
       { id: "c_134087", matricula: "134087", nome: "SERGIO GOMES PEREIRA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "sergiopereira@vibraenergia.com.br" },
       { id: "c_130709", matricula: "130709", nome: "SERGIO JOSE DO NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "sergionascimento@vibraenergia.com.br" },
       { id: "c_189480", matricula: "189480", nome: "SHELINTON ROBERTO MARQUES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "shelintonsilva@vibraenergia.com.br" },
@@ -840,19 +845,79 @@
       { id: "c_191776", matricula: "191776", nome: "WILSON FERREIRA NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "wilsonnascimento@vibraenergia.com.br" }
     ];
 
+    // 5. BANCO COMPLETO DE EPIS OFICIAIS BAVGRU (78 ITENS)
     const INITIAL_ESTOQUE = [
       { id: "e1", nome: "Luva Nitrílica", ca: "42760", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e2", nome: "Luva Nitrílica Manga Longa G", ca: "S/C.A.", validade: "2029-12-31", qtd: 15, min: 5 },
       { id: "e3", nome: "Luva Nitrílica Verde M", ca: "40189", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e4", nome: "Luva Nitrílica Verde G", ca: "40189", validade: "2029-12-31", qtd: 15, min: 5 },
       { id: "e5", nome: "Óculos de Segurança Incolor", ca: "18821", validade: "2029-12-31", qtd: 25, min: 5 },
+      { id: "e6", nome: "Óculos de Segurança Cinza", ca: "18821", validade: "2029-12-31", qtd: 25, min: 5 },
+      { id: "e7", nome: "Óculos de Segurança Ampla Visão", ca: "19072", validade: "2029-12-31", qtd: 20, min: 5 },
+      { id: "e8", nome: "Lente oculos ampla visão incolor", ca: "19072", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e9", nome: "Lente oculos ampla visão cinza", ca: "19072", validade: "2029-12-31", qtd: 15, min: 5 },
       { id: "e10", nome: "Capacete de Segurança Branco", ca: "8304", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e11", nome: "Capacete de Segurança Amarelo", ca: "8304", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e12", nome: "Refil Abafador", ca: "92154", validade: "2029-12-31", qtd: 15, min: 5 },
       { id: "e13", nome: "Protetor Auricular Abafador", ca: "43588", validade: "2029-12-31", qtd: 40, min: 5 },
+      { id: "e14", nome: "Mala Operação", ca: "S/C.A.", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e15", nome: "Carneira com jugular", ca: "S/C.A.", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e16", nome: "Casquete", ca: "38352", validade: "2029-12-31", qtd: 80, min: 5 },
+      { id: "e17", nome: "Calçado de Segurança 34", ca: "42374", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e18", nome: "Calçado de Segurança 36", ca: "42374", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e19", nome: "Calçado de Segurança 37", ca: "42374", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e20", nome: "Calçado de Segurança 38", ca: "42374", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e21", nome: "Calçado de Segurança 39", ca: "42374", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e22", nome: "Calçado de Segurança 40", ca: "42374", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e23", nome: "Calçado de Segurança 41", ca: "42374", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e24", nome: "Calçado de Segurança 42", ca: "42374", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e25", nome: "Calçado de Segurança 43", ca: "42374", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e26", nome: "Calçado de Segurança 44", ca: "42374", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e27", nome: "Calçado de Segurança 45", ca: "42374", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e28", nome: "Capa Chuva P", ca: "31884", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e29", nome: "Capa Chuva M", ca: "31884", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e30", nome: "Capa Chuva G", ca: "31884", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e31", nome: "Capa Chuva GG", ca: "31884", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e32", nome: "Capa Chuva XGG", ca: "31884", validade: "2029-12-31", qtd: 15, min: 5 },
       { id: "e33", nome: "Cinto Trava Quedas Hercules", ca: "35191", validade: "2029-12-31", qtd: 15, min: 5 },
       { id: "e34", nome: "Camisa RF P Masculina", ca: "49095", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e35", nome: "Camisa RF M Masculina", ca: "49095", validade: "2029-12-31", qtd: 40, min: 5 },
+      { id: "e36", nome: "Camisa RF G Masculina", ca: "49095", validade: "2029-12-31", qtd: 30, min: 5 },
+      { id: "e37", nome: "Camisa RF GG Masculina", ca: "49095", validade: "2029-12-31", qtd: 30, min: 5 },
+      { id: "e38", nome: "Camisa RF XXG Masculina", ca: "49095", validade: "2029-12-31", qtd: 30, min: 5 },
       { id: "e39", nome: "Calça RF P Masculina", ca: "49093", validade: "2029-12-31", qtd: 15, min: 5 },
-      { id: "e44", nome: "Camisa RF P Feminina", ca: "50427", validade: "2029-12-31", qtd: 15, min: 5 }
+      { id: "e40", nome: "Calça RF M Masculina", ca: "49093", validade: "2029-12-31", qtd: 40, min: 5 },
+      { id: "e41", nome: "Calça RF G Masculina", ca: "49093", validade: "2029-12-31", qtd: 30, min: 5 },
+      { id: "e42", nome: "Calça RF GG Masculina", ca: "49093", validade: "2029-12-31", qtd: 30, min: 5 },
+      { id: "e43", nome: "Calça RF XXG Masculina", ca: "49093", validade: "2029-12-31", qtd: 30, min: 5 },
+      { id: "e44", nome: "Camisa RF P Feminina", ca: "50427", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e45", nome: "Camisa RF M Feminina", ca: "50427", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e46", nome: "Camisa RF G Feminina", ca: "50427", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e47", nome: "Camisa RF GG Feminina", ca: "50427", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e48", nome: "Calça RF P Feminina", ca: "50428", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e49", nome: "Calça RF M Feminina", ca: "50428", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e50", nome: "Calça RF G Feminina", ca: "50428", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e51", nome: "Calça RF GG Feminina", ca: "50428", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e52", nome: "Japona Operacional P", ca: "S/C.A.", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e53", nome: "Japona Operacional M", ca: "S/C.A.", validade: "2029-12-31", qtd: 20, min: 5 },
+      { id: "e54", nome: "Japona Operacional G", ca: "S/C.A.", validade: "2029-12-31", qtd: 20, min: 5 },
+      { id: "e55", nome: "Japona Operacional GG", ca: "S/C.A.", validade: "2029-12-31", qtd: 30, min: 5 },
+      { id: "e56", nome: "Japona Operacional XGG", ca: "S/C.A.", validade: "2029-12-31", qtd: 40, min: 5 },
+      { id: "e57", nome: "Calçado de Segurança 34 impermeável", ca: "S/C.A.", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e58", nome: "Calçado de Segurança 36 impermeável", ca: "S/C.A.", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e59", nome: "Calçado de Segurança 37 impermeável", ca: "S/C.A.", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e60", nome: "Calçado de Segurança 38 impermeável", ca: "S/C.A.", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e61", nome: "Calçado de Segurança 39 impermeável", ca: "40398", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e62", nome: "Calçado de Segurança 40 impermeável", ca: "40398", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e63", nome: "Calçado de Segurança 41 impermeável", ca: "40398", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e64", nome: "Calçado de Segurança 42 impermeável", ca: "S/C.A.", validade: "2029-12-31", qtd: 20, min: 5 },
+      { id: "e65", nome: "Calçado de Segurança 43 impermeável", ca: "S/C.A.", validade: "2029-12-31", qtd: 10, min: 5 },
+      { id: "e66", nome: "Calçado de Segurança 44 impermeável", ca: "S/C.A.", validade: "2029-12-31", qtd: 10, min: 5 },
+      { id: "e67", nome: "Calçado de Segurança 45 impermeável", ca: "S/C.A.", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e68", nome: "Óculos de Segurança Com Grau", ca: "33594", validade: "2029-12-31", qtd: 15, min: 5 }
     ];
 
-    // 0. CONFIGURAÇÃO DA NUVEM FIREBASE (SINCRONIZAÇÃO EM TEMPO REAL)
+    // 6. CONFIGURAÇÃO DA NUVEM FIREBASE (SINCRONIZAÇÃO EM TEMPO REAL)
     const firebaseConfig = {
       apiKey: "AIzaSyDTMDXAbh2zx7d55kwjV1LTMCZ9eNIz4hs",
       authDomain: "ssma-bavgru.firebaseapp.com",
@@ -874,10 +939,11 @@
       console.warn("Erro ao iniciar Firebase:", e);
     }
 
-    // ATUALIZAÇÃO AUTOMÁTICA DA BASE PARA 116 COLABORADORES
-    const VERSAO_BASE = 'bavgru_efetivo_116_oficial_v2';
+    // ATUALIZAÇÃO AUTOMÁTICA DA BASE PARA 116 COLABORADORES E 78 EPIS
+    const VERSAO_BASE = 'bavgru_efetivo_116_epis_78_oficial_v3';
     if (localStorage.getItem('bavgru_versao_instalada') !== VERSAO_BASE) {
       localStorage.setItem('bavgru_colaboradores', JSON.stringify(INITIAL_COLABORADORES));
+      localStorage.setItem('bavgru_estoque', JSON.stringify(INITIAL_ESTOQUE));
       localStorage.setItem('bavgru_versao_instalada', VERSAO_BASE);
     }
 
@@ -916,7 +982,6 @@
 
       const textoBadge = document.getElementById('texto-status-nuvem');
 
-      // Monitor de conexão com a nuvem
       dbNuvem.ref('.info/connected').on('value', (snap) => {
         if (snap.val() === true) {
           if (textoBadge) textoBadge.textContent = 'Nuvem Conectada';
@@ -925,7 +990,7 @@
         }
       });
 
-      // 1. Escuta Auditoria (Dispensações NR-06 e Inspeções Anexo C)
+      // 1. Escuta Auditoria
       dbNuvem.ref('bavgru/auditoria').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -972,7 +1037,7 @@
       primeiraCargaNuvem = false;
     }
 
-    // NAVEGAÇÃO
+    // NAVEGAÇÃO DE ABAS
     function switchTab(tab) {
       ['dashboard', 'dispensacao', 'inspecao', 'pendencias', 'estoque', 'colaboradores', 'admin'].forEach(t => {
         const section = document.getElementById('tab-' + t);
@@ -1003,7 +1068,7 @@
       else if (tab === 'dispensacao' || tab === 'inspecao') redimensionarCanvas();
     }
 
-    // ADMIN
+    // CONTROLES DE ADMINISTRAÇÃO
     function autenticarAdmin() {
       const input = document.getElementById('admin-input-senha').value;
       if (input === senhaAdmin) {
@@ -1294,7 +1359,6 @@
         if (!canvas) return;
         const rect = canvas.getBoundingClientRect();
         if (rect.width > 0 && canvas.width !== rect.width) {
-          // Mantém conteúdo se já desenhado
           const temp = canvas.toDataURL();
           canvas.width = rect.width;
           canvas.height = 170;
@@ -1534,11 +1598,11 @@
           <td class="p-2 font-mono text-slate-500">${l.dataHoraExclusao}</td>
           <td class="p-2 font-bold text-slate-700">${l.idOriginal}</td>
           <td class="p-2">${l.colaboradorAfetado}</td>
-          <td class="p-2"><span class="bg-red-100 text-red-800 px-1.5 py-0.5 rounded">${l.itemAfetado}</span></td>
+          <td class="p-2"><span class="bg-red-100 text-red-800 px-1.5 py-0.5 rounded font-medium">${l.itemAfetado}</span></td>
           <td class="p-2 font-bold text-slate-800">${l.responsavelExclusao}</td>
           <td class="p-2 text-slate-600 italic">"${l.justificativa}"</td>
         </tr>
-      `).join('') : `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nenhuma exclusão registrada até o momento.</td></tr>`;
+      `).join('') : `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nenhuma exclusão registrada na base até o momento.</td></tr>`;
     }
 
     function exportarLogExclusoesCSV() {
@@ -1671,7 +1735,7 @@
         <div class="flex justify-between items-center border-b-2 border-vibraGreen pb-2">
           <div>
             <h2 class="text-sm md:text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A. - BAVGRU (GUARULHOS)</h2>
-            <p class="text-[11px] text-slate-600">${reg.tipo} | Comprovante Oficial</p>
+            <p class="text-[11px] text-slate-600">${reg.tipo} | Comprovante Oficial de entrega de epi</p>
           </div>
           <div class="text-right text-[10px]">
             <p><strong>Nº:</strong> ${reg.id}</p>

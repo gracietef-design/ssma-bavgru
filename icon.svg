@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="vibraGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#008542"/>
+      <stop offset="100%" stop-color="#00582C"/>
+    </linearGradient>
+  </defs>
+  <!-- Fundo com cantos arredondados -->
+  <rect width="512" height="512" rx="100" fill="url(#vibraGrad)"/>
+  
+  <!-- Detalhe em Amarelo Vibra -->
+  <path d="M 60 420 L 452 420" stroke="#FFC72C" stroke-width="24" stroke-linecap="round"/>
+  
+  <!-- Escudo / Capacete de Segurança SSMA -->
+  <path d="M 256 90 L 390 145 C 390 280 256 360 256 360 C 256 360 122 280 122 145 Z" fill="#FFFFFF" fill-opacity="0.15" stroke="#FFFFFF" stroke-width="16" stroke-linejoin="round"/>
+  
+  <!-- Cruz de Segurança / EPI -->
+  <path d="M 256 160 L 256 290 M 191 225 L 321 225" stroke="#FFC72C" stroke-width="26" stroke-linecap="round"/>
+  
+  <!-- Letreiro VIBRA SSMA -->
+  <text x="256" y="468" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="38" fill="#FFFFFF" text-anchor="middle" letter-spacing="4">SSMA BAVGRU</text>
+</svg>

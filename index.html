@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Portal SSMA BAVGRU - Gestão de EPIs, Inspeção SPIQ & Auditoria</title>
+  
+  <!-- CONFIGURAÇÕES DE PWA (APLICATIVO PARA CELULAR E TABLET) -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#008542" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="SSMA BAVGRU" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            vibraGreen: '#008542',
+            vibraDark: '#00582C',
+            vibraYellow: '#FFC72C',
+            vibraLight: '#F4FBF7'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none !important; }
+      .no-print { display: none !important; }
+    }
+    canvas { touch-action: none; }
+    
+    /* Barra de rolagem suave para abas no celular */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Ajuste para telas com entalhe (iPhone Notch / Safe Areas) */
+    header { padding-top: max(1rem, env(safe-area-inset-top)); }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col select-none md:select-auto">
+
+  <!-- BANNER DE INSTALAÇÃO DO APP (APARECE NO CELULAR/TABLET) -->
+  <div id="pwa-install-banner" class="hidden bg-gradient-to-r from-vibraDark to-vibraGreen text-white px-4 py-3 shadow-md border-b-2 border-vibraYellow no-print">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-white p-1 shrink-0 flex items-center justify-center shadow">
+          <img src="icon.svg" alt="App Icon" class="w-8 h-8" />
+        </div>
+        <div>
+          <p class="text-sm font-bold leading-tight">Instalar Aplicativo BAVGRU</p>
+          <p class="text-xs text-emerald-100">Acesse direto da tela inicial com 1 toque</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btn-instalar-app" onclick="acionarInstalacaoPWA()" class="bg-vibraYellow text-vibraDark font-bold px-3 py-1.5 rounded-lg text-xs shadow hover:bg-yellow-400 transition-all">
+          📲 Instalar
+        </button>
+        <button onclick="fecharBannerPWA()" class="text-white/80 hover:text-white text-lg px-1">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CABEÇALHO PADRÃO VIBRA -->
+  <header class="bg-vibraGreen text-white shadow-lg border-b-4 border-vibraYellow no-print">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
+      <div class="flex items-center justify-between w-full md:w-auto">
+        <div class="flex items-center gap-3">
+          <div class="text-white font-extrabold px-2 py-1 text-2xl tracking-widest flex items-center gap-2">
+            <span>VIBRA</span>
+            <span class="text-xs bg-vibraYellow text-vibraDark px-2 py-0.5 rounded font-black tracking-normal uppercase">App</span>
+          </div>
+          <div class="border-l border-emerald-400 pl-3">
+            <h1 class="text-base md:text-xl font-bold tracking-tight leading-tight">SSMA BAVGRU</h1>
+            <p class="text-[11px] text-emerald-100">Gestão EPIs & Inspeção Trava-Quedas</p>
+          </div>
+        </div>
+
+        <!-- Botão de Ajuda de Instalação Mobile -->
+        <button onclick="abrirModalAjudaApp()" class="md:hidden bg-emerald-800 text-vibraYellow border border-emerald-600 px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
+          📲 App
+        </button>
+      </div>
+
+      <!-- NAVEGAÇÃO DE ABAS: COM ROLAGEM HORIZONTAL SUAVE NO CELULAR -->
+      <nav class="w-full md:w-auto overflow-x-auto no-scrollbar flex items-center gap-2 pb-1 md:pb-0">
+        <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="tab-btn whitespace-nowrap bg-white text-vibraDark font-semibold px-3.5 py-2 rounded-lg text-xs md:text-sm shadow transition-all">📊 Painel</button>
+        <button onclick="switchTab('dispensacao')" id="tab-btn-dispensacao" class="tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all">🦺 Dispensar EPI</button>
+        <button onclick="switchTab('inspecao')" id="tab-btn-inspecao" class="tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all">🧗 Inspeção Cinto</button>
+        <button onclick="switchTab('pendencias')" id="tab-btn-pendencias" class="tab-btn whitespace-nowrap bg-amber-600 text-white hover:bg-amber-700 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold">⚠️ Pendências</button>
+        <button onclick="switchTab('estoque')" id="tab-btn-estoque" class="tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all">📦 Estoque</button>
+        <button onclick="switchTab('colaboradores')" id="tab-btn-colaboradores" class="tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all">👥 Efetivo</button>
+        <button onclick="switchTab('admin')" id="tab-btn-admin" class="tab-btn whitespace-nowrap bg-slate-800 text-white hover:bg-slate-900 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold">⚙️ Admin</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="max-w-7xl mx-auto w-full p-3 md:p-4 flex-1 no-print">
+
+    <!-- ABA 1: DASHBOARD E ARQUIVO DE AUDITORIA -->
+    <section id="tab-dashboard" class="space-y-4 md:space-y-6">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
+        <div onclick="switchTab('colaboradores')" class="bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-vibraGreen cursor-pointer hover:shadow-md transition-shadow">
+          <p class="text-[10px] md:text-xs text-slate-500 uppercase font-bold">Colaboradores</p>
+          <p id="kpi-colaboradores" class="text-2xl md:text-3xl font-extrabold text-slate-800 mt-1">0</p>
+          <p class="text-[10px] md:text-xs text-emerald-600 mt-1">Base BAVGRU</p>
+        </div>
+        <div onclick="switchTab('dashboard')" class="bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-blue-600 cursor-pointer hover:shadow-md transition-shadow">
+          <p class="text-[10px] md:text-xs text-slate-500 uppercase font-bold">Fichas NR-06</p>
+          <p id="kpi-dispensacoes" class="text-2xl md:text-3xl font-extrabold text-slate-800 mt-1">0</p>
+          <p class="text-[10px] md:text-xs text-blue-600 mt-1">Assinadas</p>
+        </div>
+        <div onclick="switchTab('inspecao')" class="bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-emerald-600 cursor-pointer hover:shadow-md transition-shadow">
+          <p class="text-[10px] md:text-xs text-slate-500 uppercase font-bold">Inspeções Cinto</p>
+          <p id="kpi-inspecoes" class="text-2xl md:text-3xl font-extrabold text-slate-800 mt-1">0</p>
+          <p class="text-[10px] md:text-xs text-emerald-600 mt-1">Anexo C no mês</p>
+        </div>
+        <div onclick="switchTab('pendencias')" class="bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-amber-500 cursor-pointer hover:shadow-md transition-shadow">
+          <p class="text-[10px] md:text-xs text-slate-500 uppercase font-bold">Pendências Mês</p>
+          <p id="kpi-pendencias" class="text-2xl md:text-3xl font-extrabold text-amber-600 mt-1">0</p>
+          <p class="text-[10px] md:text-xs text-amber-700 mt-1">Sem visto</p>
+        </div>
+        <div onclick="switchTab('estoque')" class="col-span-2 md:col-span-1 bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-red-600 cursor-pointer hover:shadow-md transition-shadow">
+          <p class="text-[10px] md:text-xs text-slate-500 uppercase font-bold">Alertas Estoque</p>
+          <p id="kpi-alertas" class="text-2xl md:text-3xl font-extrabold text-red-600 mt-1">0</p>
+          <p class="text-[10px] md:text-xs text-red-500 mt-1">Abaixo do mínimo</p>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 md:p-6 rounded-xl shadow">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
+          <div>
+            <h2 class="text-base md:text-lg font-bold text-slate-800">🗂️ Arquivo Digital de Auditoria (Fichas NR-06 & Inspeções)</h2>
+            <p class="text-xs text-slate-500">Documentos oficiais com validade jurídica e assinatura digital coletada.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+            <input type="text" id="busca-auditoria" oninput="renderAuditoria()" placeholder="🔎 Filtrar nome ou CA..." class="border rounded-lg px-3 py-2 text-sm w-full md:w-64 bg-slate-50 border-emerald-300 focus:outline-none focus:ring-2 focus:ring-vibraGreen" />
+            <button onclick="exportarCSV()" class="bg-vibraGreen hover:bg-vibraDark text-white px-3 py-2 rounded-lg text-xs md:text-sm font-semibold shrink-0">📥 Exportar CSV</button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[600px]">
+            <thead>
+              <tr class="bg-slate-100 text-slate-600 border-b">
+                <th class="p-2.5">Data/Hora</th>
+                <th class="p-2.5">Tipo</th>
+                <th class="p-2.5">Colaborador</th>
+                <th class="p-2.5">Equipamento / CA</th>
+                <th class="p-2.5">Status</th>
+                <th class="p-2.5 text-right">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-auditoria" class="divide-y"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 2: DISPENSAÇÃO DE EPI (NR-06) -->
+    <section id="tab-dispensacao" class="hidden space-y-4 md:space-y-6">
+      <div class="bg-white p-4 md:p-6 rounded-xl shadow">
+        <h2 class="text-base md:text-lg font-bold text-vibraDark border-b pb-2 mb-4">🦺 Nova Dispensação de EPI com Assinatura (NR-06)</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Colaborador (BAVGRU) *</label>
+            <select id="disp-colaborador" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">EPI do Estoque (Com CA Válido) *</label>
+            <select id="disp-epi" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50"></select>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Quantidade *</label>
+              <input type="number" id="disp-qtd" value="1" min="1" class="w-full border rounded-lg p-2.5 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Motivo *</label>
+              <select id="disp-motivo" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+                <option value="Substituição por Desgaste Normal">Substituição por Desgaste</option>
+                <option value="Primeira Entrega / Admissão">Primeira Entrega</option>
+                <option value="Substituição por Reprovação na Inspeção">Reprovação em Inspeção</option>
+                <option value="Perda ou Extravio">Perda / Danificação</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs text-slate-700 leading-relaxed">
+          <strong>Termo NR-06 (6.5.1 / 6.7.1):</strong> Declaro ter recebido da Vibra Energia (BAVGRU) o EPI especificado, com CA ativo e em perfeito estado, recebendo orientações sobre uso correto, guarda e obrigatoriedade de conservação.
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
+          <div class="border rounded-xl p-3 md:p-4 bg-slate-50">
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="font-bold text-xs md:text-sm text-slate-700">📸 1. Foto do Colaborador / EPI</h3>
+              <button type="button" onclick="alternarCamera('disp')" class="text-xs text-blue-600 font-bold hover:underline">🔄 Inverter Câmera</button>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="relative w-full max-w-[280px] h-44 bg-slate-200 rounded-lg overflow-hidden border flex items-center justify-center">
+                <video id="video-disp" class="w-full h-full object-cover hidden" autoplay playsinline muted></video>
+                <img id="foto-disp-preview" class="w-full h-full object-cover hidden" alt="Foto capturada" />
+                <span id="foto-disp-placeholder" class="text-xs text-slate-400 text-center px-4">Câmera desligada</span>
+              </div>
+              <div class="flex gap-2">
+                <button type="button" onclick="iniciarCamera('disp')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Ligar Câmera</button>
+                <button type="button" onclick="capturarFoto('disp')" class="bg-vibraGreen hover:bg-vibraDark text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Tirar Foto</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="border rounded-xl p-3 md:p-4 bg-slate-50">
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="font-bold text-xs md:text-sm text-slate-700">✍️ 2. Assinatura Digital do Colaborador</h3>
+              <button type="button" onclick="limparAssinatura('canvas-disp')" class="text-xs text-red-600 hover:underline font-semibold">Limpar</button>
+            </div>
+            <div class="bg-white border-2 border-dashed border-slate-300 rounded-lg overflow-hidden">
+              <canvas id="canvas-disp" height="170" class="w-full bg-white cursor-crosshair block"></canvas>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">Assine com o dedo no celular/tablet ou mouse no PC.</p>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end">
+          <button onclick="salvarDispensacao()" class="w-full md:w-auto bg-vibraGreen hover:bg-vibraDark text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm">
+            ✅ Confirmar Entrega e Gerar Ficha NR-06
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 3: INSPEÇÃO DE CINTO TRAVA-QUEDAS -->
+    <section id="tab-inspecao" class="hidden space-y-4 md:space-y-6">
+      <div class="bg-white p-4 md:p-6 rounded-xl shadow">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-3 mb-4 gap-2">
+          <div>
+            <h2 class="text-base md:text-lg font-bold text-vibraDark">🧗 Inspeção Mensal de Cinto e Talabarte (Anexo C)</h2>
+            <p class="text-xs text-slate-500">Padrão Corporativo Vibra <strong>040.010.060.021.PR (Anexo C)</strong> & NR-35.</p>
+          </div>
+          <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">CA Padrão: 35191</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Colaborador Executante *</label>
+            <select id="insp-colaborador" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nº C.A. do Cinto *</label>
+            <input type="text" id="insp-ca" value="35191" class="w-full border rounded-lg p-2.5 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Data da Inspeção *</label>
+            <input type="date" id="insp-data" class="w-full border rounded-lg p-2.5 text-sm" />
+          </div>
+        </div>
+
+        <div class="space-y-2" id="checklist-container"></div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
+          <div class="border rounded-xl p-3 md:p-4 bg-slate-50">
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="font-bold text-xs md:text-sm text-slate-700">📸 1. Foto do Colaborador / Inspeção</h3>
+              <button type="button" onclick="alternarCamera('insp')" class="text-xs text-blue-600 font-bold hover:underline">🔄 Inverter Câmera</button>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="relative w-full max-w-[280px] h-44 bg-slate-200 rounded-lg overflow-hidden border flex items-center justify-center">
+                <video id="video-insp" class="w-full h-full object-cover hidden" autoplay playsinline muted></video>
+                <img id="foto-insp-preview" class="w-full h-full object-cover hidden" alt="Foto capturada" />
+                <span id="foto-insp-placeholder" class="text-xs text-slate-400 text-center px-4">Câmera desligada</span>
+              </div>
+              <div class="flex gap-2">
+                <button type="button" onclick="iniciarCamera('insp')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Ligar Câmera</button>
+                <button type="button" onclick="capturarFoto('insp')" class="bg-vibraGreen hover:bg-vibraDark text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Tirar Foto</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="border rounded-xl p-3 md:p-4 bg-slate-50">
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="font-bold text-xs md:text-sm text-slate-700">✍️ 2. Visto Mensal / Assinatura</h3>
+              <button type="button" onclick="limparAssinatura('canvas-insp')" class="text-xs text-red-600 hover:underline font-semibold">Limpar</button>
+            </div>
+            <div class="bg-white border-2 border-dashed border-slate-300 rounded-lg overflow-hidden">
+              <canvas id="canvas-insp" height="170" class="w-full bg-white cursor-crosshair block"></canvas>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">Confirmo a veracidade da inspeção visual realizada.</p>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end">
+          <button onclick="salvarInspecao()" class="w-full md:w-auto bg-vibraGreen hover:bg-vibraDark text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm">
+            🛡️ Registrar Inspeção Anexo C e Gerar Certificado
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 4: PENDÊNCIAS DE INSPEÇÃO -->
+    <section id="tab-pendencias" class="hidden space-y-4 md:space-y-6">
+      <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-amber-500">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 border-b pb-3">
+          <div>
+            <h2 class="text-base md:text-lg font-bold text-slate-800 flex items-center gap-2">
+              <span class="text-amber-500 text-xl">⚠️</span> Pendências Mensais: Trava-Quedas (SPIQ)
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">Colaboradores que <strong>não realizaram</strong> a inspeção do Anexo C no mês selecionado.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+            <input type="month" id="pendencias-mes-ano" onchange="renderPendencias()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs md:text-sm font-semibold bg-slate-50" />
+            <button onclick="exportarPendenciasCSV()" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold shadow">📥 Exportar CSV</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 md:gap-4 mb-4">
+          <div class="bg-amber-50 border border-amber-200 p-2.5 md:p-4 rounded-xl text-center md:text-left">
+            <p class="text-[10px] md:text-xs text-amber-800 font-bold uppercase">Pendentes</p>
+            <p id="total-pendentes-num" class="text-xl md:text-3xl font-extrabold text-amber-700 mt-1">0</p>
+          </div>
+          <div class="bg-emerald-50 border border-emerald-200 p-2.5 md:p-4 rounded-xl text-center md:text-left">
+            <p class="text-[10px] md:text-xs text-emerald-800 font-bold uppercase">Inspecionados</p>
+            <p id="total-inspecionados-num" class="text-xl md:text-3xl font-extrabold text-emerald-700 mt-1">0</p>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 p-2.5 md:p-4 rounded-xl text-center md:text-left">
+            <p class="text-[10px] md:text-xs text-slate-600 font-bold uppercase">Conformidade</p>
+            <p id="taxa-adesao-num" class="text-xl md:text-3xl font-extrabold text-slate-800 mt-1">0%</p>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <input type="text" id="busca-pendencias" oninput="renderPendencias()" placeholder="🔎 Filtrar colaborador pendente..." class="w-full border rounded-lg px-3 py-2 text-xs md:text-sm bg-slate-50 border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[550px]">
+            <thead>
+              <tr class="bg-slate-100 text-slate-600 border-b">
+                <th class="p-2.5">Matrícula</th>
+                <th class="p-2.5">Colaborador</th>
+                <th class="p-2.5">Função</th>
+                <th class="p-2.5 text-center">Status</th>
+                <th class="p-2.5 text-right">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-pendencias" class="divide-y"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 5: CONTROLE DE ESTOQUE -->
+    <section id="tab-estoque" class="hidden space-y-4 md:space-y-6">
+      <div class="bg-white p-4 md:p-6 rounded-xl shadow">
+        <div class="flex justify-between items-center mb-4 border-b pb-2">
+          <h2 class="text-base md:text-lg font-bold text-vibraDark">📦 Inventário Permanente de EPIs</h2>
+          <span class="text-xs text-slate-500">Unidade BAVGRU</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[500px]">
+            <thead>
+              <tr class="bg-slate-100 text-slate-600 border-b">
+                <th class="p-2.5">Equipamento</th>
+                <th class="p-2.5">Nº C.A.</th>
+                <th class="p-2.5">Saldo</th>
+                <th class="p-2.5">Mínimo</th>
+                <th class="p-2.5">Status</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-estoque" class="divide-y"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 6: EFETIVO BAVGRU -->
+    <section id="tab-colaboradores" class="hidden space-y-4 md:space-y-6">
+      <div class="bg-white p-4 md:p-6 rounded-xl shadow">
+        <h2 class="text-base md:text-lg font-bold text-vibraDark mb-3">👥 Banco de Colaboradores - BAVGRU</h2>
+        <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg mb-4 flex gap-2 items-center">
+          <span>🔍</span>
+          <input type="text" id="busca-colab" oninput="renderColaboradores()" placeholder="Pesquise por nome ou matrícula..." class="w-full border-none rounded bg-white px-3 py-2 text-xs md:text-sm shadow-sm focus:ring-2 focus:ring-vibraGreen outline-none" />
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[450px]">
+            <thead>
+              <tr class="bg-slate-100 text-slate-600 border-b">
+                <th class="p-2.5">Matrícula</th>
+                <th class="p-2.5">Nome</th>
+                <th class="p-2.5">Função</th>
+                <th class="p-2.5 text-right">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-colaboradores" class="divide-y"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 7: ADMINISTRAÇÃO -->
+    <section id="tab-admin" class="hidden space-y-4 md:space-y-6">
+
+      <div id="admin-login-box" class="bg-white p-6 md:p-8 rounded-xl shadow max-w-md mx-auto border-t-4 border-slate-800">
+        <h2 class="text-base md:text-lg font-bold text-slate-800 text-center mb-1">🔒 Acesso Administrativo Restrito</h2>
+        <p class="text-xs text-slate-500 text-center mb-4">Área exclusiva para Técnica de Segurança e Liderança da BAVGRU.</p>
+        <div class="space-y-3">
+          <input type="password" id="admin-input-senha" placeholder="Senha do Administrador" class="w-full border rounded-lg p-2.5 text-sm outline-none focus:ring-2 focus:ring-vibraGreen" />
+          <button onclick="autenticarAdmin()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-lg text-sm shadow">Entrar no Painel</button>
+        </div>
+      </div>
+
+      <div id="admin-content-box" class="hidden space-y-4 md:space-y-6">
+        <div class="bg-emerald-50 border border-emerald-300 p-3 md:p-4 rounded-xl flex justify-between items-center">
+          <div>
+            <span class="font-bold text-emerald-900 text-sm">Sessão Administrativa Ativa</span>
+            <p class="text-xs text-emerald-700">Controles de estoque, funcionários e auditoria liberados.</p>
+          </div>
+          <button onclick="sairAdmin()" class="bg-emerald-200 text-emerald-800 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-300">Sair ✕</button>
+        </div>
+
+        <!-- ENTRADA DE ESTOQUE -->
+        <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-blue-600">
+          <h2 class="text-base font-bold text-blue-900 mb-2">📥 Registrar Entrada de EPI (Reposição)</h2>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div class="md:col-span-2">
+              <label class="block text-xs font-bold uppercase text-slate-600 mb-1">EPI Existente *</label>
+              <select id="entrada-epi" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50"></select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nº NF / Lote</label>
+              <input type="text" id="entrada-nf" placeholder="Ex: NF-10452" class="w-full border rounded-lg p-2.5 text-sm" />
+            </div>
+            <div class="flex items-end gap-2">
+              <div class="w-full">
+                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Quantidade *</label>
+                <input type="number" id="entrada-qtd" min="1" value="10" class="w-full border rounded-lg p-2.5 text-sm" />
+              </div>
+              <button onclick="registrarEntrada()" class="bg-blue-600 hover:bg-blue-800 text-white font-bold px-4 py-2.5 rounded-lg text-sm shrink-0">➕ Salvar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- NOVO COLABORADOR -->
+        <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-vibraGreen">
+          <h2 class="text-base font-bold text-vibraDark mb-3">👥 Cadastrar Novo Colaborador</h2>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <input type="text" id="novo-colab-nome" placeholder="Nome Completo" class="border rounded-lg p-2 text-sm" />
+            <input type="text" id="novo-colab-matricula" placeholder="Matrícula" class="border rounded-lg p-2 text-sm" />
+            <input type="text" id="novo-colab-funcao" placeholder="Função" class="border rounded-lg p-2 text-sm" />
+            <div class="flex gap-2">
+              <input type="email" id="novo-colab-email" placeholder="E-mail (@vibraenergia.com.br)" class="border rounded-lg p-2 text-sm flex-1" />
+              <button onclick="cadastrarNovoColaborador()" class="bg-vibraGreen hover:bg-vibraDark text-white font-bold px-4 py-2 rounded-lg text-sm shrink-0">+ Incluir</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- LOG DE AUDITORIA -->
+        <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-red-600">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 mb-3">
+            <div>
+              <h2 class="text-base font-bold text-red-700">📜 Trilha de Auditoria: Log de Exclusões</h2>
+              <p class="text-xs text-slate-500">Histórico de exclusões com justificativa e responsável.</p>
+            </div>
+            <button onclick="exportarLogExclusoesCSV()" class="bg-red-700 hover:bg-red-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0">📥 Baixar Log CSV</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs min-w-[650px]">
+              <thead>
+                <tr class="bg-red-50 text-red-900 border-b">
+                  <th class="p-2">Data/Hora</th>
+                  <th class="p-2">Protocolo</th>
+                  <th class="p-2">Colaborador</th>
+                  <th class="p-2">Item</th>
+                  <th class="p-2">Responsável</th>
+                  <th class="p-2">Justificativa</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-log-exclusoes" class="divide-y"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ALTERAR SENHA -->
+        <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-slate-700">
+          <h2 class="text-base font-bold text-slate-800 mb-2">🔑 Alterar Senha de Administrador</h2>
+          <div class="flex flex-col sm:flex-row gap-2 max-w-md">
+            <input type="password" id="nova-senha-admin" placeholder="Nova senha (min. 4 caracteres)" class="border rounded-lg p-2 text-sm flex-1" />
+            <button onclick="alterarSenhaAdmin()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-4 py-2 rounded-lg text-sm shrink-0">Salvar Senha</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL DE COMPROVANTE / IMPRESSÃO -->
+  <div id="modal-print" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-3 z-50">
+    <div class="bg-white rounded-xl max-w-2xl w-full p-4 md:p-6 max-h-[92vh] overflow-y-auto shadow-2xl relative">
+      <div class="flex justify-between items-center mb-3 pb-2 border-b no-print">
+        <h3 class="font-bold text-vibraDark text-sm md:text-base">📄 Comprovante Oficial SSMA</h3>
+        <div class="flex gap-2">
+          <button onclick="window.print()" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow hover:bg-vibraDark">📥 Imprimir / PDF</button>
+          <button onclick="fecharModalPrint()" class="bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-slate-300">Fechar ✕</button>
+        </div>
+      </div>
+      <div id="print-area" class="p-4 border border-slate-300 rounded-lg text-xs space-y-3 bg-white pointer-events-none"></div>
+    </div>
+  </div>
+
+  <!-- MODAL GUIA DE COMO INSTALAR NO CELULAR / TABLET -->
+  <div id="modal-ajuda-app" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+      <div class="flex justify-between items-center mb-4 pb-2 border-b">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">📲</span>
+          <h3 class="font-bold text-slate-800 text-base">Instalar Aplicativo BAVGRU</h3>
+        </div>
+        <button onclick="fecharModalAjudaApp()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
+      </div>
+      
+      <div class="space-y-4 text-xs text-slate-600">
+        <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl">
+          <p class="font-bold text-vibraDark text-sm mb-1">🤖 No Android (Google Chrome / Edge):</p>
+          <ol class="list-decimal pl-4 space-y-1">
+            <li>Toque nos <strong>três pontinhos (⋮)</strong> no canto superior direito do navegador.</li>
+            <li>Selecione <strong>"Instalar aplicativo"</strong> ou <strong>"Adicionar à tela inicial"</strong>.</li>
+            <li>Confirme. O ícone do SSMA BAVGRU aparecerá como aplicativo instalado no celular!</li>
+          </ol>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl">
+          <p class="font-bold text-blue-900 text-sm mb-1">🍎 No iPhone / iPad (Safari):</p>
+          <ol class="list-decimal pl-4 space-y-1">
+            <li>Toque no botão de <strong>Compartilhar (quadrado com seta para cima ⎋)</strong> na barra inferior do Safari.</li>
+            <li>Role as opções e toque em <strong>"Adicionar à Tela de Início" (+)</strong>.</li>
+            <li>Toque em <strong>"Adicionar"</strong> no canto superior direito. Pronto!</li>
+          </ol>
+        </div>
+
+        <p class="text-[11px] text-slate-400 text-center">Uma vez adicionado, ele abre em tela cheia sem a barra de endereço do navegador, funcionando como um app de verdade!</p>
+      </div>
+
+      <div class="mt-5">
+        <button onclick="fecharModalAjudaApp()" class="w-full bg-vibraGreen text-white py-2.5 rounded-xl font-bold text-xs shadow hover:bg-vibraDark">Entendido!</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. REGISTRO DO SERVICE WORKER (PWA)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('Service Worker ativo para BAVGRU:', reg.scope))
+          .catch(err => console.log('Erro ao registrar Service Worker:', err));
+      });
+    }
+
+    // 2. CONTROLE DE INSTALAÇÃO PWA
+    let eventoInstalacaoPWA = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      eventoInstalacaoPWA = e;
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.classList.remove('hidden');
+    });
+
+    function acionarInstalacaoPWA() {
+      if (eventoInstalacaoPWA) {
+        eventoInstalacaoPWA.prompt();
+        eventoInstalacaoPWA.userChoice.then((resultado) => {
+          if (resultado.outcome === 'accepted') {
+            fecharBannerPWA();
+          }
+          eventoInstalacaoPWA = null;
+        });
+      } else {
+        abrirModalAjudaApp();
+      }
+    }
+
+    function fecharBannerPWA() {
+      document.getElementById('pwa-install-banner').classList.add('hidden');
+    }
+
+    function abrirModalAjudaApp() {
+      document.getElementById('modal-ajuda-app').classList.remove('hidden');
+      document.getElementById('modal-ajuda-app').classList.add('flex');
+    }
+
+    function fecharModalAjudaApp() {
+      document.getElementById('modal-ajuda-app').classList.add('hidden');
+      document.getElementById('modal-ajuda-app').classList.remove('flex');
+    }
+
+    // 3. ITENS OFICIAIS DO PADRÃO VIBRA ANEXO C
+    const PERGUNTAS_ANEXO_C = [
+      { id: "c1", grupo: "Cinto Paraquedista", texto: "1. As costuras apresentam boas condições sem ponto de rompimento ou desgastes?" },
+      { id: "c2", grupo: "Cinto Paraquedista", texto: "2. As fitas não apresentam rompimentos ou aparência desgastadas?" },
+      { id: "c3", grupo: "Cinto Paraquedista", texto: "3. Os engates não se soltam com facilidade e se conectam adequadamente?" },
+      { id: "c4", grupo: "Cinto Paraquedista", texto: "4. Os pontos de fixação das peças metálicas (fivelas e argolas) não apresentam desgaste incomum, fibras cortadas ou costuras rompidas?" },
+      { id: "c5", grupo: "Cinto Paraquedista", texto: "5. As argolas metálicas não apresentam distorções, rachaduras, rupturas, bordas afiadas ou corrosão?" },
+      { id: "c6", grupo: "Cinto Paraquedista", texto: "6. As argolas metálicas possibilitam a regulagem (abertura e soltura) do cinto sem dificuldades, proporcionando o ajuste correto e seguro?" },
+      { id: "c7", grupo: "Cinto Paraquedista", texto: "7. O indicador de impacto está sem avarias ou sinais de queda?" },
+      { id: "c8", grupo: "Cinto Paraquedista", texto: "8. O equipamento analisado é para sua EXCLUSIVA utilização?" },
+      { id: "t1", grupo: "Talabarte Y / Trava-Quedas", texto: "9. Os conectores não apresentam deformação, trinca, corrosão ou superfície irregular?" },
+      { id: "t2", grupo: "Talabarte Y / Trava-Quedas", texto: "10. O talabarte não apresenta corte ou deformações?" },
+      { id: "t3", grupo: "Talabarte Y / Trava-Quedas", texto: "11. A parte interna do absorvedor de energia não apresenta cortes e/ou furos?" }
+    ];
+
+    // 4. BANCO INICIAL BAVGRU
+    const INITIAL_COLABORADORES = [
+      { id: "c1", matricula: "128660", nome: "ADAUTO RIBEIRO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adautosantos@vibraenergia.com.br" },
+      { id: "c2", matricula: "129028", nome: "ADILSON MARQUES ESCANHOLATO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adilsonescanholato@vibraenergia.com.br" },
+      { id: "c3", matricula: "134770", nome: "ADRIANO APARECIDO GONZAGA DA COSTA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adrianocosta@vibraenergia.com.br" },
+      { id: "c4", matricula: "185782", nome: "ADRIANO LUIZ DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "adrianoluiz@vibraenergia.com.br" },
+      { id: "c5", matricula: "128578", nome: "ALECSANDER RODRIGUES LOPES CAVALCANTI", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "alecsandercavalcanti@vibraenergia.com.br" },
+      { id: "c15", matricula: "127059", nome: "ANDRE DO NASCIMENTO SANTOS", funcao: "LIDER DE ABASTECIMENTO", email: "andresantos@vibraenergia.com.br" },
+      { id: "c26", matricula: "150641", nome: "CLAUDIANA QUEIROZ SILVA", funcao: "TECNICA DE SEGURANCA DO TRABALHO PL", email: "claudianasilva@vibraenergia.com.br" },
+      { id: "c32", matricula: "127060", nome: "DIONISIO FRANCISCO DE MORAIS", funcao: "LIDER DE TURMA", email: "dionisiomorais@vibraenergia.com.br" },
+      { id: "c34", matricula: "127594", nome: "EDUARDO BRASILEIRO", funcao: "LIDER DE ABASTECIMENTO", email: "eduardobrasileiro@vibraenergia.com.br" },
+      { id: "c47", matricula: "147913", nome: "GRACIETE MARTINS FERREIRA", funcao: "TECNICA DE SEGURANCA DO TRABALHO JR", email: "gracietef@vibraenergia.com.br" },
+      { id: "c73", matricula: "125761", nome: "MARCOS VINICIUS DA SILVA VIRGINIO", funcao: "LIDER DE ABASTECIMENTO", email: "marcosvirginio@vibraenergia.com.br" },
+      { id: "c93", matricula: "908884", nome: "RUAN CARLOS BORGES ALVES", funcao: "GERENTE DE OPERACAO DE AEROPORTOS", email: "ruan@vibraenergia.com.br" }
+    ];
+
+    const INITIAL_ESTOQUE = [
+      { id: "e1", nome: "Luva Nitrílica", ca: "42760", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e3", nome: "Luva Nitrílica Verde M", ca: "40189", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e5", nome: "Óculos de Segurança Incolor", ca: "18821", validade: "2029-12-31", qtd: 25, min: 5 },
+      { id: "e10", nome: "Capacete de Segurança Branco", ca: "8304", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e13", nome: "Protetor Auricular Abafador", ca: "43588", validade: "2029-12-31", qtd: 40, min: 5 },
+      { id: "e33", nome: "Cinto Trava Quedas Hercules", ca: "35191", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e34", nome: "Camisa RF P Masculina", ca: "49095", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e39", nome: "Calça RF P Masculina", ca: "49093", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e44", nome: "Camisa RF P Feminina", ca: "50427", validade: "2029-12-31", qtd: 15, min: 5 }
+    ];
+
+    // ESTADO LOCAL
+    let colaboradores = JSON.parse(localStorage.getItem('bavgru_colaboradores')) || INITIAL_COLABORADORES;
+    let estoque = JSON.parse(localStorage.getItem('bavgru_estoque')) || INITIAL_ESTOQUE;
+    let auditoria = JSON.parse(localStorage.getItem('bavgru_auditoria')) || [];
+    let logExclusoes = JSON.parse(localStorage.getItem('bavgru_log_exclusoes')) || [];
+    let senhaAdmin = localStorage.getItem('bavgru_senha_admin') || 'vibra@2025';
+    let adminAutenticado = false;
+    let fotosCapturadas = { disp: null, insp: null };
+    let streamsCamera = { disp: null, insp: null };
+    let cameraFacing = { disp: 'user', insp: 'environment' };
+
+    function salvarBancoLocal() {
+      localStorage.setItem('bavgru_colaboradores', JSON.stringify(colaboradores));
+      localStorage.setItem('bavgru_estoque', JSON.stringify(estoque));
+      localStorage.setItem('bavgru_auditoria', JSON.stringify(auditoria));
+      localStorage.setItem('bavgru_log_exclusoes', JSON.stringify(logExclusoes));
+      localStorage.setItem('bavgru_senha_admin', senhaAdmin);
+      atualizarTudo();
+    }
+
+    // NAVEGAÇÃO
+    function switchTab(tab) {
+      ['dashboard', 'dispensacao', 'inspecao', 'pendencias', 'estoque', 'colaboradores', 'admin'].forEach(t => {
+        const section = document.getElementById('tab-' + t);
+        if (section) section.classList.add('hidden');
+
+        const btn = document.getElementById('tab-btn-' + t);
+        if (btn) {
+          if (t === 'admin') {
+            btn.className = "tab-btn whitespace-nowrap bg-slate-800 text-white hover:bg-slate-900 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold";
+          } else if (t === 'pendencias') {
+            btn.className = "tab-btn whitespace-nowrap bg-amber-600 text-white hover:bg-amber-700 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold";
+          } else {
+            btn.className = "tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all";
+          }
+        }
+      });
+
+      const targetSection = document.getElementById('tab-' + tab);
+      if (targetSection) targetSection.classList.remove('hidden');
+
+      const targetBtn = document.getElementById('tab-btn-' + tab);
+      if (targetBtn) {
+        targetBtn.className = "tab-btn whitespace-nowrap bg-white text-vibraDark font-semibold px-3.5 py-2 rounded-lg text-xs md:text-sm shadow transition-all";
+      }
+
+      if (tab === 'admin') renderAdminState();
+      else if (tab === 'pendencias') renderPendencias();
+      else if (tab === 'dispensacao' || tab === 'inspecao') redimensionarCanvas();
+    }
+
+    // ADMIN
+    function autenticarAdmin() {
+      const input = document.getElementById('admin-input-senha').value;
+      if (input === senhaAdmin) {
+        adminAutenticado = true;
+        document.getElementById('admin-input-senha').value = '';
+        renderAdminState();
+      } else {
+        alert('❌ Senha de Administrador incorreta.');
+      }
+    }
+
+    function sairAdmin() {
+      adminAutenticado = false;
+      renderAdminState();
+    }
+
+    function renderAdminState() {
+      const loginBox = document.getElementById('admin-login-box');
+      const contentBox = document.getElementById('admin-content-box');
+      if (adminAutenticado) {
+        loginBox.classList.add('hidden');
+        contentBox.classList.remove('hidden');
+        renderLogExclusoes();
+      } else {
+        loginBox.classList.remove('hidden');
+        contentBox.classList.add('hidden');
+      }
+    }
+
+    function alterarSenhaAdmin() {
+      const nova = document.getElementById('nova-senha-admin').value.trim();
+      if (!nova || nova.length < 4) return alert('A nova senha deve ter no mínimo 4 caracteres.');
+      senhaAdmin = nova;
+      salvarBancoLocal();
+      document.getElementById('nova-senha-admin').value = '';
+      alert('✅ Senha de Administrador alterada com sucesso!');
+    }
+
+    function cadastrarNovoColaborador() {
+      const nome = document.getElementById('novo-colab-nome').value.trim();
+      const matricula = document.getElementById('novo-colab-matricula').value.trim();
+      const funcao = document.getElementById('novo-colab-funcao').value.trim() || 'OPERADOR BAVGRU';
+      const email = document.getElementById('novo-colab-email').value.trim();
+      if (!nome || !matricula) return alert('Informe Nome e Matrícula.');
+      colaboradores.push({ id: 'c' + Date.now(), matricula, nome, funcao, email });
+      document.getElementById('novo-colab-nome').value = '';
+      document.getElementById('novo-colab-matricula').value = '';
+      document.getElementById('novo-colab-funcao').value = '';
+      document.getElementById('novo-colab-email').value = '';
+      salvarBancoLocal();
+      alert(`Colaborador ${nome} cadastrado com sucesso!`);
+    }
+
+    // CHECKLIST ANEXO C
+    function renderChecklistForm() {
+      const container = document.getElementById('checklist-container');
+      container.innerHTML = PERGUNTAS_ANEXO_C.map(p => `
+        <div class="p-3 border rounded-lg bg-slate-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+          <div>
+            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 text-vibraDark">${p.grupo}</span>
+            <p class="text-xs md:text-sm font-medium text-slate-800 mt-1 leading-snug">${p.texto}</p>
+          </div>
+          <div class="flex gap-2 shrink-0 text-xs font-bold w-full md:w-auto justify-between md:justify-end mt-1 md:mt-0">
+            <label class="flex items-center gap-1 cursor-pointer bg-white border px-2.5 py-1.5 rounded-lg flex-1 md:flex-initial justify-center">
+              <input type="radio" name="${p.id}" value="Conforme" checked /> <span class="text-emerald-700">✅ Conf.</span>
+            </label>
+            <label class="flex items-center gap-1 cursor-pointer bg-white border px-2.5 py-1.5 rounded-lg text-red-600 flex-1 md:flex-initial justify-center">
+              <input type="radio" name="${p.id}" value="Não Conforme" /> <span>❌ N.C.</span>
+            </label>
+            <label class="flex items-center gap-1 cursor-pointer bg-white border px-2.5 py-1.5 rounded-lg text-slate-500 flex-1 md:flex-initial justify-center">
+              <input type="radio" name="${p.id}" value="Não Aplicável" /> <span>N/A</span>
+            </label>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // CÂMERA COM SUPORTE A TROCA FRONTAL / TRASEIRA
+    async function iniciarCamera(tipo) {
+      try {
+        if (streamsCamera[tipo]) {
+          streamsCamera[tipo].getTracks().forEach(t => t.stop());
+        }
+        const video = document.getElementById('video-' + tipo);
+        const preview = document.getElementById('foto-' + tipo + '-preview');
+        const placeholder = document.getElementById('foto-' + tipo + '-placeholder');
+        
+        const constraints = {
+          video: {
+            facingMode: cameraFacing[tipo]
+          }
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamsCamera[tipo] = stream;
+        video.srcObject = stream;
+        video.classList.remove('hidden');
+        preview.classList.add('hidden');
+        if (placeholder) placeholder.classList.add('hidden');
+      } catch (e) {
+        alert('Câmera indisponível ou permissão não concedida no navegador.\nCertifique-se de acessar via HTTPS ou rede segura.');
+      }
+    }
+
+    function alternarCamera(tipo) {
+      cameraFacing[tipo] = cameraFacing[tipo] === 'user' ? 'environment' : 'user';
+      iniciarCamera(tipo);
+    }
+
+    function capturarFoto(tipo) {
+      const video = document.getElementById('video-' + tipo);
+      const preview = document.getElementById('foto-' + tipo + '-preview');
+      if (!streamsCamera[tipo]) return alert('Ligue primeiro a câmera.');
+      
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = video.videoWidth || 320;
+      tempCanvas.height = video.videoHeight || 240;
+      tempCanvas.getContext('2d').drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+      
+      const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.85);
+      fotosCapturadas[tipo] = dataUrl;
+      preview.src = dataUrl;
+      preview.classList.remove('hidden');
+      video.classList.add('hidden');
+      
+      streamsCamera[tipo].getTracks().forEach(t => t.stop());
+      streamsCamera[tipo] = null;
+    }
+
+    // ASSINATURA DIGITAL TOUCH TOTALMENTE RESPONSIVA
+    function redimensionarCanvas() {
+      ['canvas-disp', 'canvas-insp'].forEach(id => {
+        const canvas = document.getElementById(id);
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        if (rect.width > 0 && canvas.width !== rect.width) {
+          // Mantém conteúdo se já desenhado
+          const temp = canvas.toDataURL();
+          canvas.width = rect.width;
+          canvas.height = 170;
+          if (canvas.dataset.assinado === "true") {
+            const img = new Image();
+            img.onload = () => canvas.getContext('2d').drawImage(img, 0, 0);
+            img.src = temp;
+          }
+        }
+      });
+    }
+
+    function configurarCanvasAssinatura(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      let desenhando = false;
+      
+      ctx.lineWidth = 2.5; 
+      ctx.lineCap = 'round'; 
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#00582C';
+
+      const obterPos = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: (clientX - rect.left) * (canvas.width / rect.width),
+          y: (clientY - rect.top) * (canvas.height / rect.height)
+        };
+      };
+
+      const iniciar = (e) => {
+        desenhando = true;
+        const p = obterPos(e);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        canvas.dataset.assinado = "true";
+      };
+
+      const mover = (e) => {
+        if (!desenhando) return;
+        if (e.cancelable) e.preventDefault();
+        const p = obterPos(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      };
+
+      const parar = () => { desenhando = false; };
+
+      canvas.addEventListener('mousedown', iniciar);
+      canvas.addEventListener('mousemove', mover);
+      window.addEventListener('mouseup', parar);
+
+      canvas.addEventListener('touchstart', iniciar, { passive: true });
+      canvas.addEventListener('touchmove', mover, { passive: false });
+      window.addEventListener('touchend', parar);
+    }
+
+    function limparAssinatura(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+      canvas.dataset.assinado = "false";
+    }
+
+    // AÇÕES DE GRAVAÇÃO
+    function salvarDispensacao() {
+      const colabId = document.getElementById('disp-colaborador').value;
+      const epiId = document.getElementById('disp-epi').value;
+      const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
+      const motivo = document.getElementById('disp-motivo').value;
+      const canvas = document.getElementById('canvas-disp');
+
+      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.disp) {
+        return alert('Colete a assinatura ou a foto para validade legal da NR-06.');
+      }
+
+      const colab = colaboradores.find(c => c.id === colabId);
+      const itemEstoque = estoque.find(e => e.id === epiId);
+
+      if (!itemEstoque || itemEstoque.qtd < qtd) return alert('Estoque insuficiente para essa entrega!');
+
+      itemEstoque.qtd -= qtd;
+
+      const registro = {
+        id: 'NR06-' + Date.now(),
+        tipo: 'Dispensação EPI (NR-06)',
+        dataHora: new Date().toLocaleString('pt-BR'),
+        colaborador: colab.nome,
+        matricula: colab.matricula,
+        funcao: colab.funcao,
+        equipamento: itemEstoque.nome,
+        ca: itemEstoque.ca,
+        quantidade: qtd,
+        motivo: motivo,
+        status: 'ENTREGUE',
+        foto: fotosCapturadas.disp,
+        assinatura: canvas.toDataURL('image/png'),
+        hash: 'VIBRA-BAVGRU-' + Math.random().toString(36).substring(2, 10).toUpperCase()
+      };
+
+      auditoria.unshift(registro);
+      limparAssinatura('canvas-disp');
+      fotosCapturadas.disp = null;
+      document.getElementById('foto-disp-preview').src = '';
+      document.getElementById('foto-disp-preview').classList.add('hidden');
+      document.getElementById('foto-disp-placeholder').classList.remove('hidden');
+      salvarBancoLocal();
+      abrirComprovante(registro.id);
+    }
+
+    function salvarInspecao() {
+      const colabId = document.getElementById('insp-colaborador').value;
+      const ca = document.getElementById('insp-ca').value;
+      const dataInsp = document.getElementById('insp-data').value;
+      const canvas = document.getElementById('canvas-insp');
+
+      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.insp) {
+        return alert('Colete assinatura ou foto para o Anexo C.');
+      }
+
+      const colab = colaboradores.find(c => c.id === colabId);
+      let reprovado = false;
+      const respostas = PERGUNTAS_ANEXO_C.map(p => {
+        const sel = document.querySelector(`input[name="${p.id}"]:checked`).value;
+        if (sel === 'Não Conforme') reprovado = true;
+        return { pergunta: p.texto, resposta: sel };
+      });
+
+      const statusFinal = reprovado ? 'INTERDITADO / SUBSTITUIR' : 'APROVADO PARA USO';
+
+      const registro = {
+        id: 'ANEXOC-' + Date.now(),
+        tipo: 'Inspeção Cinto (Anexo C)',
+        dataHora: new Date().toLocaleString('pt-BR'),
+        dataReferencia: dataInsp,
+        colaborador: colab.nome,
+        matricula: colab.matricula,
+        funcao: colab.funcao,
+        equipamento: 'Cinto Paraquedista / Trava-Quedas',
+        ca: ca,
+        quantidade: 1,
+        status: statusFinal,
+        respostasChecklist: respostas,
+        foto: fotosCapturadas.insp,
+        assinatura: canvas.toDataURL('image/png'),
+        hash: 'ANEXOC-BAVGRU-' + Math.random().toString(36).substring(2, 10).toUpperCase()
+      };
+
+      auditoria.unshift(registro);
+      limparAssinatura('canvas-insp');
+      fotosCapturadas.insp = null;
+      document.getElementById('foto-insp-preview').src = '';
+      document.getElementById('foto-insp-preview').classList.add('hidden');
+      document.getElementById('foto-insp-placeholder').classList.remove('hidden');
+      salvarBancoLocal();
+
+      if (reprovado) alert('⚠️ ATENÇÃO: Equipamento reprovado na inspeção visual. INTERDITADO imediatamente!');
+      abrirComprovante(registro.id);
+    }
+
+    function abrirInspecaoDireta(colabId) {
+      switchTab('inspecao');
+      document.getElementById('insp-colaborador').value = colabId;
+    }
+
+    function registrarEntrada() {
+      const epiId = document.getElementById('entrada-epi').value;
+      const qtd = parseInt(document.getElementById('entrada-qtd').value || '0', 10);
+      const nf = document.getElementById('entrada-nf').value;
+
+      if (!epiId || qtd <= 0) return alert("Selecione o EPI e informe uma quantidade válida de entrada.");
+
+      const itemEstoque = estoque.find(e => e.id === epiId);
+      if(itemEstoque) {
+        itemEstoque.qtd += qtd;
+        alert(`Entrada registrada! O saldo de ${itemEstoque.nome} agora é ${itemEstoque.qtd} un.`);
+        document.getElementById('entrada-qtd').value = '10';
+        document.getElementById('entrada-nf').value = '';
+        salvarBancoLocal();
+      }
+    }
+
+    // EXCLUSÃO COM AUDITORIA
+    function excluirRegistro(id) {
+      const senha = prompt("🔒 Digite a senha do Administrador para excluir o registro:");
+      if (senha !== senhaAdmin) {
+        if (senha !== null) alert("❌ Senha incorreta.");
+        return;
+      }
+
+      const index = auditoria.findIndex(r => r.id === id);
+      if (index === -1) return;
+      const reg = auditoria[index];
+
+      const justificativa = prompt(`📝 MOTIVO DA EXCLUSÃO (${reg.colaborador}):\n(Obrigatório para conformidade de auditoria)`);
+      if (!justificativa || justificativa.trim().length < 5) {
+        return alert("❌ Cancelado. É obrigatório fornecer uma justificativa (mínimo 5 letras).");
+      }
+
+      const adminNome = prompt("👤 Digite seu Nome / Matrícula como Administrador:");
+      if (!adminNome || adminNome.trim().length === 0) return alert("❌ Identificação obrigatória.");
+
+      let estornoMsg = "Nenhum estorno necessário.";
+      if (reg.tipo.includes('Dispensação EPI')) {
+        const itemEstoque = estoque.find(e => e.nome === reg.equipamento && e.ca === reg.ca);
+        if (itemEstoque) {
+          const qtdEstornada = parseInt(reg.quantidade, 10) || 1;
+          itemEstoque.qtd += qtdEstornada;
+          estornoMsg = `Estornado +${qtdEstornada} un. para ${itemEstoque.nome}`;
+        }
+      }
+
+      const logEntry = {
+        idLog: 'LOG-' + Date.now(),
+        dataHoraExclusao: new Date().toLocaleString('pt-BR'),
+        idOriginal: reg.id,
+        tipoRegistro: reg.tipo,
+        colaboradorAfetado: `${reg.colaborador} (${reg.matricula})`,
+        itemAfetado: `${reg.equipamento} (CA: ${reg.ca})`,
+        estornoRealizado: estornoMsg,
+        responsavelExclusao: adminNome.trim(),
+        justificativa: justificativa.trim()
+      };
+
+      logExclusoes.unshift(logEntry);
+      auditoria.splice(index, 1);
+      salvarBancoLocal();
+      alert(`✅ Registro excluído e estornado no estoque com protocolo ${logEntry.idLog}.`);
+    }
+
+    function renderLogExclusoes() {
+      const container = document.getElementById('tabela-log-exclusoes');
+      if (!container) return;
+      container.innerHTML = logExclusoes.length ? logExclusoes.map(l => `
+        <tr class="hover:bg-red-50">
+          <td class="p-2 font-mono text-slate-500">${l.dataHoraExclusao}</td>
+          <td class="p-2 font-bold text-slate-700">${l.idOriginal}</td>
+          <td class="p-2">${l.colaboradorAfetado}</td>
+          <td class="p-2"><span class="bg-red-100 text-red-800 px-1.5 py-0.5 rounded">${l.itemAfetado}</span></td>
+          <td class="p-2 font-bold text-slate-800">${l.responsavelExclusao}</td>
+          <td class="p-2 text-slate-600 italic">"${l.justificativa}"</td>
+        </tr>
+      `).join('') : `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nenhuma exclusão registrada até o momento.</td></tr>`;
+    }
+
+    function exportarLogExclusoesCSV() {
+      if (!logExclusoes.length) return alert("Não há registros de exclusão para exportar.");
+      const headers = ['Data_Hora', 'Protocolo', 'Tipo', 'Colaborador', 'Item', 'Estorno', 'Responsavel', 'Justificativa'];
+      const linhas = logExclusoes.map(l => [l.dataHoraExclusao, l.idOriginal, l.tipoRegistro, l.colaboradorAfetado, l.itemAfetado, l.estornoRealizado, l.responsavelExclusao, l.justificativa].map(v => `"${v || ''}"`).join(';'));
+      const csv = '\uFEFF' + [headers.join(';'), ...linhas].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `Log_Auditoria_BAVGRU_${new Date().toISOString().slice(0,10)}.csv`;
+      link.click();
+    }
+
+    // PENDÊNCIAS DE INSPEÇÃO
+    function obterMesAnoSelecionado() {
+      const input = document.getElementById('pendencias-mes-ano');
+      if (input && input.value) return input.value;
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    function renderPendencias() {
+      const mesAno = obterMesAnoSelecionado();
+      const termo = (document.getElementById('busca-pendencias')?.value || '').toLowerCase();
+
+      const inspecionadosMes = new Set();
+      auditoria.forEach(r => {
+        if (r.tipo.includes('Inspeção Cinto')) {
+          let dataRef = r.dataReferencia;
+          if (!dataRef && r.dataHora) {
+            const partes = r.dataHora.split(',')[0].split('/');
+            if (partes.length === 3) dataRef = `${partes[2].trim()}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
+          }
+          if (dataRef && dataRef.startsWith(mesAno)) {
+            inspecionadosMes.add(r.matricula);
+          }
+        }
+      });
+
+      const pendentes = colaboradores.filter(c => !inspecionadosMes.has(c.matricula));
+      const inspecionadosCount = colaboradores.length - pendentes.length;
+      const taxa = colaboradores.length ? Math.round((inspecionadosCount / colaboradores.length) * 100) : 0;
+
+      document.getElementById('total-pendentes-num').textContent = pendentes.length;
+      document.getElementById('total-inspecionados-num').textContent = inspecionadosCount;
+      document.getElementById('taxa-adesao-num').textContent = `${taxa}%`;
+      document.getElementById('kpi-pendencias').textContent = pendentes.length;
+
+      const pendentesFiltrados = pendentes.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
+      const tbody = document.getElementById('tabela-pendencias');
+      if (!tbody) return;
+
+      tbody.innerHTML = pendentesFiltrados.length ? pendentesFiltrados.map(c => `
+        <tr class="border-b hover:bg-amber-50/50">
+          <td class="p-2.5 font-mono font-bold text-xs text-slate-700">${c.matricula}</td>
+          <td class="p-2.5 font-semibold text-slate-800">${c.nome}</td>
+          <td class="p-2.5 text-xs text-slate-600">${c.funcao}</td>
+          <td class="p-2.5 text-center">
+            <span class="bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 rounded-full text-[11px] font-bold">
+              ⚠️ Pendente (${mesAno})
+            </span>
+          </td>
+          <td class="p-2.5 text-right">
+            <button onclick="abrirInspecaoDireta('${c.id}')" class="bg-vibraGreen hover:bg-vibraDark text-white px-2.5 py-1.5 rounded-lg text-xs font-bold shadow">
+              Inspecionar ↗
+            </button>
+          </td>
+        </tr>
+      `).join('') : `
+        <tr>
+          <td colspan="5" class="p-6 text-center text-emerald-700 bg-emerald-50 font-bold">
+            🎉 Parabéns! Todos os operadores realizaram a inspeção obrigatória do cinto no mês ${mesAno}!
+          </td>
+        </tr>
+      `;
+    }
+
+    function exportarPendenciasCSV() {
+      const mesAno = obterMesAnoSelecionado();
+      const inspecionadosMes = new Set();
+      auditoria.forEach(r => {
+        if (r.tipo.includes('Inspeção Cinto')) {
+          let dataRef = r.dataReferencia;
+          if (!dataRef && r.dataHora) {
+            const partes = r.dataHora.split(',')[0].split('/');
+            if (partes.length === 3) dataRef = `${partes[2].trim()}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
+          }
+          if (dataRef && dataRef.startsWith(mesAno)) inspecionadosMes.add(r.matricula);
+        }
+      });
+
+      const pendentes = colaboradores.filter(c => !inspecionadosMes.has(c.matricula));
+      if (!pendentes.length) return alert(`Nenhuma pendência no mês ${mesAno}!`);
+
+      const headers = ['Matricula', 'Nome', 'Funcao', 'Email', 'Mes_Referencia', 'Status'];
+      const linhas = pendentes.map(c => [c.matricula, c.nome, c.funcao, c.email || '', mesAno, 'PENDENTE'].map(v => `"${v || ''}"`).join(';'));
+      const csv = '\uFEFF' + [headers.join(';'), ...linhas].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `Pendencias_Cinto_BAVGRU_${mesAno}.csv`;
+      link.click();
+    }
+
+    // COMPROVANTE MODAL
+    function abrirComprovante(id) {
+      const reg = auditoria.find(r => r.id === id);
+      if (!reg) return;
+
+      const checklistHtml = reg.respostasChecklist ? `
+        <div class="mt-2">
+          <h4 class="font-bold text-[11px] uppercase bg-slate-100 p-1 border">Checklist Padrão Vibra (Anexo C)</h4>
+          <table class="w-full text-[11px] border-collapse border mt-1">
+            ${reg.respostasChecklist.map(r => `
+              <tr class="border-b">
+                <td class="p-1 border-r">${r.pergunta}</td>
+                <td class="p-1 font-bold ${r.resposta === 'Não Conforme' ? 'text-red-600' : 'text-emerald-700'}">${r.resposta}</td>
+              </tr>
+            `).join('')}
+          </table>
+        </div>
+      ` : `
+        <div class="p-2.5 bg-slate-50 border rounded text-[11px] mt-2">
+          <strong>Termo NR-06:</strong> Declaro recebimento do EPI especificado em perfeitas condições de uso, assumindo o compromisso de zelar pela guarda e conservação.
+        </div>
+      `;
+
+      document.getElementById('print-area').innerHTML = `
+        <div class="flex justify-between items-center border-b-2 border-vibraGreen pb-2">
+          <div>
+            <h2 class="text-sm md:text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A. - BAVGRU (GUARULHOS)</h2>
+            <p class="text-[11px] text-slate-600">${reg.tipo} | Comprovante Oficial</p>
+          </div>
+          <div class="text-right text-[10px]">
+            <p><strong>Nº:</strong> ${reg.id}</p>
+            <p><strong>Data:</strong> ${reg.dataHora}</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-1.5 text-[11px] bg-slate-50 p-2.5 border rounded mt-2">
+          <p><strong>Colaborador:</strong> ${reg.colaborador}</p>
+          <p><strong>Matrícula:</strong> ${reg.matricula}</p>
+          <p><strong>Função:</strong> ${reg.funcao}</p>
+          <p><strong>Equipamento:</strong> ${reg.equipamento}</p>
+          <p><strong>Nº CA:</strong> ${reg.ca}</p>
+          <p><strong>Status:</strong> <span class="font-bold ${reg.status.includes('INTERDITADO') ? 'text-red-600' : 'text-emerald-700'}">${reg.status}</span></p>
+        </div>
+        ${checklistHtml}
+        <div class="grid grid-cols-2 gap-3 pt-3 items-center">
+          <div class="text-center border p-2 rounded bg-slate-50">
+            <p class="text-[10px] font-bold text-slate-600 mb-1">Evidência Fotográfica</p>
+            ${reg.foto ? `<img src="${reg.foto}" class="h-24 mx-auto rounded border object-cover" />` : `<p class="text-[10px] text-slate-400 py-6">Sem foto</p>`}
+          </div>
+          <div class="text-center border p-2 rounded bg-slate-50">
+            <p class="text-[10px] font-bold text-slate-600 mb-1">Assinatura Digital</p>
+            <img src="${reg.assinatura}" class="h-24 mx-auto object-contain" />
+          </div>
+        </div>
+        <div class="text-[9px] text-slate-500 border-t pt-2 flex justify-between mt-3">
+          <span>Autenticador SSMA: <strong>${reg.hash}</strong></span>
+          <span>Responsável Legal: Graciete Martins Ferreira</span>
+        </div>
+      `;
+      document.getElementById('modal-print').classList.remove('hidden');
+      document.getElementById('modal-print').classList.add('flex');
+    }
+
+    function fecharModalPrint() {
+      document.getElementById('modal-print').classList.add('hidden');
+      document.getElementById('modal-print').classList.remove('flex');
+    }
+
+    // RENDERIZAÇÕES
+    function renderColaboradores() {
+      const termo = (document.getElementById('busca-colab').value || '').toLowerCase();
+      const filtrados = colaboradores.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
+
+      document.getElementById('tabela-colaboradores').innerHTML = filtrados.map(c => `
+        <tr class="border-b hover:bg-slate-50">
+          <td class="p-2.5 font-bold text-xs">${c.matricula}</td>
+          <td class="p-2.5 font-medium">${c.nome}</td>
+          <td class="p-2.5 text-xs text-slate-600">${c.funcao}</td>
+          <td class="p-2.5 text-right">
+            <button onclick="buscarFichasDoColaborador('${c.nome}')" class="bg-vibraDark text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-vibraGreen">Fichas ↗</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function buscarFichasDoColaborador(nome) {
+      switchTab('dashboard');
+      document.getElementById('busca-auditoria').value = nome;
+      renderAuditoria();
+    }
+
+    function renderAuditoria() {
+      const termo = (document.getElementById('busca-auditoria').value || '').toLowerCase();
+      const filtrados = auditoria.filter(r => r.colaborador.toLowerCase().includes(termo) || r.ca.toLowerCase().includes(termo));
+
+      document.getElementById('tabela-auditoria').innerHTML = filtrados.length ? filtrados.map(r => `
+        <tr class="hover:bg-slate-50">
+          <td class="p-2.5 text-xs">${r.dataHora}</td>
+          <td class="p-2.5 font-semibold">${r.tipo}</td>
+          <td class="p-2.5">${r.colaborador} <span class="text-xs text-slate-400">(${r.matricula})</span></td>
+          <td class="p-2.5">${r.equipamento} <span class="bg-slate-200 px-1.5 py-0.5 rounded text-[10px] font-bold">CA ${r.ca}</span></td>
+          <td class="p-2.5"><span class="px-2 py-0.5 rounded text-xs font-bold ${r.status.includes('INTERDITADO') ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-800'}">${r.status}</span></td>
+          <td class="p-2.5 text-right flex gap-1 justify-end">
+            <button onclick="abrirComprovante('${r.id}')" class="bg-vibraDark text-white px-2 py-1 rounded text-xs font-bold hover:bg-vibraGreen">PDF</button>
+            <button onclick="excluirRegistro('${r.id}')" class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold hover:bg-red-800" title="Excluir">🗑️</button>
+          </td>
+        </tr>
+      `).join('') : `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nenhum registro encontrado.</td></tr>`;
+    }
+
+    function atualizarTudo() {
+      document.getElementById('kpi-colaboradores').textContent = colaboradores.length;
+      document.getElementById('kpi-dispensacoes').textContent = auditoria.filter(a => a.tipo.includes('NR-06')).length;
+      document.getElementById('kpi-inspecoes').textContent = auditoria.filter(a => a.tipo.includes('Anexo C')).length;
+      const alertasEstoque = estoque.filter(e => e.qtd <= e.min).length;
+      document.getElementById('kpi-alertas').textContent = alertasEstoque;
+
+      colaboradores.sort((a, b) => a.nome.localeCompare(b.nome));
+
+      const opcoesColab = colaboradores.map(c => `<option value="${c.id}">${c.nome} (${c.matricula})</option>`).join('');
+      document.getElementById('disp-colaborador').innerHTML = opcoesColab;
+      document.getElementById('insp-colaborador').innerHTML = opcoesColab;
+
+      const opcoesEpi = estoque.map(e => `<option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>`).join('');
+      document.getElementById('disp-epi').innerHTML = opcoesEpi;
+      document.getElementById('entrada-epi').innerHTML = opcoesEpi;
+
+      document.getElementById('tabela-estoque').innerHTML = estoque.map(e => `
+        <tr class="border-b">
+          <td class="p-2.5 font-medium">${e.nome}</td>
+          <td class="p-2.5 font-bold">${e.ca}</td>
+          <td class="p-2.5 font-extrabold ${e.qtd <= e.min ? 'text-red-600' : 'text-slate-800'}">${e.qtd} un.</td>
+          <td class="p-2.5 text-slate-500">${e.min} un.</td>
+          <td class="p-2.5">${e.qtd <= e.min ? '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[11px] font-bold">⚠️ Repor</span>' : '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[11px] font-bold">✔ Regular</span>'}</td>
+        </tr>
+      `).join('');
+
+      renderColaboradores();
+      renderAuditoria();
+      renderLogExclusoes();
+      renderPendencias();
+    }
+
+    function exportarCSV() {
+      const headers = ['ID_Registro', 'Data_Hora', 'Tipo', 'Colaborador', 'Matricula', 'EPI', 'CA', 'Status_Final'];
+      const linhas = auditoria.map(r => [r.id, r.dataHora, r.tipo, r.colaborador, r.matricula, r.equipamento, r.ca, r.status].map(v => `"${v || ''}"`).join(';'));
+      const csv = '\uFEFF' + [headers.join(';'), ...linhas].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `Auditoria_EPI_BAVGRU.csv`;
+      link.click();
+    }
+
+    window.onload = () => {
+      const d = new Date();
+      document.getElementById('insp-data').value = d.toISOString().slice(0, 10);
+      const mesStr = String(d.getMonth() + 1).padStart(2, '0');
+      document.getElementById('pendencias-mes-ano').value = `${d.getFullYear()}-${mesStr}`;
+      renderChecklistForm();
+      configurarCanvasAssinatura('canvas-disp');
+      configurarCanvasAssinatura('canvas-insp');
+      atualizarTudo();
+      window.addEventListener('resize', redimensionarCanvas);
+      redimensionarCanvas();
+    };
+  </script>
+</body>
+</html>

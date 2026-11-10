@@ -385,7 +385,15 @@
     <!-- ABA 6: EFETIVO BAVGRU -->
     <section id="tab-colaboradores" class="hidden space-y-4 md:space-y-6">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
-        <h2 class="text-base md:text-lg font-bold text-vibraDark mb-3">👥 Banco de Colaboradores - BAVGRU</h2>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-3 border-b pb-3">
+          <div>
+            <h2 class="text-base md:text-lg font-bold text-vibraDark">👥 Banco de Colaboradores - BAVGRU</h2>
+            <p class="text-xs text-slate-500">Base oficial para dispensação de EPI e inspeção do SPIQ Anexo C.</p>
+          </div>
+          <button onclick="abrirModalImportarColaboradores()" class="bg-vibraGreen hover:bg-vibraDark text-white px-3.5 py-2 rounded-lg text-xs md:text-sm font-bold shadow flex items-center gap-2 transition-all">
+            📥 Importar Lista / Planilha do Excel
+          </button>
+        </div>
         <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg mb-4 flex gap-2 items-center">
           <span>🔍</span>
           <input type="text" id="busca-colab" oninput="renderColaboradores()" placeholder="Pesquise por nome ou matrícula..." class="w-full border-none rounded bg-white px-3 py-2 text-xs md:text-sm shadow-sm focus:ring-2 focus:ring-vibraGreen outline-none" />
@@ -451,7 +459,12 @@
 
         <!-- NOVO COLABORADOR -->
         <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-vibraGreen">
-          <h2 class="text-base font-bold text-vibraDark mb-3">👥 Cadastrar Novo Colaborador</h2>
+          <div class="flex justify-between items-center mb-3">
+            <h2 class="text-base font-bold text-vibraDark">👥 Cadastrar Novo Colaborador</h2>
+            <button onclick="abrirModalImportarColaboradores()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3 py-1.5 rounded-lg text-xs shadow flex items-center gap-1.5">
+              📥 Importar Planilha do Excel
+            </button>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
             <input type="text" id="novo-colab-nome" placeholder="Nome Completo" class="border rounded-lg p-2 text-sm" />
             <input type="text" id="novo-colab-matricula" placeholder="Matrícula" class="border rounded-lg p-2 text-sm" />
@@ -556,6 +569,78 @@
     </div>
   </div>
 
+  <!-- MODAL IMPORTAÇÃO EM LOTE DE COLABORADORES (EXCEL / CSV) -->
+  <div id="modal-importar-colaboradores" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-3 z-50">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-5 md:p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-3 pb-2 border-b">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">📥</span>
+          <div>
+            <h3 class="font-bold text-slate-800 text-base">Importação em Lote de Colaboradores</h3>
+            <p class="text-[11px] text-slate-500">Cadastre todos os colaboradores de uma só vez colando do Excel</p>
+          </div>
+        </div>
+        <button onclick="fecharModalImportarColaboradores()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-slate-700 leading-relaxed">
+          <p class="font-bold text-vibraDark mb-1">Como fazer em 3 passos:</p>
+          <ol class="list-decimal pl-4 space-y-1">
+            <li>Abra sua planilha do <strong>Excel</strong> com os funcionários da base BAVGRU.</li>
+            <li>Selecione as colunas com <strong>Matrícula | Nome | Função | E-mail</strong> (ou apenas Matrícula e Nome).</li>
+            <li>Aperte <strong>Ctrl + C</strong> no Excel e dê <strong>Ctrl + V</strong> no campo abaixo!</li>
+          </ol>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between bg-slate-50 p-2.5 rounded-lg border">
+          <span class="font-bold text-slate-700">Modo de Gravação:</span>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-1.5 cursor-pointer font-medium">
+              <input type="radio" name="modo-importacao-colab" value="adicionar" checked />
+              <span>Adicionar / Atualizar</span>
+            </label>
+            <label class="flex items-center gap-1.5 cursor-pointer font-medium text-red-700">
+              <input type="radio" name="modo-importacao-colab" value="substituir" />
+              <span>Substituir lista inteira</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="font-bold text-slate-700 uppercase text-[11px]">Cole as linhas copiadas do Excel:</label>
+            <label class="text-blue-600 hover:underline cursor-pointer font-bold text-[11px]">
+              📁 Carregar arquivo .csv / .txt
+              <input type="file" id="arquivo-importar-colab" accept=".csv, .txt" class="hidden" onchange="carregarArquivoColaboradores(event)" />
+            </label>
+          </div>
+          <textarea id="texto-importar-colab" rows="7" oninput="atualizarPreviaEmTempoReal()" placeholder="Exemplo do que você cola aqui:
+128660	ADAUTO RIBEIRO DOS SANTOS	OPERADOR DE ABASTECIMENTO SR	adautosantos@vibraenergia.com.br
+129028	ADILSON MARQUES ESCANHOLATO	OPERADOR DE ABASTECIMENTO SR	adilsonescanholato@vibraenergia.com.br
+134770	ADRIANO APARECIDO GONZAGA	OPERADOR DE ABASTECIMENTO SR	adrianocosta@vibraenergia.com.br" class="w-full border rounded-xl p-3 font-mono text-xs bg-slate-50 border-slate-300 focus:outline-none focus:ring-2 focus:ring-vibraGreen"></textarea>
+        </div>
+
+        <div id="preview-importar-colab" class="hidden bg-slate-100 p-3 rounded-lg border text-slate-700">
+          <div class="flex justify-between items-center mb-1">
+            <p class="font-bold text-emerald-800" id="preview-colab-count">0 colaboradores reconhecidos</p>
+            <span class="text-[10px] text-slate-500">Prévia dos primeiros cadastros</span>
+          </div>
+          <div class="max-h-32 overflow-y-auto mt-1 divide-y divide-slate-200 text-[11px]" id="preview-colab-lista"></div>
+        </div>
+
+        <div class="flex justify-between items-center pt-2 border-t gap-2">
+          <button type="button" onclick="fecharModalImportarColaboradores()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-xl font-bold">
+            Cancelar
+          </button>
+          <button type="button" onclick="executarImportacaoColaboradores()" class="bg-vibraGreen hover:bg-vibraDark text-white px-5 py-2.5 rounded-xl font-bold text-xs md:text-sm shadow flex items-center gap-1.5">
+            ✅ Importar e Salvar no Sistema
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // 1. REGISTRO DO SERVICE WORKER (PWA)
     if ('serviceWorker' in navigator) {
@@ -618,20 +703,124 @@
       { id: "t3", grupo: "Talabarte Y / Trava-Quedas", texto: "11. A parte interna do absorvedor de energia não apresenta cortes e/ou furos?" }
     ];
 
-    // 4. BANCO INICIAL BAVGRU
+    // 4. BANCO OFICIAL DE COLABORADORES BAVGRU (116 COLABORADORES)
     const INITIAL_COLABORADORES = [
-      { id: "c1", matricula: "128660", nome: "ADAUTO RIBEIRO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adautosantos@vibraenergia.com.br" },
-      { id: "c2", matricula: "129028", nome: "ADILSON MARQUES ESCANHOLATO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adilsonescanholato@vibraenergia.com.br" },
-      { id: "c3", matricula: "134770", nome: "ADRIANO APARECIDO GONZAGA DA COSTA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adrianocosta@vibraenergia.com.br" },
-      { id: "c4", matricula: "185782", nome: "ADRIANO LUIZ DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "adrianoluiz@vibraenergia.com.br" },
-      { id: "c5", matricula: "128578", nome: "ALECSANDER RODRIGUES LOPES CAVALCANTI", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "alecsandercavalcanti@vibraenergia.com.br" },
-      { id: "c15", matricula: "127059", nome: "ANDRE DO NASCIMENTO SANTOS", funcao: "LIDER DE ABASTECIMENTO", email: "andresantos@vibraenergia.com.br" },
-      { id: "c26", matricula: "150641", nome: "CLAUDIANA QUEIROZ SILVA", funcao: "TECNICA DE SEGURANCA DO TRABALHO PL", email: "claudianasilva@vibraenergia.com.br" },
-      { id: "c32", matricula: "127060", nome: "DIONISIO FRANCISCO DE MORAIS", funcao: "LIDER DE TURMA", email: "dionisiomorais@vibraenergia.com.br" },
-      { id: "c34", matricula: "127594", nome: "EDUARDO BRASILEIRO", funcao: "LIDER DE ABASTECIMENTO", email: "eduardobrasileiro@vibraenergia.com.br" },
-      { id: "c47", matricula: "147913", nome: "GRACIETE MARTINS FERREIRA", funcao: "TECNICA DE SEGURANCA DO TRABALHO JR", email: "gracietef@vibraenergia.com.br" },
-      { id: "c73", matricula: "125761", nome: "MARCOS VINICIUS DA SILVA VIRGINIO", funcao: "LIDER DE ABASTECIMENTO", email: "marcosvirginio@vibraenergia.com.br" },
-      { id: "c93", matricula: "908884", nome: "RUAN CARLOS BORGES ALVES", funcao: "GERENTE DE OPERACAO DE AEROPORTOS", email: "ruan@vibraenergia.com.br" }
+      { id: "c_128660", matricula: "128660", nome: "ADAUTO RIBEIRO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adautosantos@vibraenergia.com.br" },
+      { id: "c_129028", matricula: "129028", nome: "ADILSON MARQUES ESCANHOLATO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adilsonescanholato@vibraenergia.com.br" },
+      { id: "c_189584", matricula: "189584", nome: "ADOLFO DE SOUSA OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "adolfooliveira@vibraenergia.com.br" },
+      { id: "c_134770", matricula: "134770", nome: "ADRIANO APARECIDO GONZAGA DA COSTA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adrianocosta@vibraenergia.com.br" },
+      { id: "c_128578", matricula: "128578", nome: "ALECSANDER RODRIGUES LOPES CAVALCANTI", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "alecsandercavalcanti@vibraenergia.com.br" },
+      { id: "c_123480", matricula: "123480", nome: "ALEX BARBOSA DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "alexsantos@vibraenergia.com.br" },
+      { id: "c_129298", matricula: "129298", nome: "ALEX SILVERIO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "alexsilverio@vibraenergia.com.br" },
+      { id: "c_123233", matricula: "123233", nome: "ALEXANDRE CORREIA ALVES", funcao: "ASSISTENTE ADMINISTRATIVO JR", email: "alexandrealves@vibraenergia.com.br" },
+      { id: "c_132101", matricula: "132101", nome: "ALEXANDRE PIRES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "alexandrepires@vibraenergia.com.br" },
+      { id: "c_128241", matricula: "128241", nome: "ALEXANDRO TORRES FERREIRA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "alexandroferreira@vibraenergia.com.br" },
+      { id: "c_177470", matricula: "177470", nome: "ALIEN PETTINELLI", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "alienpettinelli@vibraenergia.com.br" },
+      { id: "c_71126590", matricula: "71126590", nome: "ANA MARIA GOMES DOS SANTOS", funcao: "CONTRATADO", email: "" },
+      { id: "c_123048", matricula: "123048", nome: "ANDERSON DOS SANTOS DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "andersonsilva@vibraenergia.com.br" },
+      { id: "c_128216", matricula: "128216", nome: "ANDERSON HORACIO PIRES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "andersonpires@vibraenergia.com.br" },
+      { id: "c_128542", matricula: "128542", nome: "ANDERSON ZAGO DE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "andersonsouza@vibraenergia.com.br" },
+      { id: "c_189572", matricula: "189572", nome: "ANDRE ALVES DE PAULA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "andrepaula@vibraenergia.com.br" },
+      { id: "c_127059", matricula: "127059", nome: "ANDRE DO NASCIMENTO SANTOS", funcao: "LIDER DE ABASTECIMENTO", email: "andresantos@vibraenergia.com.br" },
+      { id: "c_128806", matricula: "128806", nome: "ANTONIO NORIVAL RIBEIRO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "antonioribeiro@vibraenergia.com.br" },
+      { id: "c_71176703", matricula: "71176703", nome: "BRUNA VIEIRA DE SOUZA", funcao: "CONTRATADO", email: "" },
+      { id: "c_185131", matricula: "185131", nome: "BRUNO DE ALMEIDA DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "brunoalmeida@vibraenergia.com.br" },
+      { id: "c_185813", matricula: "185813", nome: "BRUNO EVANGELISTA CERQUEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "brunocerqueira@vibraenergia.com.br" },
+      { id: "c_179959", matricula: "179959", nome: "CAIO FIALHO DE CASTRO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "caiocastro@vibraenergia.com.br" },
+      { id: "c_183727", matricula: "183727", nome: "CARLOS ALBERTO BASTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "carlosbastos@vibraenergia.com.br" },
+      { id: "c_131210", matricula: "131210", nome: "CARLOS ALBERTO DE JESUS SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "carlosalberto@vibraenergia.com.br" },
+      { id: "c_128449", matricula: "128449", nome: "CARLOS EDUARDO PAVAO", funcao: "ASSISTENTE ADMINISTRATIVO JR", email: "carlospavao@vibraenergia.com.br" },
+      { id: "c_127465", matricula: "127465", nome: "CESAR MOREIRA DOURADO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "cesardourado@vibraenergia.com.br" },
+      { id: "c_133853", matricula: "133853", nome: "CESARIO RODRIGUES DE MEDEIROS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "cesariomedeiros@vibraenergia.com.br" },
+      { id: "c_150641", matricula: "150641", nome: "CLAUDIANA QUEIROZ SILVA", funcao: "TECNICA DE SEGURANCA DO TRABALHO PL", email: "claudianasilva@vibraenergia.com.br" },
+      { id: "c_136413", matricula: "136413", nome: "CLAUDIO ALVES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "claudioalves@vibraenergia.com.br" },
+      { id: "c_133423", matricula: "133423", nome: "CLAYTON DOUGLAS IGREJA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "claytonigreja@vibraenergia.com.br" },
+      { id: "c_136610", matricula: "136610", nome: "CLEBER RICARDO RIBEIRO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "cleberribeiro@vibraenergia.com.br" },
+      { id: "c_149433", matricula: "149433", nome: "DIOGO DA SILVA FEITOSA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "diogofeitosa@vibraenergia.com.br" },
+      { id: "c_133400", matricula: "133400", nome: "DIOGO SABATELLI", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "diogosabatelli@vibraenergia.com.br" },
+      { id: "c_127060", matricula: "127060", nome: "DIONISIO FRANCISCO DE MORAIS", funcao: "LIDER DE TURMA", email: "dionisiomorais@vibraenergia.com.br" },
+      { id: "c_150260", matricula: "150260", nome: "DOUGLAS PROCOPIO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "douglasprocopio@vibraenergia.com.br" },
+      { id: "c_127594", matricula: "127594", nome: "EDUARDO BRASILEIRO", funcao: "LIDER DE ABASTECIMENTO", email: "eduardobrasileiro@vibraenergia.com.br" },
+      { id: "c_133632", matricula: "133632", nome: "EDUARDO LOYOLA DE MELO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "eduardomelo@vibraenergia.com.br" },
+      { id: "c_175912", matricula: "175912", nome: "EULES SOUSA OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "eulesoliveira@vibraenergia.com.br" },
+      { id: "c_182073", matricula: "182073", nome: "EVANDRO FERREIRA CAIPPES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "evandrocaippes@vibraenergia.com.br" },
+      { id: "c_174731", matricula: "174731", nome: "EWERTON COTRIM CARDEAL", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "ewertoncardeal@vibraenergia.com.br" },
+      { id: "c_131638", matricula: "131638", nome: "FERNANDO GOMES DA COSTA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "fernandocosta@vibraenergia.com.br" },
+      { id: "c_133908", matricula: "133908", nome: "FERNANDO VIEIRA MARTINEZ", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "fernandomartinez@vibraenergia.com.br" },
+      { id: "c_149863", matricula: "149863", nome: "FLAVIO RENATO DE ARRUDA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "flavioarruda@vibraenergia.com.br" },
+      { id: "c_188483", matricula: "188483", nome: "FRANCIELDO FRANCISCO DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "francieldosilva@vibraenergia.com.br" },
+      { id: "c_170314", matricula: "170314", nome: "FREDISON AMADEUS DO NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "fredisonnascimento@vibraenergia.com.br" },
+      { id: "c_134708", matricula: "134708", nome: "GABRIEL LUIZ DE SOUZA SPEDINI", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "gabrielspedini@vibraenergia.com.br" },
+      { id: "c_124870", matricula: "124870", nome: "GILVAN BARBOSA CASTRO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "gilvancastro@vibraenergia.com.br" },
+      { id: "c_124045", matricula: "124045", nome: "GIVANI CORDEIRO DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "givanisilva@vibraenergia.com.br" },
+      { id: "c_147913", matricula: "147913", nome: "GRACIETE MARTINS FERREIRA", funcao: "TECNICA DE SEGURANCA DO TRABALHO PL", email: "gracietef@vibraenergia.com.br" },
+      { id: "c_123731", matricula: "123731", nome: "GUILHERME FREIRE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "guilhermesouza@vibraenergia.com.br" },
+      { id: "c_189025", matricula: "189025", nome: "GUILHERME GOMES DE NOVAIS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "guilhermenovais@vibraenergia.com.br" },
+      { id: "c_189013", matricula: "189013", nome: "GUSTAVO DA SILVA RODRIGUES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "gustavorodrigues@vibraenergia.com.br" },
+      { id: "c_134862", matricula: "134862", nome: "GUSTAVO GOMES DE FARIAS JUNIOR", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "gustavojunior@vibraenergia.com.br" },
+      { id: "c_124186", matricula: "124186", nome: "HENRIQUE FLORENTINO ALVES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "henriquealves@vibraenergia.com.br" },
+      { id: "c_123442", matricula: "123442", nome: "HUAN CARLOS NASCIMENTO SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "huansantos@vibraenergia.com.br" },
+      { id: "c_150259", matricula: "150259", nome: "IDENILSON PEREIRA COSTA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "idenilsoncosta@vibraenergia.com.br" },
+      { id: "c_130377", matricula: "130377", nome: "ILDO LUIZ DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "ildosilva@vibraenergia.com.br" },
+      { id: "c_150653", matricula: "150653", nome: "ITAYLON TAVARES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "itaylonsilva@vibraenergia.com.br" },
+      { id: "c_130040", matricula: "130040", nome: "JOAO MARCOS DE JESUS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "joaomarcos@vibraenergia.com.br" },
+      { id: "c_128843", matricula: "128843", nome: "JONATAN ALVES DE BARROS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "jonatanbarros@vibraenergia.com.br" },
+      { id: "c_134223", matricula: "134223", nome: "JOSE EDSON GONCALVES DIAS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "josedias@vibraenergia.com.br" },
+      { id: "c_155151", matricula: "155151", nome: "JOSE RAMOS GALDINO DE ARAUJO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "josearaujo@vibraenergia.com.br" },
+      { id: "c_188981", matricula: "188981", nome: "JOVELINO ANTONIO DE SOUZA JUNIOR", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "jovelinojunior@vibraenergia.com.br" },
+      { id: "c_128683", matricula: "128683", nome: "JOVINIANO ANDRADE DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "jovinianosilva@vibraenergia.com.br" },
+      { id: "c_123429", matricula: "123429", nome: "JULIO CESAR CAMARGO DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "juliosilva@vibraenergia.com.br" },
+      { id: "c_144787", matricula: "144787", nome: "JULIO CESAR DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "juliooliveira@vibraenergia.com.br" },
+      { id: "c_189062", matricula: "189062", nome: "JULIO CESAR MARQUES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "juliomarques@vibraenergia.com.br" },
+      { id: "c_128879", matricula: "128879", nome: "JUNIOR TOZETTI DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "juniortozetti@vibraenergia.com.br" },
+      { id: "c_179610", matricula: "179610", nome: "KLEYSSON LUZ DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "kleyssonoliveira@vibraenergia.com.br" },
+      { id: "c_127127", matricula: "127127", nome: "LAERCIO VITAL MARTINS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "laerciomartins@vibraenergia.com.br" },
+      { id: "c_128462", matricula: "128462", nome: "LEANDRO ARAUJO DE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "leandrosouza@vibraenergia.com.br" },
+      { id: "c_123602", matricula: "123602", nome: "LEONARDO WEBERT DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "leonardosilva@vibraenergia.com.br" },
+      { id: "c_158478", matricula: "158478", nome: "LUCAS EVARISTO GOMES DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "lucasevaristo@vibraenergia.com.br" },
+      { id: "c_189001", matricula: "189001", nome: "LUCAS VIEIRA SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "lucasvsantos@vibraenergia.com.br" },
+      { id: "c_122200", matricula: "122200", nome: "LUCIANO COSTA DE JESUS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "lucianojesus@vibraenergia.com.br" },
+      { id: "c_127140", matricula: "127140", nome: "LUIS FRANCISCO DO NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "luisnascimento@vibraenergia.com.br" },
+      { id: "c_134420", matricula: "134420", nome: "MANOEL BAZILIO DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "manoelsilva@vibraenergia.com.br" },
+      { id: "c_134597", matricula: "134597", nome: "MARCIO EDIVAL SILVA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "marcioedival@vibraenergia.com.br" },
+      { id: "c_182964", matricula: "182964", nome: "MARCOS BARBOSA LEITE", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "marcosleite@vibraenergia.com.br" },
+      { id: "c_125761", matricula: "125761", nome: "MARCOS VINICIUS DA SILVA VIRGINIO", funcao: "SUPERVISOR DE PISTA", email: "marcosvirginio@vibraenergia.com.br" },
+      { id: "c_135072", matricula: "135072", nome: "MICHEL DE CASTRO PEREIRA DO CARMO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "michelcarmo@vibraenergia.com.br" },
+      { id: "c_134364", matricula: "134364", nome: "MILTON OLIVEIRA DE ASSIS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "miltonassis@vibraenergia.com.br" },
+      { id: "c_189500", matricula: "189500", nome: "NATAN PEREIRA DO CARMO CRUZ", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "natancruz@vibraenergia.com.br" },
+      { id: "c_124727", matricula: "124727", nome: "NORMAN TADAO DE MORAIS MORI", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "normanmori@vibraenergia.com.br" },
+      { id: "c_134340", matricula: "134340", nome: "PAULO HENRIQUE MARTINS BENTO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "paulobento@vibraenergia.com.br" },
+      { id: "c_188502", matricula: "188502", nome: "PEDRO HENRIQUE SOUZA SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "pedrohenriquess@vibraenergia.com.br" },
+      { id: "c_123417", matricula: "123417", nome: "PETERSON GASPARINI", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "petersongasparini@vibraenergia.com.br" },
+      { id: "c_140832", matricula: "140832", nome: "RAFAEL CALAZANS DE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rafaelcalazans@vibraenergia.com.br" },
+      { id: "c_134303", matricula: "134303", nome: "RAFAEL MOURA DOS SANTOS ARAUJO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rafaelaraujo@vibraenergia.com.br" },
+      { id: "c_134327", matricula: "134327", nome: "REGIS BRITO DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "regisoliveira@vibraenergia.com.br" },
+      { id: "c_157838", matricula: "157838", nome: "RENATA RODRIGUES DOS SANTOS", funcao: "OPERADORA DE ABASTECIMENTO JR", email: "renatarodrigues@vibraenergia.com.br" },
+      { id: "c_123454", matricula: "123454", nome: "RENATO LOPES DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "renatosantos@vibraenergia.com.br" },
+      { id: "c_134296", matricula: "134296", nome: "RENATO PASCHOAL", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "renatopaschoal@vibraenergia.com.br" },
+      { id: "c_134315", matricula: "134315", nome: "RENILSON ALVES SIMAO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "renilsonsimao@vibraenergia.com.br" },
+      { id: "c_189492", matricula: "189492", nome: "RICARDO RODRIGUES DE PAIVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "ricardopaiva@vibraenergia.com.br" },
+      { id: "c_186778", matricula: "186778", nome: "ROBSON FERNANDES ARRUDA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "robsonarruda@vibraenergia.com.br" },
+      { id: "c_134339", matricula: "134339", nome: "RODOLFO LEONEL", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "rodolfoleonel@vibraenergia.com.br" },
+      { id: "c_188993", matricula: "188993", nome: "RODRIGO CALDEIRA LOPES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rodrigolopes@vibraenergia.com.br" },
+      { id: "c_185120", matricula: "185120", nome: "RODRIGO COSTA DE HOLANDA CAVALCANTE", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rodrigocavalcante@vibraenergia.com.br" },
+      { id: "c_135000", matricula: "135000", nome: "RODRIGO EXPEDITO BELENTANI DE SOUSA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rodrigosousa@vibraenergia.com.br" },
+      { id: "c_134825", matricula: "134825", nome: "RODRIGO SANTOS DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "rodrigos@vibraenergia.com.br" },
+      { id: "c_138812", matricula: "138812", nome: "RODRIGO VENANCIO DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rodrigovenancio@vibraenergia.com.br" },
+      { id: "c_179357", matricula: "179357", nome: "RONALD SILVA LIMA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "ronaldlima@vibraenergia.com.br" },
+      { id: "c_908884", matricula: "908884", nome: "RUAN CARLOS BORGES ALVES", funcao: "GERENTE DE OPERACAO DE AEROPORTOS", email: "ruan@vibraenergia.com.br" },
+      { id: "c_134710", matricula: "134710", nome: "SANDRO RUIZ BELINI", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "sandrobelini@vibraenergia.com.br" },
+      { id: "c_134087", matricula: "134087", nome: "SERGIO GOMES PEREIRA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "sergiopereira@vibraenergia.com.br" },
+      { id: "c_130709", matricula: "130709", nome: "SERGIO JOSE DO NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "sergionascimento@vibraenergia.com.br" },
+      { id: "c_189480", matricula: "189480", nome: "SHELINTON ROBERTO MARQUES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "shelintonsilva@vibraenergia.com.br" },
+      { id: "c_134524", matricula: "134524", nome: "SOLANGE GOMES DE SOUSA", funcao: "OPERADORA DE ABASTECIMENTO JR", email: "solangesousa@vibraenergia.com.br" },
+      { id: "c_123491", matricula: "123491", nome: "VAGNER LOPES DE CASTRO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "vagnercastro@vibraenergia.com.br" },
+      { id: "c_71112246", matricula: "71112246", nome: "VALDENICE MARIA DA CONCEICAO", funcao: "CONTRATADO", email: "" },
+      { id: "c_150628", matricula: "150628", nome: "VALDINA ROSA DE OLIVEIRA PINHEIRO", funcao: "OPERADORA DE ABASTECIMENTO JR", email: "valdinapinheiro@vibraenergia.com.br" },
+      { id: "c_123767", matricula: "123767", nome: "VINICIUS LUNA FERNANDES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "viniciusfernandes@vibraenergia.com.br" },
+      { id: "c_134470", matricula: "134470", nome: "WESLEY VALIM MOREIRA RAFAEL", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "wesleyrafael@vibraenergia.com.br" },
+      { id: "c_124555", matricula: "124555", nome: "WILLIAM KOLODZIEJSKI JUNIOR", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "williamjunior@vibraenergia.com.br" },
+      { id: "c_191776", matricula: "191776", nome: "WILSON FERREIRA NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "wilsonnascimento@vibraenergia.com.br" }
     ];
 
     const INITIAL_ESTOQUE = [
@@ -645,6 +834,13 @@
       { id: "e39", nome: "Calça RF P Masculina", ca: "49093", validade: "2029-12-31", qtd: 15, min: 5 },
       { id: "e44", nome: "Camisa RF P Feminina", ca: "50427", validade: "2029-12-31", qtd: 15, min: 5 }
     ];
+
+    // ATUALIZAÇÃO AUTOMÁTICA DA BASE PARA 116 COLABORADORES
+    const VERSAO_BASE = 'bavgru_efetivo_116_oficial_v2';
+    if (localStorage.getItem('bavgru_versao_instalada') !== VERSAO_BASE) {
+      localStorage.setItem('bavgru_colaboradores', JSON.stringify(INITIAL_COLABORADORES));
+      localStorage.setItem('bavgru_versao_instalada', VERSAO_BASE);
+    }
 
     // ESTADO LOCAL
     let colaboradores = JSON.parse(localStorage.getItem('bavgru_colaboradores')) || INITIAL_COLABORADORES;
@@ -749,6 +945,160 @@
       document.getElementById('novo-colab-email').value = '';
       salvarBancoLocal();
       alert(`Colaborador ${nome} cadastrado com sucesso!`);
+    }
+
+    // FUNÇÕES DE IMPORTAÇÃO EM LOTE DE COLABORADORES
+    function abrirModalImportarColaboradores() {
+      document.getElementById('modal-importar-colaboradores').classList.remove('hidden');
+      document.getElementById('modal-importar-colaboradores').classList.add('flex');
+    }
+
+    function fecharModalImportarColaboradores() {
+      document.getElementById('modal-importar-colaboradores').classList.add('hidden');
+      document.getElementById('modal-importar-colaboradores').classList.remove('flex');
+    }
+
+    function extrairColaboradoresDoTexto(texto) {
+      if (!texto) return [];
+      const linhas = texto.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+      const resultado = [];
+      const vistos = new Set();
+
+      for (const linha of linhas) {
+        const lower = linha.toLowerCase();
+        if (lower.startsWith('matricula') || lower.startsWith('matrícula') || lower.startsWith('código') || lower.startsWith('chapa')) {
+          continue;
+        }
+
+        let separador = '\t';
+        if (linha.includes('\t')) separador = '\t';
+        else if (linha.includes(';')) separador = ';';
+        else if (linha.includes(',')) separador = ',';
+        else if (linha.includes(' - ')) separador = ' - ';
+
+        const partes = linha.split(separador).map(p => p.trim().replace(/^["']|["']$/g, '')).filter(p => p.length > 0);
+        if (partes.length < 2) continue;
+
+        let matricula = '';
+        let nome = '';
+        let funcao = 'OPERADOR BAVGRU';
+        let email = '';
+
+        const ehNumero = (str) => /^\d+$/.test(str.replace(/[-.]/g, ''));
+
+        if (ehNumero(partes[0])) {
+          matricula = partes[0];
+          nome = partes[1];
+          if (partes[2]) {
+            if (partes[2].includes('@')) email = partes[2];
+            else funcao = partes[2];
+          }
+          if (partes[3]) {
+            if (partes[3].includes('@')) email = partes[3];
+            else if (funcao === 'OPERADOR BAVGRU') funcao = partes[3];
+          }
+        } else {
+          nome = partes[0];
+          if (ehNumero(partes[1])) {
+            matricula = partes[1];
+            if (partes[2]) {
+              if (partes[2].includes('@')) email = partes[2];
+              else funcao = partes[2];
+            }
+            if (partes[3]) {
+              if (partes[3].includes('@')) email = partes[3];
+              else if (funcao === 'OPERADOR BAVGRU') funcao = partes[3];
+            }
+          } else {
+            matricula = partes[1];
+            if (partes[2]) funcao = partes[2];
+            if (partes[3] && partes[3].includes('@')) email = partes[3];
+          }
+        }
+
+        if (nome && matricula && !vistos.has(matricula.toUpperCase())) {
+          vistos.add(matricula.toUpperCase());
+          resultado.push({
+            id: 'c_' + matricula.replace(/\D/g, '') + '_' + Math.random().toString(36).substring(2, 6),
+            matricula: matricula.trim().toUpperCase(),
+            nome: nome.trim().toUpperCase(),
+            funcao: (funcao || 'OPERADOR BAVGRU').trim().toUpperCase(),
+            email: (email || '').trim().toLowerCase()
+          });
+        }
+      }
+      return resultado;
+    }
+
+    function atualizarPreviaEmTempoReal() {
+      const texto = document.getElementById('texto-importar-colab').value;
+      const extraidos = extrairColaboradoresDoTexto(texto);
+      const container = document.getElementById('preview-importar-colab');
+      const countEl = document.getElementById('preview-colab-count');
+      const listaEl = document.getElementById('preview-colab-lista');
+
+      if (extraidos.length > 0) {
+        container.classList.remove('hidden');
+        countEl.textContent = `✅ ${extraidos.length} colaboradores identificados`;
+        listaEl.innerHTML = extraidos.slice(0, 5).map(c => `
+          <div class="py-1 flex justify-between items-center">
+            <span><strong>${c.matricula}</strong> - ${c.nome}</span>
+            <span class="text-slate-500 text-[10px]">${c.funcao}</span>
+          </div>
+        `).join('') + (extraidos.length > 5 ? `<div class="py-1 text-slate-400 italic">...e mais ${extraidos.length - 5} colaboradores.</div>` : '');
+      } else {
+        container.classList.add('hidden');
+      }
+    }
+
+    function carregarArquivoColaboradores(event) {
+      const arquivo = event.target.files[0];
+      if (!arquivo) return;
+      const leitor = new FileReader();
+      leitor.onload = function(e) {
+        document.getElementById('texto-importar-colab').value = e.target.result;
+        atualizarPreviaEmTempoReal();
+      };
+      leitor.readAsText(arquivo, 'UTF-8');
+    }
+
+    function executarImportacaoColaboradores() {
+      const texto = document.getElementById('texto-importar-colab').value;
+      const novos = extrairColaboradoresDoTexto(texto);
+
+      if (novos.length === 0) {
+        return alert('Nenhum colaborador foi identificado. Verifique se copiou as colunas de Matrícula e Nome da sua planilha.');
+      }
+
+      const modo = document.querySelector('input[name="modo-importacao-colab"]:checked').value;
+
+      if (modo === 'substituir') {
+        const confirma = confirm(`Tem certeza que deseja substituir todo o efetivo atual por estes ${novos.length} novos colaboradores?`);
+        if (!confirma) return;
+        colaboradores = novos;
+        alert(`✅ Base atualizada! ${novos.length} colaboradores carregados com sucesso.`);
+      } else {
+        let adicionados = 0;
+        let atualizados = 0;
+        novos.forEach(novo => {
+          const idx = colaboradores.findIndex(c => c.matricula === novo.matricula);
+          if (idx !== -1) {
+            colaboradores[idx].nome = novo.nome;
+            if (novo.funcao && novo.funcao !== 'OPERADOR BAVGRU') colaboradores[idx].funcao = novo.funcao;
+            if (novo.email) colaboradores[idx].email = novo.email;
+            atualizados++;
+          } else {
+            colaboradores.push(novo);
+            adicionados++;
+          }
+        });
+        alert(`✅ Sucesso! ${adicionados} novos colaboradores adicionados e ${atualizados} atualizados.`);
+      }
+
+      document.getElementById('texto-importar-colab').value = '';
+      document.getElementById('preview-importar-colab').classList.add('hidden');
+      fecharModalImportarColaboradores();
+      salvarBancoLocal();
     }
 
     // CHECKLIST ANEXO C

@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Portal SSMA BAVGRU - Gestão de EPIs, Inspeção SPIQ & Auditoria</title>
-  
+
   <!-- METATAGS DE APARÊNCIA CORPORATIVA VIBRA (TEAMS, WHATSAPP, SHAREPOINT) -->
   <meta property="og:title" content="Vibra Energia | Portal SSMA BAVGRU" />
   <meta property="og:description" content="Gestão Integrada de EPIs (NR-06), Inspeção Trava-Quedas (Anexo C) e Auditoria - Unidade BAVGRU" />
-  <meta property="og:image" content="https://gracietef-design.github.io/ssma-bavgru/icon.svg" />
+  <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Vibra_Energia_logo.svg/1200px-Vibra_Energia_logo.svg.png" />
   <meta property="og:site_name" content="Vibra Energia S.A." />
   <meta name="description" content="Portal SSMA BAVGRU - Gestão de EPIs e Inspeção de Trava-Quedas Vibra Energia" />
 
@@ -23,12 +23,11 @@
   <link class="no-print" rel="apple-touch-icon" href="icon.svg" />
 
   <!-- FIREBASE SDK COMPAT (SINCRONIZAÇÃO EM NUVEM MULTI-DISPOSITIVOS EM TEMPO REAL) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
   <!-- BIBLIOTECA INTERNACIONAL DO EXCEL (SHEETJS) - LÊ ARQUIVOS .XLS, .XLSX E .CSV DIRETAMENTE -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -52,10 +51,11 @@
       .no-print { display: none !important; }
     }
     canvas { touch-action: none; }
-    
+
     /* Barra de rolagem suave para abas no celular */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
     /* Ajuste para telas com entalhe (iPhone Notch / Safe Areas) */
     header { padding-top: max(1rem, env(safe-area-inset-top)); }
   </style>
@@ -108,6 +108,7 @@
           📲 App
         </button>
       </div>
+
       <!-- NAVEGAÇÃO DE ABAS: COM ROLAGEM HORIZONTAL SUAVE NO CELULAR -->
       <nav class="w-full md:w-auto overflow-x-auto no-scrollbar flex items-center gap-2 pb-1 md:pb-0">
         <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="tab-btn whitespace-nowrap bg-white text-vibraDark font-semibold px-3.5 py-2 rounded-lg text-xs md:text-sm shadow transition-all">📊 Painel</button>
@@ -123,6 +124,7 @@
 
   <!-- CONTEÚDO PRINCIPAL -->
   <main class="max-w-7xl mx-auto w-full p-3 md:p-4 flex-1 no-print">
+
     <!-- ABA 1: DASHBOARD E ARQUIVO DE AUDITORIA -->
     <section id="tab-dashboard" class="space-y-4 md:space-y-6">
       <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
@@ -152,6 +154,7 @@
           <p class="text-[10px] md:text-xs text-red-500 mt-1">Abaixo do mínimo</p>
         </div>
       </div>
+
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
           <div>
@@ -210,9 +213,27 @@
             </div>
           </div>
         </div>
+
+        <!-- OPÇÃO DE SELECIONAR MAIS DE UM EPI NA HORA DA DISPENSAÇÃO -->
+        <div class="mt-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-slate-50 p-3 rounded-lg border border-slate-200">
+          <p class="text-xs text-slate-600">💡 <strong>Vários EPIs?</strong> Clique ao lado para montar uma lista de entrega com uma única assinatura:</p>
+          <button type="button" onclick="adicionarEpiNaLista()" class="bg-blue-600 hover:bg-blue-700 text-white px-3.5 py-2 rounded-lg text-xs font-bold shadow shrink-0 flex items-center gap-1">
+            ➕ Incluir EPI na Lista
+          </button>
+        </div>
+
+        <div id="box-carrinho-epis" class="hidden mt-3 border border-emerald-300 rounded-xl p-3 bg-emerald-50/50">
+          <div class="flex justify-between items-center mb-2">
+            <h4 class="text-xs font-bold text-vibraDark uppercase">📋 EPIs Selecionados para esta Entrega (<span id="count-carrinho-epis">0</span>)</h4>
+            <button type="button" onclick="limparCarrinhoEpis()" class="text-[11px] text-red-600 hover:underline font-bold">Limpar Lista</button>
+          </div>
+          <div id="lista-carrinho-epis" class="divide-y divide-emerald-200 text-xs"></div>
+        </div>
+
         <div class="mt-4 bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs text-slate-700 leading-relaxed">
           <strong>Termo NR-06 (6.5.1 / 6.7.1):</strong> Declaro ter recebido da Vibra Energia (BAVGRU) o EPI especificado, com CA ativo e em perfeito estado, recebendo orientações sobre uso correto, guarda e obrigatoriedade de conservação.
         </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
           <div class="border rounded-xl p-3 md:p-4 bg-slate-50">
             <div class="flex justify-between items-center mb-2">
@@ -231,6 +252,7 @@
               </div>
             </div>
           </div>
+
           <div class="border rounded-xl p-3 md:p-4 bg-slate-50">
             <div class="flex justify-between items-center mb-2">
               <h3 class="font-bold text-xs md:text-sm text-slate-700">✍️ 2. Assinatura Digital do Colaborador</h3>
@@ -242,6 +264,7 @@
             <p class="text-[11px] text-slate-500 mt-1">Assine com o dedo no celular/tablet ou mouse no PC.</p>
           </div>
         </div>
+
         <div class="mt-6 flex justify-end">
           <button onclick="salvarDispensacao()" class="w-full md:w-auto bg-vibraGreen hover:bg-vibraDark text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm">
             ✅ Confirmar Entrega e Gerar Ficha NR-06
@@ -260,6 +283,7 @@
           </div>
           <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">CA Padrão: 35191</span>
         </div>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4">
           <div>
             <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Colaborador Executante *</label>
@@ -274,7 +298,9 @@
             <input type="date" id="insp-data" class="w-full border rounded-lg p-2.5 text-sm" />
           </div>
         </div>
+
         <div class="space-y-2" id="checklist-container"></div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
           <div class="border rounded-xl p-3 md:p-4 bg-slate-50">
             <div class="flex justify-between items-center mb-2">
@@ -293,6 +319,7 @@
               </div>
             </div>
           </div>
+
           <div class="border rounded-xl p-3 md:p-4 bg-slate-50">
             <div class="flex justify-between items-center mb-2">
               <h3 class="font-bold text-xs md:text-sm text-slate-700">✍️ 2. Visto Mensal / Assinatura</h3>
@@ -304,6 +331,7 @@
             <p class="text-[11px] text-slate-500 mt-1">Confirmo a veracidade da inspeção visual realizada.</p>
           </div>
         </div>
+
         <div class="mt-6 flex justify-end">
           <button onclick="salvarInspecao()" class="w-full md:w-auto bg-vibraGreen hover:bg-vibraDark text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm">
             🛡️ Registrar Inspeção Anexo C e Gerar Certificado
@@ -320,13 +348,14 @@
             <h2 class="text-base md:text-lg font-bold text-slate-800 flex items-center gap-2">
               <span class="text-amber-500 text-xl">⚠️</span> Pendências Mensais: Trava-Quedas (SPIQ)
             </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Colaboradores que <strong>não realizaram</strong> a inspeção do Anexo C no mês selecionado.</p>
+            <p class="text-xs text-slate-500 mt-0.5">Colaboradores que <strong>utilizam cinto</strong> e <strong>não realizaram</strong> a inspeção do Anexo C no mês selecionado.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
             <input type="month" id="pendencias-mes-ano" onchange="renderPendencias()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs md:text-sm font-semibold bg-slate-50" />
             <button onclick="exportarPendenciasCSV()" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold shadow">📥 Exportar CSV</button>
           </div>
         </div>
+
         <div class="grid grid-cols-3 gap-2 md:gap-4 mb-4">
           <div class="bg-amber-50 border border-amber-200 p-2.5 md:p-4 rounded-xl text-center md:text-left">
             <p class="text-[10px] md:text-xs text-amber-800 font-bold uppercase">Pendentes</p>
@@ -341,9 +370,11 @@
             <p id="taxa-adesao-num" class="text-xl md:text-3xl font-extrabold text-slate-800 mt-1">0%</p>
           </div>
         </div>
+
         <div class="mb-3">
           <input type="text" id="busca-pendencias" oninput="renderPendencias()" placeholder="🔎 Filtrar colaborador pendente..." class="w-full border rounded-lg px-3 py-2 text-xs md:text-sm bg-slate-50 border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-500" />
         </div>
+
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[550px]">
             <thead>
@@ -396,7 +427,7 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-3 border-b pb-3">
           <div>
             <h2 class="text-base md:text-lg font-bold text-vibraDark">👥 Banco de Colaboradores - BAVGRU</h2>
-            <p class="text-xs text-slate-500">Base oficial para dispensação de EPI e inspeção do SPIQ Anexo C.</p>
+            <p class="text-xs text-slate-500">Base oficial para dispensação de EPI e inspeção do SPIQ Anexo C. Clique no status do cinto para alternar quem está dispensado da inspeção.</p>
           </div>
           <button onclick="abrirModalImportarColaboradores()" class="bg-vibraGreen hover:bg-vibraDark text-white px-3.5 py-2 rounded-lg text-xs md:text-sm font-bold shadow flex items-center gap-2 transition-all">
             📥 Importar Lista / Planilha do Excel
@@ -407,12 +438,13 @@
           <input type="text" id="busca-colab" oninput="renderColaboradores()" placeholder="Pesquise por nome ou matrícula..." class="w-full border-none rounded bg-white px-3 py-2 text-xs md:text-sm shadow-sm focus:ring-2 focus:ring-vibraGreen outline-none" />
         </div>
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[450px]">
+          <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[550px]">
             <thead>
               <tr class="bg-slate-100 text-slate-600 border-b">
                 <th class="p-2.5">Matrícula</th>
                 <th class="p-2.5">Nome</th>
                 <th class="p-2.5">Função</th>
+                <th class="p-2.5 text-center">Cinto (SPIQ)</th>
                 <th class="p-2.5 text-right">Ação</th>
               </tr>
             </thead>
@@ -505,6 +537,29 @@
               <button onclick="cadastrarNovoColaborador()" class="bg-vibraGreen hover:bg-vibraDark text-white font-bold px-4 py-2 rounded-lg text-sm shrink-0">+ Incluir</button>
             </div>
           </div>
+          <div class="mt-2.5 flex items-center gap-2">
+            <label class="flex items-center gap-2 text-xs text-slate-700 font-semibold cursor-pointer">
+              <input type="checkbox" id="novo-colab-nao-usa-cinto" class="rounded border-slate-300 text-vibraGreen focus:ring-vibraGreen" />
+              <span>🚫 Não utiliza Cinto Trava-Quedas (Dispensado de realizar a inspeção mensal do Anexo C)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- HISTÓRICO CONSOLIDADO DE ENTREGA POR FUNCIONÁRIO EM PDF ÚNICO -->
+        <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-emerald-600">
+          <div class="mb-3">
+            <h2 class="text-base font-bold text-vibraDark">📑 Histórico de Entrega de EPIs por Funcionário (PDF Único)</h2>
+            <p class="text-xs text-slate-500">Puxe em um único PDF todas as entregas de EPI (Ficha NR-06) registradas para o colaborador selecionado.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
+            <div class="flex-1">
+              <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Selecionar Funcionário *</label>
+              <select id="admin-historico-colab" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50"></select>
+            </div>
+            <button onclick="gerarPdfHistoricoFuncionario()" class="bg-vibraGreen hover:bg-vibraDark text-white font-bold px-5 py-2.5 rounded-lg text-sm shadow shrink-0">
+              📄 Gerar PDF Único do Histórico
+            </button>
+          </div>
         </div>
 
         <!-- LOG DE AUDITORIA -->
@@ -543,6 +598,7 @@
         </div>
       </div>
     </section>
+
   </main>
 
   <!-- MODAL DE COMPROVANTE / IMPRESSÃO -->
@@ -569,7 +625,7 @@
         </div>
         <button onclick="fecharModalAjudaApp()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
       </div>
-      
+
       <div class="space-y-4 text-xs text-slate-600">
         <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl">
           <p class="font-bold text-vibraDark text-sm mb-1">🤖 No Android (Google Chrome / Edge):</p>
@@ -579,6 +635,7 @@
             <li>Confirme. O ícone do SSMA BAVGRU aparecerá como aplicativo instalado no celular!</li>
           </ol>
         </div>
+
         <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl">
           <p class="font-bold text-blue-900 text-sm mb-1">🍎 No iPhone / iPad (Safari):</p>
           <ol class="list-decimal pl-4 space-y-1">
@@ -587,8 +644,10 @@
             <li>Toque em <strong>"Adicionar"</strong> no canto superior direito. Pronto!</li>
           </ol>
         </div>
+
         <p class="text-[11px] text-slate-400 text-center">Uma vez adicionado, ele abre em tela cheia sem a barra de endereço do navegador, funcionando como um app de verdade!</p>
       </div>
+
       <div class="mt-5">
         <button onclick="fecharModalAjudaApp()" class="w-full bg-vibraGreen text-white py-2.5 rounded-xl font-bold text-xs shadow hover:bg-vibraDark">Entendido!</button>
       </div>
@@ -683,6 +742,7 @@ Casquete	38352	100	10
         </div>
         <button onclick="fecharModalImportarColaboradores()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
       </div>
+
       <div class="space-y-4 text-xs">
         <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-slate-700 leading-relaxed">
           <p class="font-bold text-vibraDark mb-1">Como fazer em 3 passos:</p>
@@ -692,6 +752,7 @@ Casquete	38352	100	10
             <li>Aperte <strong>Ctrl + C</strong> no Excel e dê <strong>Ctrl + V</strong> no campo abaixo!</li>
           </ol>
         </div>
+
         <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between bg-slate-50 p-2.5 rounded-lg border">
           <span class="font-bold text-slate-700">Modo de Gravação:</span>
           <div class="flex gap-4">
@@ -705,6 +766,7 @@ Casquete	38352	100	10
             </label>
           </div>
         </div>
+
         <div>
           <div class="flex justify-between items-center mb-1">
             <label class="font-bold text-slate-700 uppercase text-[11px]">Cole as linhas copiadas do Excel:</label>
@@ -718,6 +780,7 @@ Casquete	38352	100	10
 129028	ADILSON MARQUES ESCANHOLATO	OPERADOR DE ABASTECIMENTO SR	adilsonescanholato@vibraenergia.com.br
 134770	ADRIANO APARECIDO GONZAGA	OPERADOR DE ABASTECIMENTO SR	adrianocosta@vibraenergia.com.br" class="w-full border rounded-xl p-3 font-mono text-xs bg-slate-50 border-slate-300 focus:outline-none focus:ring-2 focus:ring-vibraGreen"></textarea>
         </div>
+
         <div id="preview-importar-colab" class="hidden bg-slate-100 p-3 rounded-lg border text-slate-700">
           <div class="flex justify-between items-center mb-1">
             <p class="font-bold text-emerald-800" id="preview-colab-count">0 colaboradores reconhecidos</p>
@@ -725,6 +788,7 @@ Casquete	38352	100	10
           </div>
           <div class="max-h-32 overflow-y-auto mt-1 divide-y divide-slate-200 text-[11px]" id="preview-colab-lista"></div>
         </div>
+
         <div class="flex justify-between items-center pt-2 border-t gap-2">
           <button type="button" onclick="fecharModalImportarColaboradores()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-xl font-bold">
             Cancelar
@@ -746,6 +810,7 @@ Casquete	38352	100	10
           .catch(err => console.log('Erro ao registrar Service Worker:', err));
       });
     }
+
     // 2. CONTROLE DE INSTALAÇÃO PWA
     let eventoInstalacaoPWA = null;
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -754,6 +819,7 @@ Casquete	38352	100	10
       const banner = document.getElementById('pwa-install-banner');
       if (banner) banner.classList.remove('hidden');
     });
+
     function acionarInstalacaoPWA() {
       if (eventoInstalacaoPWA) {
         eventoInstalacaoPWA.prompt();
@@ -767,17 +833,21 @@ Casquete	38352	100	10
         abrirModalAjudaApp();
       }
     }
+
     function fecharBannerPWA() {
       document.getElementById('pwa-install-banner').classList.add('hidden');
     }
+
     function abrirModalAjudaApp() {
       document.getElementById('modal-ajuda-app').classList.remove('hidden');
       document.getElementById('modal-ajuda-app').classList.add('flex');
     }
+
     function fecharModalAjudaApp() {
       document.getElementById('modal-ajuda-app').classList.add('hidden');
       document.getElementById('modal-ajuda-app').classList.remove('flex');
     }
+
     // 3. ITENS OFICIAIS DO PADRÃO VIBRA ANEXO C
     const PERGUNTAS_ANEXO_C = [
       { id: "c1", grupo: "Cinto Paraquedista", texto: "1. As costuras apresentam boas condições sem ponto de rompimento ou desgastes?" },
@@ -792,9 +862,10 @@ Casquete	38352	100	10
       { id: "t2", grupo: "Talabarte Y / Trava-Quedas", texto: "10. O talabarte não apresenta corte ou deformações?" },
       { id: "t3", grupo: "Talabarte Y / Trava-Quedas", texto: "11. A parte interna do absorvedor de energia não apresenta cortes e/ou furos?" }
     ];
+
     // 4. BANCO OFICIAL DE COLABORADORES BAVGRU (116 COLABORADORES)
     const INITIAL_COLABORADORES = [
-        { id: "c_128660", matricula: "128660", nome: "ADAUTO RIBEIRO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adautosantos@vibraenergia.com.br" },
+      { id: "c_128660", matricula: "128660", nome: "ADAUTO RIBEIRO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adautosantos@vibraenergia.com.br" },
       { id: "c_129028", matricula: "129028", nome: "ADILSON MARQUES ESCANHOLATO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adilsonescanholato@vibraenergia.com.br" },
       { id: "c_189584", matricula: "189584", nome: "ADOLFO DE SOUSA OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "adolfooliveira@vibraenergia.com.br" },
       { id: "c_134770", matricula: "134770", nome: "ADRIANO APARECIDO GONZAGA DA COSTA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adrianocosta@vibraenergia.com.br" },
@@ -916,8 +987,9 @@ Casquete	38352	100	10
       { id: "c_124555", matricula: "124555", nome: "WILLIAM KOLODZIEJSKI JUNIOR", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "williamjunior@vibraenergia.com.br" },
       { id: "c_191776", matricula: "191776", nome: "WILSON FERREIRA NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "wilsonnascimento@vibraenergia.com.br" }
     ];
+
     const INITIAL_ESTOQUE = [
-     { id: "e1", nome: "Luva Nitrílica", ca: "42760", validade: "2029-12-31", qtd: 15, min: 5 },
+      { id: "e1", nome: "Luva Nitrílica", ca: "42760", validade: "2029-12-31", qtd: 15, min: 5 },
       { id: "e2", nome: "Luva Nitrílica Manga Longa G", ca: "S/C.A.", validade: "2029-12-31", qtd: 15, min: 5 },
       { id: "e3", nome: "Luva Nitrílica Verde M", ca: "40189", validade: "2029-12-31", qtd: 15, min: 5 },
       { id: "e4", nome: "Luva Nitrílica Verde G", ca: "40189", validade: "2029-12-31", qtd: 15, min: 5 },
@@ -1020,7 +1092,7 @@ Casquete	38352	100	10
     }
 
     // ATUALIZAÇÃO AUTOMÁTICA DA BASE PARA 116 COLABORADORES
-   const VERSAO_BASE = 'bavgru_versao_116colab_78epis_v4';
+    const VERSAO_BASE = 'bavgru_versao_116colab_78epis_v4';
     if (localStorage.getItem('bavgru_versao_instalada') !== VERSAO_BASE) {
       localStorage.setItem('bavgru_colaboradores', JSON.stringify(INITIAL_COLABORADORES));
       localStorage.setItem('bavgru_estoque', JSON.stringify(INITIAL_ESTOQUE));
@@ -1034,10 +1106,12 @@ Casquete	38352	100	10
     let logExclusoes = JSON.parse(localStorage.getItem('bavgru_log_exclusoes')) || [];
     let senhaAdmin = localStorage.getItem('bavgru_senha_admin') || 'vibra@2025';
     let adminAutenticado = false;
+
     let fotosCapturadas = { disp: null, insp: null };
     let streamsCamera = { disp: null, insp: null };
     let cameraFacing = { disp: 'user', insp: 'environment' };
     let primeiraCargaNuvem = true;
+    let carrinhoDispensacao = [];
 
     function salvarBancoLocal() {
       // 1. Salva localmente como backup e suporte offline
@@ -1054,11 +1128,13 @@ Casquete	38352	100	10
         dbNuvem.ref('bavgru/colaboradores').set(colaboradores).catch(e => console.warn('Sync colaboradores:', e));
         dbNuvem.ref('bavgru/logExclusoes').set(logExclusoes).catch(e => console.warn('Sync log:', e));
       }
+
       atualizarTudo();
     }
 
     function iniciarSincronizacaoNuvem() {
       if (!dbNuvem) return;
+
       const textoBadge = document.getElementById('texto-status-nuvem');
 
       // Monitor de conexão com a nuvem
@@ -1136,6 +1212,7 @@ Casquete	38352	100	10
 
       const targetSection = document.getElementById('tab-' + tab);
       if (targetSection) targetSection.classList.remove('hidden');
+
       const targetBtn = document.getElementById('tab-btn-' + tab);
       if (targetBtn) {
         targetBtn.className = "tab-btn whitespace-nowrap bg-white text-vibraDark font-semibold px-3.5 py-2 rounded-lg text-xs md:text-sm shadow transition-all";
@@ -1190,14 +1267,24 @@ Casquete	38352	100	10
       const matricula = document.getElementById('novo-colab-matricula').value.trim();
       const funcao = document.getElementById('novo-colab-funcao').value.trim() || 'OPERADOR BAVGRU';
       const email = document.getElementById('novo-colab-email').value.trim();
+      const naoUsaCinto = document.getElementById('novo-colab-nao-usa-cinto')?.checked || false;
       if (!nome || !matricula) return alert('Informe Nome e Matrícula.');
-      colaboradores.push({ id: 'c' + Date.now(), matricula, nome, funcao, email });
+      colaboradores.push({ id: 'c' + Date.now(), matricula, nome, funcao, email, usaCinto: !naoUsaCinto });
       document.getElementById('novo-colab-nome').value = '';
       document.getElementById('novo-colab-matricula').value = '';
       document.getElementById('novo-colab-funcao').value = '';
       document.getElementById('novo-colab-email').value = '';
+      if (document.getElementById('novo-colab-nao-usa-cinto')) document.getElementById('novo-colab-nao-usa-cinto').checked = false;
       salvarBancoLocal();
       alert(`Colaborador ${nome} cadastrado com sucesso!`);
+    }
+
+    // ALTERNAR SE O COLABORADOR UTILIZA CINTO TRAVA-QUEDAS OU ESTÁ DISPENSADO
+    function alternarUsoCinto(colabId) {
+      const colab = colaboradores.find(c => c.id === colabId);
+      if (!colab) return;
+      colab.usaCinto = colab.usaCinto === false ? true : false;
+      salvarBancoLocal();
     }
 
     // FUNÇÕES DE IMPORTAÇÃO EM LOTE DE COLABORADORES
@@ -1216,6 +1303,7 @@ Casquete	38352	100	10
       const linhas = texto.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
       const resultado = [];
       const vistos = new Set();
+
       for (const linha of linhas) {
         const lower = linha.toLowerCase();
         if (lower.startsWith('matricula') || lower.startsWith('matrícula') || lower.startsWith('código') || lower.startsWith('chapa')) {
@@ -1235,6 +1323,7 @@ Casquete	38352	100	10
         let nome = '';
         let funcao = 'OPERADOR BAVGRU';
         let email = '';
+
         const ehNumero = (str) => /^\d+$/.test(str.replace(/[-.]/g, ''));
 
         if (ehNumero(partes[0])) {
@@ -1313,14 +1402,16 @@ Casquete	38352	100	10
       leitor.readAsText(arquivo, 'UTF-8');
     }
 
-    function ejecutarImportacaoColaboradores() {
+    function executarImportacaoColaboradores() {
       const texto = document.getElementById('texto-importar-colab').value;
       const novos = extrairColaboradoresDoTexto(texto);
+
       if (novos.length === 0) {
         return alert('Nenhum colaborador foi identificado. Verifique se copiou as colunas de Matrícula e Nome da sua planilha.');
       }
 
       const modo = document.querySelector('input[name="modo-importacao-colab"]:checked').value;
+
       if (modo === 'substituir') {
         const confirma = confirm(`Tem certeza que deseja substituir todo o efetivo atual por estes ${novos.length} novos colaboradores?`);
         if (!confirma) return;
@@ -1383,12 +1474,13 @@ Casquete	38352	100	10
         const video = document.getElementById('video-' + tipo);
         const preview = document.getElementById('foto-' + tipo + '-preview');
         const placeholder = document.getElementById('foto-' + tipo + '-placeholder');
-        
+
         const constraints = {
           video: {
             facingMode: cameraFacing[tipo]
           }
         };
+
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         streamsCamera[tipo] = stream;
         video.srcObject = stream;
@@ -1409,18 +1501,18 @@ Casquete	38352	100	10
       const video = document.getElementById('video-' + tipo);
       const preview = document.getElementById('foto-' + tipo + '-preview');
       if (!streamsCamera[tipo]) return alert('Ligue primeiro a câmera.');
-      
+
       const tempCanvas = document.createElement('canvas');
       tempCanvas.width = video.videoWidth || 320;
       tempCanvas.height = video.videoHeight || 240;
       tempCanvas.getContext('2d').drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
-      
+
       const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.85);
       fotosCapturadas[tipo] = dataUrl;
       preview.src = dataUrl;
       preview.classList.remove('hidden');
       video.classList.add('hidden');
-      
+
       streamsCamera[tipo].getTracks().forEach(t => t.stop());
       streamsCamera[tipo] = null;
     }
@@ -1449,11 +1541,12 @@ Casquete	38352	100	10
       const canvas = document.getElementById(canvasId);
       const ctx = canvas.getContext('2d');
       let desenhando = false;
-      
-      ctx.lineWidth = 2.5; 
-      ctx.lineCap = 'round'; 
+
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.strokeStyle = '#00582C';
+
       const obterPos = (e) => {
         const rect = canvas.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -1463,6 +1556,7 @@ Casquete	38352	100	10
           y: (clientY - rect.top) * (canvas.height / rect.height)
         };
       };
+
       const iniciar = (e) => {
         desenhando = true;
         const p = obterPos(e);
@@ -1470,6 +1564,7 @@ Casquete	38352	100	10
         ctx.moveTo(p.x, p.y);
         canvas.dataset.assinado = "true";
       };
+
       const mover = (e) => {
         if (!desenhando) return;
         if (e.cancelable) e.preventDefault();
@@ -1477,7 +1572,9 @@ Casquete	38352	100	10
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
       };
+
       const parar = () => { desenhando = false; };
+
       canvas.addEventListener('mousedown', iniciar);
       canvas.addEventListener('mousemove', mover);
       window.addEventListener('mouseup', parar);
@@ -1492,20 +1589,125 @@ Casquete	38352	100	10
       canvas.dataset.assinado = "false";
     }
 
+    // FUNÇÕES DE MÚLTIPLOS EPIS NA DISPENSAÇÃO
+    function adicionarEpiNaLista() {
+      const epiId = document.getElementById('disp-epi').value;
+      const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
+      if (!epiId || qtd <= 0) return alert('Selecione um EPI e informe uma quantidade válida.');
+
+      const itemEstoque = estoque.find(e => e.id === epiId);
+      if (!itemEstoque) return;
+
+      const existente = carrinhoDispensacao.find(i => i.epiId === epiId);
+      const qtdTotalPretendida = (existente ? existente.quantidade : 0) + qtd;
+
+      if (itemEstoque.qtd < qtdTotalPretendida) {
+        return alert(`Estoque insuficiente para ${itemEstoque.nome} (Saldo disponível: ${itemEstoque.qtd} un).`);
+      }
+
+      if (existente) {
+        existente.quantidade += qtd;
+      } else {
+        carrinhoDispensacao.push({
+          epiId: itemEstoque.id,
+          nome: itemEstoque.nome,
+          ca: itemEstoque.ca,
+          quantidade: qtd
+        });
+      }
+
+      document.getElementById('disp-qtd').value = '1';
+      renderCarrinhoEpis();
+    }
+
+    function removerEpiDaLista(idx) {
+      carrinhoDispensacao.splice(idx, 1);
+      renderCarrinhoEpis();
+    }
+
+    function limparCarrinhoEpis() {
+      carrinhoDispensacao = [];
+      renderCarrinhoEpis();
+    }
+
+    function renderCarrinhoEpis() {
+      const box = document.getElementById('box-carrinho-epis');
+      const lista = document.getElementById('lista-carrinho-epis');
+      const count = document.getElementById('count-carrinho-epis');
+      if (!box || !lista || !count) return;
+
+      if (carrinhoDispensacao.length === 0) {
+        box.classList.add('hidden');
+        lista.innerHTML = '';
+        count.textContent = '0';
+        return;
+      }
+
+      box.classList.remove('hidden');
+      count.textContent = carrinhoDispensacao.length;
+      lista.innerHTML = carrinhoDispensacao.map((item, idx) => `
+        <div class="py-1.5 flex justify-between items-center">
+          <div>
+            <span class="font-bold text-slate-800">${item.quantidade}x ${item.nome}</span>
+            <span class="ml-1 bg-white border border-emerald-300 px-1.5 py-0.5 rounded text-[10px] font-bold text-emerald-800">CA: ${item.ca}</span>
+          </div>
+          <button type="button" onclick="removerEpiDaLista(${idx})" class="text-red-600 hover:text-red-800 font-bold text-xs px-2">✕ Remover</button>
+        </div>
+      `).join('');
+    }
+
     // AÇÕES DE GRAVAÇÃO
     function salvarDispensacao() {
       const colabId = document.getElementById('disp-colaborador').value;
-      const epiId = document.getElementById('disp-epi').value;
-      const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
       const motivo = document.getElementById('disp-motivo').value;
       const canvas = document.getElementById('canvas-disp');
+
       if (canvas.dataset.assinado !== "true" && !fotosCapturadas.disp) {
         return alert('Colete a assinatura ou a foto para validade legal da NR-06.');
       }
+
       const colab = colaboradores.find(c => c.id === colabId);
-      const itemEstoque = estoque.find(e => e.id === epiId);
-      if (!itemEstoque || itemEstoque.qtd < qtd) return alert('Estoque insuficiente para essa entrega!');
-      itemEstoque.qtd -= qtd;
+
+      let itensParaEntregar = [];
+      if (carrinhoDispensacao.length > 0) {
+        itensParaEntregar = [...carrinhoDispensacao];
+      } else {
+        const epiId = document.getElementById('disp-epi').value;
+        const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
+        const itemEstoque = estoque.find(e => e.id === epiId);
+        if (!itemEstoque) return alert('Selecione um EPI válido.');
+        itensParaEntregar.push({
+          epiId: itemEstoque.id,
+          nome: itemEstoque.nome,
+          ca: itemEstoque.ca,
+          quantidade: qtd
+        });
+      }
+
+      // Valida saldo de todos os itens antes de dar baixa
+      for (const item of itensParaEntregar) {
+        const est = estoque.find(e => e.id === item.epiId);
+        if (!est || est.qtd < item.quantidade) {
+          return alert(`Estoque insuficiente para ${item.nome}!`);
+        }
+      }
+
+      // Deduz do estoque
+      itensParaEntregar.forEach(item => {
+        const est = estoque.find(e => e.id === item.epiId);
+        if (est) est.qtd -= item.quantidade;
+      });
+
+      const equipamentoStr = itensParaEntregar.length === 1
+        ? itensParaEntregar[0].nome
+        : itensParaEntregar.map(i => `${i.quantidade}x ${i.nome}`).join(' + ');
+
+      const caStr = itensParaEntregar.length === 1
+        ? itensParaEntregar[0].ca
+        : itensParaEntregar.map(i => i.ca).join(', ');
+
+      const qtdTotal = itensParaEntregar.reduce((acc, i) => acc + i.quantidade, 0);
+
       const registro = {
         id: 'NR06-' + Date.now(),
         tipo: 'Dispensação EPI (NR-06)',
@@ -1513,21 +1715,25 @@ Casquete	38352	100	10
         colaborador: colab.nome,
         matricula: colab.matricula,
         funcao: colab.funcao,
-        equipamento: itemEstoque.nome,
-        ca: itemEstoque.ca,
-        quantidade: qtd,
+        equipamento: equipamentoStr,
+        ca: caStr,
+        quantidade: qtdTotal,
+        itensDetalhados: itensParaEntregar,
         motivo: motivo,
         status: 'ENTREGUE',
         foto: fotosCapturadas.disp,
         assinatura: canvas.toDataURL('image/png'),
         hash: 'VIBRA-BAVGRU-' + Math.random().toString(36).substring(2, 10).toUpperCase()
       };
+
       auditoria.unshift(registro);
+      limparCarrinhoEpis();
       limparAssinatura('canvas-disp');
       fotosCapturadas.disp = null;
       document.getElementById('foto-disp-preview').src = '';
       document.getElementById('foto-disp-preview').classList.add('hidden');
       document.getElementById('foto-disp-placeholder').classList.remove('hidden');
+
       salvarBancoLocal();
       abrirComprovante(registro.id);
     }
@@ -1537,9 +1743,11 @@ Casquete	38352	100	10
       const ca = document.getElementById('insp-ca').value;
       const dataInsp = document.getElementById('insp-data').value;
       const canvas = document.getElementById('canvas-insp');
+
       if (canvas.dataset.assinado !== "true" && !fotosCapturadas.insp) {
         return alert('Colete assinatura ou foto para o Anexo C.');
       }
+
       const colab = colaboradores.find(c => c.id === colabId);
       let reprovado = false;
       const respostas = PERGUNTAS_ANEXO_C.map(p => {
@@ -1547,7 +1755,9 @@ Casquete	38352	100	10
         if (sel === 'Não Conforme') reprovado = true;
         return { pergunta: p.texto, resposta: sel };
       });
+
       const statusFinal = reprovado ? 'INTERDITADO / SUBSTITUIR' : 'APROVADO PARA USO';
+
       const registro = {
         id: 'ANEXOC-' + Date.now(),
         tipo: 'Inspeção Cinto (Anexo C)',
@@ -1565,12 +1775,14 @@ Casquete	38352	100	10
         assinatura: canvas.toDataURL('image/png'),
         hash: 'ANEXOC-BAVGRU-' + Math.random().toString(36).substring(2, 10).toUpperCase()
       };
+
       auditoria.unshift(registro);
       limparAssinatura('canvas-insp');
       fotosCapturadas.insp = null;
       document.getElementById('foto-insp-preview').src = '';
       document.getElementById('foto-insp-preview').classList.add('hidden');
       document.getElementById('foto-insp-placeholder').classList.remove('hidden');
+
       salvarBancoLocal();
       if (reprovado) alert('⚠️ ATENÇÃO: Equipamento reprovado na inspeção visual. INTERDITADO imediatamente!');
       abrirComprovante(registro.id);
@@ -1585,6 +1797,7 @@ Casquete	38352	100	10
       const epiId = document.getElementById('entrada-epi').value;
       const qtd = parseInt(document.getElementById('entrada-qtd').value || '0', 10);
       if (!epiId || qtd <= 0) return alert("Selecione o EPI e informe uma quantidade válida de entrada.");
+
       const itemEstoque = estoque.find(e => e.id === epiId);
       if(itemEstoque) {
         itemEstoque.qtd += qtd;
@@ -1602,24 +1815,42 @@ Casquete	38352	100	10
         if (senha !== null) alert("❌ Senha incorreta.");
         return;
       }
+
       const index = auditoria.findIndex(r => r.id === id);
       if (index === -1) return;
       const reg = auditoria[index];
+
       const justificativa = prompt(`📝 MOTIVO DA EXCLUSÃO (${reg.colaborador}):\n(Obrigatório para conformidade de auditoria)`);
       if (!justificativa || justificativa.trim().length < 5) {
         return alert("❌ Cancelado. É obrigatório fornecer uma justificativa (mínimo 5 letras).");
       }
+
       const adminNome = prompt("👤 Digite seu Nome / Matrícula como Administrador:");
       if (!adminNome || adminNome.trim().length === 0) return alert("❌ Identificação obrigatória.");
+
       let estornoMsg = "Nenhum estorno necessário.";
       if (reg.tipo.includes('Dispensação EPI')) {
-        const itemEstoque = estoque.find(e => e.nome === reg.equipamento && e.ca === reg.ca);
-        if (itemEstoque) {
-          const qtdEstornada = parseInt(reg.quantidade, 10) || 1;
-          itemEstoque.qtd += qtdEstornada;
-          estornoMsg = `Estornado +${qtdEstornada} un. para ${itemEstoque.nome}`;
+        if (reg.itensDetalhados && Array.isArray(reg.itensDetalhados)) {
+          const estornos = [];
+          reg.itensDetalhados.forEach(it => {
+            const itemEstoque = estoque.find(e => e.id === it.epiId || (e.nome === it.nome && e.ca === it.ca));
+            if (itemEstoque) {
+              const qtdEstornada = parseInt(it.quantidade, 10) || 1;
+              itemEstoque.qtd += qtdEstornada;
+              estornos.push(`+${qtdEstornada} un. (${itemEstoque.nome})`);
+            }
+          });
+          if (estornos.length) estornoMsg = "Estornado: " + estornos.join(', ');
+        } else {
+          const itemEstoque = estoque.find(e => e.nome === reg.equipamento && e.ca === reg.ca);
+          if (itemEstoque) {
+            const qtdEstornada = parseInt(reg.quantidade, 10) || 1;
+            itemEstoque.qtd += qtdEstornada;
+            estornoMsg = `Estornado +${qtdEstornada} un. para ${itemEstoque.nome}`;
+          }
         }
       }
+
       const logEntry = {
         idLog: 'LOG-' + Date.now(),
         dataHoraExclusao: new Date().toLocaleString('pt-BR'),
@@ -1631,6 +1862,7 @@ Casquete	38352	100	10
         responsavelExclusao: adminNome.trim(),
         justificativa: justificativa.trim()
       };
+
       logExclusoes.unshift(logEntry);
       auditoria.splice(index, 1);
       salvarBancoLocal();
@@ -1675,6 +1907,7 @@ Casquete	38352	100	10
     function renderPendencias() {
       const mesAno = obterMesAnoSelecionado();
       const termo = (document.getElementById('busca-pendencias')?.value || '').toLowerCase();
+
       const inspecionadosMes = new Set();
       auditoria.forEach(r => {
         if (r.tipo.includes('Inspeção Cinto')) {
@@ -1688,16 +1921,21 @@ Casquete	38352	100	10
           }
         }
       });
-      const pendentes = colaboradores.filter(c => !inspecionadosMes.has(c.matricula));
-      const inspecionadosCount = colaboradores.length - pendentes.length;
-      const taxa = colaboradores.length ? Math.round((inspecionadosCount / colaboradores.length) * 100) : 0;
+
+      const elegiveisCinto = colaboradores.filter(c => c.usaCinto !== false);
+      const pendentes = elegiveisCinto.filter(c => !inspecionadosMes.has(c.matricula));
+      const inspecionadosCount = elegiveisCinto.length - pendentes.length;
+      const taxa = elegiveisCinto.length ? Math.round((inspecionadosCount / elegiveisCinto.length) * 100) : 100;
+
       document.getElementById('total-pendentes-num').textContent = pendentes.length;
       document.getElementById('total-inspecionados-num').textContent = inspecionadosCount;
       document.getElementById('taxa-adesao-num').textContent = `${taxa}%`;
       document.getElementById('kpi-pendencias').textContent = pendentes.length;
+
       const pendentesFiltrados = pendentes.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
       const tbody = document.getElementById('tabela-pendencias');
       if (!tbody) return;
+
       tbody.innerHTML = pendentesFiltrados.length ? pendentesFiltrados.map(c => `
         <tr class="border-b hover:bg-amber-50/50">
           <td class="p-2.5 font-mono font-bold text-xs text-slate-700">${c.matricula}</td>
@@ -1708,7 +1946,10 @@ Casquete	38352	100	10
               ⚠️ Pendente (${mesAno})
             </span>
           </td>
-          <td class="p-2.5 text-right">
+          <td class="p-2.5 text-right flex justify-end gap-1.5">
+            <button onclick="alternarUsoCinto('${c.id}')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold" title="Marcar como dispensado de usar cinto">
+              🚫 Não Utiliza
+            </button>
             <button onclick="abrirInspecaoDireta('${c.id}')" class="bg-vibraGreen hover:bg-vibraDark text-white px-2.5 py-1.5 rounded-lg text-xs font-bold shadow">
               Inspecionar ↗
             </button>
@@ -1717,7 +1958,7 @@ Casquete	38352	100	10
       `).join('') : `
         <tr>
           <td colspan="5" class="p-6 text-center text-emerald-700 bg-emerald-50 font-bold">
-            🎉 Parabéns! Todos os operadores realizaram a inspeção obrigatória do cinto no mês ${mesAno}!
+            🎉 Parabéns! Todos os operadores que utilizam cinto realizaram a inspeção obrigatória no mês ${mesAno}!
           </td>
         </tr>
       `;
@@ -1736,8 +1977,11 @@ Casquete	38352	100	10
           if (dataRef && dataRef.startsWith(mesAno)) inspecionadosMes.add(r.matricula);
         }
       });
-      const pendentes = colaboradores.filter(c => !inspecionadosMes.has(c.matricula));
+
+      const elegiveisCinto = colaboradores.filter(c => c.usaCinto !== false);
+      const pendentes = elegiveisCinto.filter(c => !inspecionadosMes.has(c.matricula));
       if (!pendentes.length) return alert(`Nenhuma pendência no mês ${mesAno}!`);
+
       const headers = ['Matricula', 'Nome', 'Funcao', 'Email', 'Mes_Referencia', 'Status'];
       const linhas = pendentes.map(c => [c.matricula, c.nome, c.funcao, c.email || '', mesAno, 'PENDENTE'].map(v => `"${v || ''}"`).join(';'));
       const csv = '\uFEFF' + [headers.join(';'), ...linhas].join('\n');
@@ -1752,6 +1996,31 @@ Casquete	38352	100	10
     function abrirComprovante(id) {
       const reg = auditoria.find(r => r.id === id);
       if (!reg) return;
+
+      const tabelaMultiplosItens = (reg.itensDetalhados && reg.itensDetalhados.length > 1) ? `
+        <div class="mt-2">
+          <h4 class="font-bold text-[11px] uppercase bg-slate-100 p-1 border">Relação de EPIs Entregues</h4>
+          <table class="w-full text-[11px] border-collapse border mt-1">
+            <thead>
+              <tr class="bg-slate-50 border-b">
+                <th class="p-1 border-r text-left">Equipamento (EPI)</th>
+                <th class="p-1 border-r text-center">Nº C.A.</th>
+                <th class="p-1 text-center">Qtd</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${reg.itensDetalhados.map(it => `
+                <tr class="border-b">
+                  <td class="p-1 border-r font-medium">${it.nome}</td>
+                  <td class="p-1 border-r text-center font-bold">${it.ca}</td>
+                  <td class="p-1 text-center font-bold">${it.quantidade}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      ` : '';
+
       const checklistHtml = reg.respostasChecklist ? `
         <div class="mt-2">
           <h4 class="font-bold text-[11px] uppercase bg-slate-100 p-1 border">Checklist Padrão Vibra (Anexo C)</h4>
@@ -1765,10 +2034,12 @@ Casquete	38352	100	10
           </table>
         </div>
       ` : `
+        ${tabelaMultiplosItens}
         <div class="p-2.5 bg-slate-50 border rounded text-[11px] mt-2">
           <strong>Termo NR-06:</strong> Declaro recebimento do EPI especificado em perfeitas condições de uso, assumindo o compromisso de zelar pela guarda e conservação.
         </div>
       `;
+
       document.getElementById('print-area').innerHTML = `
         <div class="flex justify-between items-center border-b-2 border-vibraGreen pb-2">
           <div>
@@ -1804,33 +2075,140 @@ Casquete	38352	100	10
           <span>Responsável Legal: Graciete Martins Ferreira</span>
         </div>
       `;
+
       document.getElementById('modal-print').classList.remove('hidden');
       document.getElementById('modal-print').classList.add('flex');
     }
+
+    // GERAR PDF ÚNICO DO HISTÓRICO DE ENTREGA POR FUNCIONÁRIO (ADMIN)
+    function gerarPdfHistoricoFuncionario() {
+      const colabId = document.getElementById('admin-historico-colab').value;
+      const colab = colaboradores.find(c => c.id === colabId);
+      if (!colab) return alert('Selecione um funcionário válido.');
+
+      const entregas = auditoria.filter(r =>
+        r.tipo.includes('Dispensação EPI') &&
+        (r.matricula === colab.matricula || r.colaborador === colab.nome)
+      );
+
+      if (entregas.length === 0) {
+        return alert(`Nenhuma entrega de EPI registrada para ${colab.nome} até o momento.`);
+      }
+
+      const linhasHtml = [];
+      entregas.forEach(reg => {
+        if (reg.itensDetalhados && Array.isArray(reg.itensDetalhados) && reg.itensDetalhados.length > 0) {
+          reg.itensDetalhados.forEach(it => {
+            linhasHtml.push(`
+              <tr class="border-b">
+                <td class="p-1.5 border-r text-[10px]">${reg.dataHora}</td>
+                <td class="p-1.5 border-r font-semibold">${it.nome}</td>
+                <td class="p-1.5 border-r text-center font-bold">${it.ca}</td>
+                <td class="p-1.5 border-r text-center font-bold">${it.quantidade}</td>
+                <td class="p-1.5 border-r text-[10px]">${reg.motivo || '-'}</td>
+                <td class="p-1.5 text-center">
+                  ${reg.assinatura ? `<img src="${reg.assinatura}" class="h-8 mx-auto object-contain" />` : 'Assinado'}
+                </td>
+              </tr>
+            `);
+          });
+        } else {
+          linhasHtml.push(`
+            <tr class="border-b">
+              <td class="p-1.5 border-r text-[10px]">${reg.dataHora}</td>
+              <td class="p-1.5 border-r font-semibold">${reg.equipamento}</td>
+              <td class="p-1.5 border-r text-center font-bold">${reg.ca}</td>
+              <td class="p-1.5 border-r text-center font-bold">${reg.quantidade || 1}</td>
+              <td class="p-1.5 border-r text-[10px]">${reg.motivo || '-'}</td>
+              <td class="p-1.5 text-center">
+                ${reg.assinatura ? `<img src="${reg.assinatura}" class="h-8 mx-auto object-contain" />` : 'Assinado'}
+              </td>
+            </tr>
+          `);
+        }
+      });
+
+      document.getElementById('print-area').innerHTML = `
+        <div class="flex justify-between items-center border-b-2 border-vibraGreen pb-2">
+          <div>
+            <h2 class="text-sm md:text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A. - BAVGRU (GUARULHOS)</h2>
+            <p class="text-[11px] text-slate-600">FICHA INDIVIDUAL CONSOLIDADA DE ENTREGA DE EPIs (NR-06)</p>
+          </div>
+          <div class="text-right text-[10px]">
+            <p><strong>Emissão:</strong> ${new Date().toLocaleString('pt-BR')}</p>
+            <p><strong>Total de Registros:</strong> ${entregas.length}</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-[11px] bg-slate-50 p-2.5 border rounded mt-2">
+          <p><strong>Colaborador:</strong> ${colab.nome}</p>
+          <p><strong>Matrícula:</strong> ${colab.matricula}</p>
+          <p><strong>Função:</strong> ${colab.funcao}</p>
+        </div>
+        <div class="p-2 bg-emerald-50 border border-emerald-200 rounded text-[10px] mt-2 leading-snug">
+          <strong>Termo de Responsabilidade (NR-06 - Portaria 3.214/77):</strong> Declaro ter recebido gratuitamente da Vibra Energia S.A. (Unidade BAVGRU) os Equipamentos de Proteção Individual (EPIs) abaixo discriminados, novos e com C.A. ativo, comprometendo-me a utilizá-los apenas para a finalidade a que se destinam e zelar por sua guarda e conservação.
+        </div>
+        <div class="mt-2">
+          <table class="w-full text-[11px] border-collapse border">
+            <thead>
+              <tr class="bg-slate-100 border-b text-slate-700">
+                <th class="p-1.5 border-r text-left">Data / Hora</th>
+                <th class="p-1.5 border-r text-left">Equipamento (EPI)</th>
+                <th class="p-1.5 border-r text-center">Nº C.A.</th>
+                <th class="p-1.5 border-r text-center">Qtd</th>
+                <th class="p-1.5 border-r text-left">Motivo</th>
+                <th class="p-1.5 text-center">Rubrica Digital</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${linhasHtml.join('')}
+            </tbody>
+          </table>
+        </div>
+        <div class="text-[9px] text-slate-500 border-t pt-2 flex justify-between mt-3">
+          <span>Relatório Unificado de Auditoria NR-06 - BAVGRU</span>
+          <span>Responsável Técnica SSMA: Graciete Martins Ferreira</span>
+        </div>
+      `;
+
+      document.getElementById('modal-print').classList.remove('hidden');
+      document.getElementById('modal-print').classList.add('flex');
+    }
+
     function fecharModalPrint() {
       document.getElementById('modal-print').classList.add('hidden');
       document.getElementById('modal-print').classList.remove('flex');
     }
+
     // RENDERIZAÇÕES
     function renderColaboradores() {
       const termo = (document.getElementById('busca-colab').value || '').toLowerCase();
       const filtrados = colaboradores.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
-      document.getElementById('tabela-colaboradores').innerHTML = filtrados.map(c => `
-        <tr class="border-b hover:bg-slate-50">
-          <td class="p-2.5 font-bold text-xs">${c.matricula}</td>
-          <td class="p-2.5 font-medium">${c.nome}</td>
-          <td class="p-2.5 text-xs text-slate-600">${c.funcao}</td>
-          <td class="p-2.5 text-right">
-            <button onclick="buscarFichasDoColaborador('${c.nome}')" class="bg-vibraDark text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-vibraGreen">Fichas ↗</button>
-          </td>
-        </tr>
-      `).join('');
+      document.getElementById('tabela-colaboradores').innerHTML = filtrados.map(c => {
+        const usaCinto = c.usaCinto !== false;
+        return `
+          <tr class="border-b hover:bg-slate-50">
+            <td class="p-2.5 font-bold text-xs">${c.matricula}</td>
+            <td class="p-2.5 font-medium">${c.nome}</td>
+            <td class="p-2.5 text-xs text-slate-600">${c.funcao}</td>
+            <td class="p-2.5 text-center">
+              <button onclick="alternarUsoCinto('${c.id}')" class="px-2.5 py-1 rounded-full text-[11px] font-bold transition-all ${usaCinto ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300' : 'bg-slate-200 text-slate-600 hover:bg-slate-300 border border-slate-300'}" title="Clique para alternar se utiliza ou não cinto trava-quedas">
+                ${usaCinto ? '✅ Utiliza Cinto' : '🚫 Não Utiliza (Isento)'}
+              </button>
+            </td>
+            <td class="p-2.5 text-right">
+              <button onclick="buscarFichasDoColaborador('${c.nome}')" class="bg-vibraDark text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-vibraGreen">Fichas ↗</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
+
     function buscarFichasDoColaborador(nome) {
       switchTab('dashboard');
       document.getElementById('busca-auditoria').value = nome;
       renderAuditoria();
     }
+
     function renderAuditoria() {
       const termo = (document.getElementById('busca-auditoria').value || '').toLowerCase();
       const filtrados = auditoria.filter(r => r.colaborador.toLowerCase().includes(termo) || r.ca.toLowerCase().includes(termo));
@@ -1958,12 +2336,10 @@ Casquete	38352	100	10
             const primeiraAba = workbook.SheetNames[0];
             const planilha = workbook.Sheets[primeiraAba];
             const matriz = XLSX.utils.sheet_to_json(planilha, { header: 1, defval: '' });
-
             const linhasTexto = matriz
               .filter(row => row.some(cell => String(cell).trim() !== ''))
               .map(row => row.map(cell => String(cell).trim()).join('\t'))
               .join('\n');
-
             document.getElementById('texto-importar-epi').value = linhasTexto;
             atualizarPreviaEpisEmTempoReal();
           } catch (err) {
@@ -2014,7 +2390,6 @@ Casquete	38352	100	10
             cadastrados++;
           }
         });
-
         alert(`✅ Sucesso! ${cadastrados} novos tipos de EPI inseridos e ${atualizados} saldos atualizados.`);
       }
 
@@ -2031,13 +2406,20 @@ Casquete	38352	100	10
       document.getElementById('kpi-inspecoes').textContent = auditoria.filter(a => a.tipo.includes('Anexo C')).length;
       const alertasEstoque = estoque.filter(e => e.qtd <= e.min).length;
       document.getElementById('kpi-alertas').textContent = alertasEstoque;
+
       colaboradores.sort((a, b) => a.nome.localeCompare(b.nome));
       const opcoesColab = colaboradores.map(c => `<option value="${c.id}">${c.nome} (${c.matricula})</option>`).join('');
+      const opcoesColabCinto = colaboradores.filter(c => c.usaCinto !== false).map(c => `<option value="${c.id}">${c.nome} (${c.matricula})</option>`).join('');
+
       document.getElementById('disp-colaborador').innerHTML = opcoesColab;
-      document.getElementById('insp-colaborador').innerHTML = opcoesColab;
+      document.getElementById('insp-colaborador').innerHTML = opcoesColabCinto;
+      const selectHistColab = document.getElementById('admin-historico-colab');
+      if (selectHistColab) selectHistColab.innerHTML = opcoesColab;
+
       const opcoesEpi = estoque.map(e => `<option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>`).join('');
       document.getElementById('disp-epi').innerHTML = opcoesEpi;
       document.getElementById('entrada-epi').innerHTML = opcoesEpi;
+
       document.getElementById('tabela-estoque').innerHTML = estoque.map(e => `
         <tr class="border-b">
           <td class="p-2.5 font-medium">${e.nome}</td>
@@ -2047,11 +2429,13 @@ Casquete	38352	100	10
           <td class="p-2.5">${e.qtd <= e.min ? '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[11px] font-bold">⚠️ Repor</span>' : '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[11px] font-bold">✔ Regular</span>'}</td>
         </tr>
       `).join('');
+
       renderColaboradores();
       renderAuditoria();
       renderLogExclusoes();
       renderPendencias();
     }
+
     function exportarCSV() {
       const headers = ['ID_Registro', 'Data_Hora', 'Tipo', 'Colaborador', 'Matricula', 'EPI', 'CA', 'Status_Final'];
       const linhas = auditoria.map(r => [r.id, r.dataHora, r.tipo, r.colaborador, r.matricula, r.equipamento, r.ca, r.status].map(v => `"${v || ''}"`).join(';'));
@@ -2062,11 +2446,13 @@ Casquete	38352	100	10
       link.download = `Auditoria_EPI_BAVGRU.csv`;
       link.click();
     }
+
     window.onload = () => {
       const d = new Date();
       document.getElementById('insp-data').value = d.toISOString().slice(0, 10);
       const mesStr = String(d.getMonth() + 1).padStart(2, '0');
       document.getElementById('pendencias-mes-ano').value = `${d.getFullYear()}-${mesStr}`;
+
       renderChecklistForm();
       configurarCanvasAssinatura('canvas-disp');
       configurarCanvasAssinatura('canvas-insp');

@@ -98,7 +98,7 @@
           <div class="border-l border-emerald-400 pl-3">
             <div class="flex items-center gap-2">
               <h1 class="text-base md:text-xl font-bold tracking-tight leading-tight">SSMA BAVGRU</h1>
-              <span id="badge-status-nuvem" onclick="testarEForcarSincronizacao()" title="Clique para testar sincronização instantânea" class="cursor-pointer text-[10px] bg-emerald-900/90 text-emerald-200 border border-emerald-400/80 px-2 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-sm">
+              <span id="badge-status-nuvem" onclick="forcarSincronizacaoManual()" title="Clique para forçar sincronização com a nuvem" class="cursor-pointer text-[10px] bg-emerald-900/90 text-emerald-200 border border-emerald-400/80 px-2 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-sm">
                 <span id="bolinha-status-nuvem" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span id="texto-status-nuvem">Conectando...</span>
               </span>
@@ -628,6 +628,7 @@
         </div>
         <button onclick="fecharModalAjudaApp()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
       </div>
+      
       <div class="space-y-4 text-xs text-slate-600">
         <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl">
           <p class="font-bold text-vibraDark text-sm mb-1">🤖 No Android (Google Chrome / Edge):</p>
@@ -637,6 +638,7 @@
             <li>Confirme. O ícone do SSMA BAVGRU aparecerá como aplicativo instalado no celular!</li>
           </ol>
         </div>
+
         <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl">
           <p class="font-bold text-blue-900 text-sm mb-1">🍎 No iPhone / iPad (Safari):</p>
           <ol class="list-decimal pl-4 space-y-1">
@@ -645,8 +647,10 @@
             <li>Toque em <strong>"Adicionar"</strong> no canto superior direito. Pronto!</li>
           </ol>
         </div>
+
         <p class="text-[11px] text-slate-400 text-center">Uma vez adicionado, ele abre em tela cheia sem a barra de endereço do navegador, funcionando como um app de verdade!</p>
       </div>
+
       <div class="mt-5">
         <button onclick="fecharModalAjudaApp()" class="w-full bg-vibraGreen text-white py-2.5 rounded-xl font-bold text-xs shadow hover:bg-vibraDark">Entendido!</button>
       </div>
@@ -666,6 +670,7 @@
         </div>
         <button onclick="fecharModalImportarEpis()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
       </div>
+
       <div class="space-y-4 text-xs">
         <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-slate-700 leading-relaxed">
           <p class="font-bold text-vibraDark mb-1">Como importar em poucos segundos:</p>
@@ -674,6 +679,7 @@
             <li><strong>Copiar e Colar:</strong> No Excel, selecione as colunas com <strong>Nome do EPI | CA | Quantidade | Mínimo</strong>, copie (`Ctrl + C`) e cole abaixo!</li>
           </ol>
         </div>
+
         <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between bg-slate-50 p-2.5 rounded-lg border">
           <span class="font-bold text-slate-700 font-sans">Modo de Importação no Estoque:</span>
           <div class="flex flex-wrap gap-4">
@@ -691,6 +697,7 @@
             </label>
           </div>
         </div>
+
         <div>
           <div class="flex justify-between items-center mb-1">
             <label class="font-bold text-slate-700 uppercase text-[11px]">Selecione a planilha ou cole as linhas copiadas:</label>
@@ -704,6 +711,7 @@ Luva Nitrílica Verde G	40189	30	5
 Casquete	38352	100	10
 Óculos de Segurança Cinza	18821	40	5" class="w-full border rounded-xl p-3 font-mono text-xs bg-slate-50 border-slate-300 focus:outline-none focus:ring-2 focus:ring-vibraGreen"></textarea>
         </div>
+
         <div id="preview-importar-epi" class="hidden bg-slate-100 p-3 rounded-lg border text-slate-700">
           <div class="flex justify-between items-center mb-1">
             <p class="font-bold text-emerald-800" id="preview-epi-count">0 EPIs reconhecidos</p>
@@ -711,6 +719,7 @@ Casquete	38352	100	10
           </div>
           <div class="max-h-32 overflow-y-auto mt-1 divide-y divide-slate-200 text-[11px]" id="preview-epi-lista"></div>
         </div>
+
         <div class="flex justify-between items-center pt-2 border-t gap-2">
           <button type="button" onclick="fecharModalImportarEpis()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-xl font-bold">
             Cancelar
@@ -736,6 +745,7 @@ Casquete	38352	100	10
         </div>
         <button onclick="fecharModalImportarColaboradores()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
       </div>
+
       <div class="space-y-4 text-xs">
         <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-slate-700 leading-relaxed">
           <p class="font-bold text-vibraDark mb-1">Como fazer em 3 passos:</p>
@@ -745,6 +755,7 @@ Casquete	38352	100	10
             <li>Aperte <strong>Ctrl + C</strong> no Excel e dê <strong>Ctrl + V</strong> no campo abaixo!</li>
           </ol>
         </div>
+
         <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between bg-slate-50 p-2.5 rounded-lg border">
           <span class="font-bold text-slate-700">Modo de Gravação:</span>
           <div class="flex gap-4">
@@ -758,6 +769,7 @@ Casquete	38352	100	10
             </label>
           </div>
         </div>
+
         <div>
           <div class="flex justify-between items-center mb-1">
             <label class="font-bold text-slate-700 uppercase text-[11px]">Cole as linhas copiadas do Excel:</label>
@@ -771,6 +783,7 @@ Casquete	38352	100	10
 129028	ADILSON MARQUES ESCANHOLATO	OPERADOR DE ABASTECIMENTO SR	adilsonescanholato@vibraenergia.com.br
 134770	ADRIANO APARECIDO GONZAGA	OPERADOR DE ABASTECIMENTO SR	adrianocosta@vibraenergia.com.br" class="w-full border rounded-xl p-3 font-mono text-xs bg-slate-50 border-slate-300 focus:outline-none focus:ring-2 focus:ring-vibraGreen"></textarea>
         </div>
+
         <div id="preview-importar-colab" class="hidden bg-slate-100 p-3 rounded-lg border text-slate-700">
           <div class="flex justify-between items-center mb-1">
             <p class="font-bold text-emerald-800" id="preview-colab-count">0 colaboradores reconhecidos</p>
@@ -778,6 +791,7 @@ Casquete	38352	100	10
           </div>
           <div class="max-h-32 overflow-y-auto mt-1 divide-y divide-slate-200 text-[11px]" id="preview-colab-lista"></div>
         </div>
+
         <div class="flex justify-between items-center pt-2 border-t gap-2">
           <button type="button" onclick="fecharModalImportarColaboradores()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-xl font-bold">
             Cancelar
@@ -1107,6 +1121,7 @@ Casquete	38352	100	10
       return JSON.parse(JSON.stringify(obj, (k, v) => (v === undefined || v === null) ? "" : v));
     }
 
+    // Extrai timestamp numérico do ID (Ex: NR06-1710000000 -> 1710000000) para ordenar sempre do mais recente para o mais antigo
     function extrairTimestampId(id) {
       if (!id) return 0;
       const partes = String(id).split('-');
@@ -1114,82 +1129,51 @@ Casquete	38352	100	10
       return isNaN(num) ? 0 : num;
     }
 
-    // Sincronização em Lote único para acabar com o delay
     function salvarBancoLocal() {
-      // 1. Atualização local instantânea (Zero Delay de clique para o operador)
+      // 1. Salva localmente como backup e suporte offline
       try {
         localStorage.setItem('bavgru_colaboradores', JSON.stringify(colaboradores));
         localStorage.setItem('bavgru_estoque', JSON.stringify(estoque));
         localStorage.setItem('bavgru_auditoria', JSON.stringify(auditoria));
         localStorage.setItem('bavgru_log_exclusoes', JSON.stringify(logExclusoes));
         localStorage.setItem('bavgru_senha_admin', senhaAdmin);
-      } catch (e) {
-        console.warn("Aviso de armazenamento local:", e);
+      } catch (err) {
+        console.warn('Alerta de armazenamento local:', err);
       }
-      atualizarTudo();
 
-      // 2. Upload unificado de Alta Velocidade para o Firebase
+      // 2. Transmite em tempo real para todos os outros computadores e celulares (sem perder dados)
       if (dbNuvem) {
-        const pacoteAtualizacao = {};
-        
-        // Empacota apenas as novas fichas locais para subir de uma só vez
-        auditoria.slice(0, 15).forEach(reg => {
+        // Envia cada registro de auditoria individualmente por ID para nunca sobrescrever nem estourar limite de pacote
+        auditoria.forEach(reg => {
           if (reg && reg.id) {
-            pacoteAtualizacao['bavgru/auditoria_itens/' + reg.id] = limparObjetoParaFirebase(reg);
+            dbNuvem.ref('bavgru/auditoria_itens/' + reg.id).set(limparObjetoParaFirebase(reg)).catch(e => console.warn('Sync item auditoria:', e));
           }
         });
-        
-        pacoteAtualizacao['bavgru/auditoria'] = limparObjetoParaFirebase(auditoria);
-        pacoteAtualizacao['bavgru/estoque'] = limparObjetoParaFirebase(estoque);
-        pacoteAtualizacao['bavgru/colaboradores'] = limparObjetoParaFirebase(colaboradores);
-        pacoteAtualizacao['bavgru/logExclusoes'] = limparObjetoParaFirebase(logExclusoes);
-
-        dbNuvem.ref().update(pacoteAtualizacao).catch(err => {
-          console.warn("Falha no upload em lote do Firebase: ", err);
-        });
+        dbNuvem.ref('bavgru/auditoria').set(limparObjetoParaFirebase(auditoria)).catch(e => console.warn('Sync auditoria:', e));
+        dbNuvem.ref('bavgru/estoque').set(limparObjetoParaFirebase(estoque)).catch(e => console.warn('Sync estoque:', e));
+        dbNuvem.ref('bavgru/colaboradores').set(limparObjetoParaFirebase(colaboradores)).catch(e => console.warn('Sync colaboradores:', e));
+        dbNuvem.ref('bavgru/logExclusoes').set(limparObjetoParaFirebase(logExclusoes)).catch(e => console.warn('Sync log:', e));
       }
+
+      atualizarTudo();
     }
 
-    async function testarEForcarSincronizacao() {
-      if (!dbNuvem) {
-        return alert("❌ O Firebase não inicializou. Verifique sua conexão com a internet.");
-      }
-      
-      const badgeTexto = document.getElementById('texto-status-nuvem');
-      if (badgeTexto) badgeTexto.textContent = "Testando...";
-
-      try {
-        await dbNuvem.ref('bavgru/teste_conexao').set({
-          dataHora: new Date().toLocaleString('pt-BR'),
-          dispositivo: navigator.userAgent
-        });
-
-        const snap = await dbNuvem.ref('bavgru/teste_conexao').once('value');
-        if (snap.exists()) {
-          alert("✅ SUCESSO! Conexão de altíssima velocidade confirmada.\nSincronizando todos os dados pendentes...");
-          salvarBancoLocal();
-          if (badgeTexto) badgeTexto.textContent = "Nuvem Conectada";
-        }
-      } catch (err) {
-        console.error(err);
-        if (badgeTexto) badgeTexto.textContent = "Erro de Nuvem";
-        
-        if (err.message && err.message.includes("PERMISSION_DENIED")) {
-          alert("❌ ERRO: PERMISSÃO NEGADA NO FIREBASE!\n\nAs Regras de Segurança do Firebase estão bloqueando a gravação.\n\nAltere as regras do database para .read: true e .write: true.");
-        } else {
-          alert("⚠️ Falha de rede:\n" + err.message);
-        }
-      }
+    function forcarSincronizacaoManual() {
+      salvarBancoLocal();
+      alert('🔄 Sincronização com a nuvem enviada! Verifique se o celular e o computador estão com internet ativa.');
     }
 
     function mesclarAuditoriaLocalENuvem(listaNuvem) {
       const mapa = new Map();
+      // 1º: Carrega o que já está no aparelho (ex: entregas feitas no celular offline/4G)
       auditoria.forEach(r => {
         if (r && r.id) mapa.set(r.id, r);
       });
+      // 2º: Junta com o que veio da nuvem (computador / outros celulares)
       listaNuvem.forEach(r => {
         if (r && r.id) mapa.set(r.id, r);
       });
+      // 3º: Remove registros que constam no log de exclusões
       const idsExcluidos = new Set(logExclusoes.map(l => l.idOriginal));
       const unificada = Array.from(mapa.values()).filter(r => !idsExcluidos.has(r.id));
       unificada.sort((a, b) => extrairTimestampId(b.id) - extrairTimestampId(a.id));
@@ -1202,28 +1186,53 @@ Casquete	38352	100	10
       const textoBadge = document.getElementById('texto-status-nuvem');
       const bolinhaBadge = document.getElementById('bolinha-status-nuvem');
 
+      // Monitor de conexão com a nuvem
       dbNuvem.ref('.info/connected').on('value', (snap) => {
         if (snap.val() === true) {
           if (textoBadge) textoBadge.textContent = 'Nuvem Conectada';
           if (bolinhaBadge) bolinhaBadge.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
-          salvarBancoLocal();
+          // Assim que o celular conecta, empurra qualquer entrega feita nele para a nuvem!
+          auditoria.forEach(reg => {
+            if (reg && reg.id) {
+              dbNuvem.ref('bavgru/auditoria_itens/' + reg.id).set(limparObjetoParaFirebase(reg));
+            }
+          });
         } else {
           if (textoBadge) textoBadge.textContent = 'Modo Offline (Local)';
           if (bolinhaBadge) bolinhaBadge.className = 'w-1.5 h-1.5 rounded-full bg-amber-400';
         }
       });
 
-      // Escuta inteligente e unificada (computador atualiza em tempo real assim que o celular grava)
-      dbNuvem.ref('bavgru/auditoria').on('value', (snapshot) => {
+      // 1A. Escuta itens individuais de Auditoria (Garante sincronização 100% confiável celular <-> PC)
+      dbNuvem.ref('bavgru/auditoria_itens').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
-          const listaNuvem = Array.isArray(val) ? val : Object.values(val);
+          const listaNuvem = Object.values(val);
           auditoria = mesclarAuditoriaLocalENuvem(listaNuvem);
           localStorage.setItem('bavgru_auditoria', JSON.stringify(auditoria));
           atualizarTudo();
         }
       });
 
+      // 1B. Escuta nó antigo 'bavgru/auditoria' e mescla sem apagar entregas locais do celular
+      dbNuvem.ref('bavgru/auditoria').on('value', (snapshot) => {
+        const val = snapshot.val();
+        if (val) {
+          const listaNuvem = Array.isArray(val) ? val : Object.values(val);
+          const qtdAntes = auditoria.length;
+          auditoria = mesclarAuditoriaLocalENuvem(listaNuvem);
+          localStorage.setItem('bavgru_auditoria', JSON.stringify(auditoria));
+          atualizarTudo();
+          // Se o celular tinha fichas que ainda não estavam na lista da nuvem, reenvia a lista unificada
+          if (auditoria.length > listaNuvem.length || auditoria.length !== qtdAntes) {
+            dbNuvem.ref('bavgru/auditoria').set(limparObjetoParaFirebase(auditoria));
+          }
+        } else if (auditoria.length > 0) {
+          dbNuvem.ref('bavgru/auditoria').set(limparObjetoParaFirebase(auditoria));
+        }
+      });
+
+      // 2. Escuta Estoque em Tempo Real
       dbNuvem.ref('bavgru/estoque').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -1233,9 +1242,12 @@ Casquete	38352	100	10
             localStorage.setItem('bavgru_estoque', JSON.stringify(estoque));
             atualizarTudo();
           }
+        } else if (primeiraCargaNuvem) {
+          dbNuvem.ref('bavgru/estoque').set(limparObjetoParaFirebase(INITIAL_ESTOQUE));
         }
       });
 
+      // 3. Escuta Colaboradores em Tempo Real
       dbNuvem.ref('bavgru/colaboradores').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -1245,9 +1257,12 @@ Casquete	38352	100	10
             localStorage.setItem('bavgru_colaboradores', JSON.stringify(colaboradores));
             atualizarTudo();
           }
+        } else if (primeiraCargaNuvem) {
+          dbNuvem.ref('bavgru/colaboradores').set(limparObjetoParaFirebase(INITIAL_COLABORADORES));
         }
       });
 
+      // 4. Escuta Log de Exclusões
       dbNuvem.ref('bavgru/logExclusoes').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -1297,7 +1312,6 @@ Casquete	38352	100	10
         adminAutenticado = true;
         document.getElementById('admin-input-senha').value = '';
         renderAdminState();
-        atualizarTudo();
       } else {
         alert('❌ Senha de Administrador incorreta.');
       }
@@ -1306,7 +1320,6 @@ Casquete	38352	100	10
     function sairAdmin() {
       adminAutenticado = false;
       renderAdminState();
-      atualizarTudo();
     }
 
     function renderAdminState() {
@@ -1348,12 +1361,12 @@ Casquete	38352	100	10
       alert(`Colaborador ${nome} cadastrado com sucesso!`);
     }
 
-    // ALTERNAR SE O COLABORADOR UTILIZA CINTO TRAVA-QUEDAS (RESTRITO AO ADMINISTRADOR)
+         // ALTERNAR SE O COLABORADOR UTILIZA CINTO TRAVA-QUEDAS (RESTRITO AO ADMINISTRADOR)
     function alternarUsoCinto(colabId) {
       if (!adminAutenticado) {
-        const senha = prompt("🔒 Ação restrita ao Administrador!\nDigite a senha de Administrador para dispensar o colaborador do uso do cinto:");
+        const senha = prompt("🔒 Ação restrita ao Administrador!\nDigite a senha de Administrador para alterar a obrigatoriedade do Cinto (SPIQ):");
         if (senha !== senhaAdmin) {
-          if (senha !== null) alert("❌ Senha incorreta.");
+          if (senha !== null) alert("❌ Senha incorreta. Apenas o Administrador pode dispensar colaboradores da inspeção do cinto.");
           return;
         }
       }
@@ -1362,6 +1375,7 @@ Casquete	38352	100	10
       colab.usaCinto = colab.usaCinto === false ? true : false;
       salvarBancoLocal();
     }
+
 
     // FUNÇÕES DE IMPORTAÇÃO EM LOTE DE COLABORADORES
     function abrirModalImportarColaboradores() {
@@ -1541,7 +1555,7 @@ Casquete	38352	100	10
       `).join('');
     }
 
-    // CÂMERA PROPORCIONAL COM COMPRESSÃO AUTOMÁTICA (MÁX 480PX)
+    // CÂMERA COM SUPORTE A TROCA FRONTAL / TRASEIRA E COMPRESSÃO PARA NUVEM
     async function iniciarCamera(tipo) {
       try {
         if (streamsCamera[tipo]) {
@@ -1564,7 +1578,7 @@ Casquete	38352	100	10
         preview.classList.add('hidden');
         if (placeholder) placeholder.classList.add('hidden');
       } catch (e) {
-        alert('Câmera indisponível ou permissão não concedida no navegador.\nCertifique-se de acessar via HTTPS.');
+        alert('Câmera indisponível ou permissão não concedida no navegador.\nCertifique-se de acessar via HTTPS ou rede segura.');
       }
     }
 
@@ -1578,6 +1592,7 @@ Casquete	38352	100	10
       const preview = document.getElementById('foto-' + tipo + '-preview');
       if (!streamsCamera[tipo]) return alert('Ligue primeiro a câmera.');
       
+      // Redimensiona proporcionalmente para máx 480px para envio rápido no 4G e Firebase
       const origW = video.videoWidth || 320;
       const origH = video.videoHeight || 240;
       const maxDim = 480;
@@ -1598,7 +1613,7 @@ Casquete	38352	100	10
       streamsCamera[tipo] = null;
     }
 
-    // ASSINATURA DIGITAL RESPONSIVA
+    // ASSINATURA DIGITAL TOUCH TOTALMENTE RESPONSIVA
     function redimensionarCanvas() {
       ['canvas-disp', 'canvas-insp'].forEach(id => {
         const canvas = document.getElementById(id);
@@ -1673,7 +1688,7 @@ Casquete	38352	100	10
       canvas.dataset.assinado = "false";
     }
 
-    // MULTIPLOS EPIS NA DISPENSAÇÃO
+    // FUNÇÕES DE MÚLTIPLOS EPIS NA DISPENSAÇÃO
     function adicionarEpiNaLista() {
       const epiId = document.getElementById('disp-epi').value;
       const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
@@ -1740,7 +1755,7 @@ Casquete	38352	100	10
       `).join('');
     }
 
-    // SALVAR DISPENSAÇÃO
+    // AÇÕES DE GRAVAÇÃO
     function salvarDispensacao() {
       const colabId = document.getElementById('disp-colaborador').value;
       const motivo = document.getElementById('disp-motivo').value;
@@ -1768,7 +1783,7 @@ Casquete	38352	100	10
         });
       }
 
-      // Valida saldo antes do envio
+      // Valida saldo de todos os itens antes de dar baixa
       for (const item of itensParaEntregar) {
         const est = estoque.find(e => e.id === item.epiId);
         if (!est || est.qtd < item.quantidade) {
@@ -1776,7 +1791,7 @@ Casquete	38352	100	10
         }
       }
 
-      // Deduz estoque localmente (Velocidade)
+      // Deduz do estoque
       itensParaEntregar.forEach(item => {
         const est = estoque.find(e => e.id === item.epiId);
         if (est) est.qtd -= item.quantidade;
@@ -1892,7 +1907,7 @@ Casquete	38352	100	10
       }
     }
 
-    // EXCLUSÃO COM AUDITORIA E RESTORNO
+    // EXCLUSÃO COM AUDITORIA
     function excluirRegistro(id) {
       const senha = prompt("🔒 Digite a senha do Administrador para excluir o registro:");
       if (senha !== senhaAdmin) {
@@ -1949,11 +1964,9 @@ Casquete	38352	100	10
 
       logExclusoes.unshift(logEntry);
       auditoria.splice(index, 1);
-      
       if (dbNuvem && reg.id) {
         dbNuvem.ref('bavgru/auditoria_itens/' + reg.id).remove().catch(e => console.warn('Remove item:', e));
       }
-      
       salvarBancoLocal();
       alert(`✅ Registro excluído e estornado no estoque com protocolo ${logEntry.idLog}.`);
     }
@@ -1985,7 +1998,7 @@ Casquete	38352	100	10
       link.click();
     }
 
-    // PENDÊNCIAS
+    // PENDÊNCIAS DE INSPEÇÃO
     function obterMesAnoSelecionado() {
       const input = document.getElementById('pendencias-mes-ano');
       if (input && input.value) return input.value;
@@ -2027,20 +2040,25 @@ Casquete	38352	100	10
 
       tbody.innerHTML = pendentesFiltrados.length ? pendentesFiltrados.map(c => `
         <tr class="border-b hover:bg-amber-50/50">
-          <td class="p-2.5 font-mono font-bold text-xs text-slate-700">${c.matricula}</td>
-          <td class="p-2.5 font-semibold text-slate-800">${c.nome}</td>
-          <td class="p-2.5 text-xs text-slate-600">${c.funcao}</td>
+          <td class="p-2.5 text-right flex justify-end gap-1.5">
+            ${adminAutenticado ? `
+              <button onclick="alternarUsoCinto('${c.id}')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold" title="Exclusivo Admin: Marcar como dispensado de usar cinto">
+                🚫 Não Utiliza
+              </button>
+            ` : ''}
+            <button onclick="abrirInspecaoDireta('${c.id}')" class="bg-vibraGreen hover:bg-vibraDark text-white px-2.5 py-1.5 rounded-lg text-xs font-bold shadow">
+              Inspecionar ↗
+            </button>
+          </td>
           <td class="p-2.5 text-center">
             <span class="bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 rounded-full text-[11px] font-bold">
               ⚠️ Pendente (${mesAno})
             </span>
           </td>
           <td class="p-2.5 text-right flex justify-end gap-1.5">
-            ${adminAutenticado ? `
-              <button onclick="alternarUsoCinto('${c.id}')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold" title="Exclusivo Admin: Dispensar de usar cinto">
-                🚫 Não Utiliza
-              </button>
-            ` : ''}
+            <button onclick="alternarUsoCinto('${c.id}')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold" title="Marcar como dispensado de usar cinto">
+              🚫 Não Utiliza
+            </button>
             <button onclick="abrirInspecaoDireta('${c.id}')" class="bg-vibraGreen hover:bg-vibraDark text-white px-2.5 py-1.5 rounded-lg text-xs font-bold shadow">
               Inspecionar ↗
             </button>
@@ -2083,7 +2101,7 @@ Casquete	38352	100	10
       link.click();
     }
 
-    // COMPROVANTE DETALHADO
+    // COMPROVANTE MODAL
     function abrirComprovante(id) {
       const reg = auditoria.find(r => r.id === id);
       if (!reg) return;
@@ -2171,7 +2189,7 @@ Casquete	38352	100	10
       document.getElementById('modal-print').classList.add('flex');
     }
 
-    // HISTÓRICO COMPLETO EM PDF ÚNICO
+    // GERAR PDF ÚNICO DO HISTÓRICO DE ENTREGA POR FUNCIONÁRIO (ADMIN)
     function gerarPdfHistoricoFuncionario() {
       const colabId = document.getElementById('admin-historico-colab').value;
       const colab = colaboradores.find(c => c.id === colabId);
@@ -2188,7 +2206,7 @@ Casquete	38352	100	10
       });
 
       if (entregas.length === 0) {
-        return alert(`Nenhuma entrega de EPI assinada registrada para ${colab.nome} até o momento.`);
+        return alert(`Nenhuma entrega de EPI registrada para ${colab.nome} até o momento.`);
       }
 
       const linhasHtml = [];
@@ -2232,7 +2250,7 @@ Casquete	38352	100	10
           </div>
           <div class="text-right text-[10px]">
             <p><strong>Emissão:</strong> ${new Date().toLocaleString('pt-BR')}</p>
-            <p><strong>Total de Fichas Assinadas:</strong> ${entregas.length}</p>
+            <p><strong>Total de Fichas Assinadas:</strong> ${entregas.length} (${linhasHtml.length} itens)</p>
           </div>
         </div>
         <div class="grid grid-cols-3 gap-2 text-[11px] bg-slate-50 p-2.5 border rounded mt-2">
@@ -2275,7 +2293,7 @@ Casquete	38352	100	10
       document.getElementById('modal-print').classList.remove('flex');
     }
 
-    // RENDERIZAÇÕES DE BANCO DE DADOS
+    // RENDERIZAÇÕES
     function renderColaboradores() {
       const termo = (document.getElementById('busca-colab').value || '').toLowerCase();
       const filtrados = colaboradores.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
@@ -2287,8 +2305,8 @@ Casquete	38352	100	10
             <td class="p-2.5 font-medium">${c.nome}</td>
             <td class="p-2.5 text-xs text-slate-600">${c.funcao}</td>
             <td class="p-2.5 text-center">
-              <button onclick="alternarUsoCinto('${c.id}')" class="px-2.5 py-1 rounded-full text-[11px] font-bold transition-all ${usaCinto ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300' : 'bg-slate-200 text-slate-600 hover:bg-slate-300 border border-slate-300'}" title="Clique para alternar obrigatoriedade">
-                ${usaCinto ? '✅ Utiliza Cinto' : '🚫 Não Utiliza (Isento)'} ${adminAutenticado ? '⚙️' : '🔒'}
+              <button onclick="alternarUsoCinto('${c.id}')" class="px-2.5 py-1 rounded-full text-[11px] font-bold transition-all ${usaCinto ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300' : 'bg-slate-200 text-slate-600 hover:bg-slate-300 border border-slate-300'}" title="Clique para alternar se utiliza ou não cinto trava-quedas">
+                ${usaCinto ? '✅ Utiliza Cinto' : '🚫 Não Utiliza (Isento)'}
               </button>
             </td>
             <td class="p-2.5 text-right">
@@ -2323,7 +2341,7 @@ Casquete	38352	100	10
       `).join('') : `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nenhum registro encontrado.</td></tr>`;
     }
 
-    // NOVO EPI
+    // CADASTRO DE EPI INDIVIDUAL OU EM LOTE (EXCEL)
     function cadastrarNovoEpi() {
       const nome = document.getElementById('novo-epi-nome').value.trim();
       const ca = document.getElementById('novo-epi-ca').value.trim() || 'S/C.A.';
@@ -2364,18 +2382,18 @@ Casquete	38352	100	10
       const linhas = texto.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
       const resultado = [];
 
-      for (const inline of linhas) {
-        const lower = inline.toLowerCase();
+      for (const linha of linhas) {
+        const lower = linha.toLowerCase();
         if (lower.startsWith('nome') || lower.startsWith('epi') || lower.startsWith('equipamento') || lower.startsWith('saldo')) {
           continue;
         }
 
         let separador = '\t';
-        if (inline.includes('\t')) separador = '\t';
-        else if (inline.includes(';')) separador = ';';
-        else if (inline.includes(',')) separador = ',';
+        if (linha.includes('\t')) separador = '\t';
+        else if (linha.includes(';')) separador = ';';
+        else if (linha.includes(',')) separador = ',';
 
-        const partes = inline.split(separador).map(p => p.trim().replace(/^["']|["']$/g, '')).filter(p => p.length > 0);
+        const partes = linha.split(separador).map(p => p.trim().replace(/^["']|["']$/g, '')).filter(p => p.length > 0);
         if (partes.length < 1) continue;
 
         const nome = partes[0];
@@ -2496,7 +2514,6 @@ Casquete	38352	100	10
       salvarBancoLocal();
     }
 
-    // ATUALIZAÇÃO DA INTERFACE DE DADOS
     function atualizarTudo() {
       document.getElementById('kpi-colaboradores').textContent = colaboradores.length;
       document.getElementById('kpi-dispensacoes').textContent = auditoria.filter(a => a.tipo.includes('NR-06')).length;

@@ -1,23 +1,48 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
-    <linearGradient id="vibraGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#008542"/>
-      <stop offset="100%" stop-color="#00582C"/>
+    <!-- Gradiente de fundo com as cores corporativas da Vibra Energia -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00582C" />
+      <stop offset="100%" stop-color="#008542" />
     </linearGradient>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.15"/>
-    </filter>
   </defs>
 
-  <!-- Fundo Corporativo Arredondado -->
-  <rect width="512" height="512" rx="110" fill="#FFFFFF" filter="url(#shadow)"/>
-  <rect x="8" y="8" width="496" height="496" rx="102" fill="none" stroke="#E2E8F0" stroke-width="4"/>
+  <!-- Fundo do ícone (quadrado arredondado padrão para Apps de Celular) -->
+  <rect width="512" height="512" rx="112" fill="url(#bg-grad)" />
 
-  <!-- Símbolo Oficial Vibra Energia (Pulso / Vibração Corporativa) -->
-  <g fill="none" stroke="#00582C" stroke-width="48" stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="6">
-    <!-- Haste Esquerda: Vertical descendo e diagonal subindo com ângulo característico -->
-    <path d="M 172 165 L 172 360 L 292 90" />
-    <!-- Haste Direita: Diagonal subindo e vertical descendo -->
-    <path d="M 220 422 L 340 152 L 340 347" />
-  </g>
+  <!-- Escudo de Proteção de Fundo (Segurança/SSMA) -->
+  <path d="M256,70 C310,70 390,95 405,115 C410,195 385,340 256,430 C127,340 102,195 107,115 C122,95 202,70 256,70 Z" 
+        fill="none" 
+        stroke="#FFC72C" 
+        stroke-width="14" 
+        stroke-linejoin="round" />
+
+  <!-- Símbolo do Capacete de Segurança do Trabalho (SMA) -->
+  <!-- Casco Principal -->
+  <path d="M160,250 C160,150 352,150 352,250 Z" fill="#FFC72C" />
+  
+  <!-- Aba do Capacete -->
+  <path d="M130,245 L382,245 C395,245 395,260 382,260 L130,260 C117,260 117,245 130,245 Z" fill="#E0AF26" />
+  
+  <!-- Nervura de reforço do topo -->
+  <path d="M241,155 L271,155 L271,230 L241,230 Z" fill="#FFF2CC" opacity="0.4" />
+  <path d="M256,150 C240,150 240,180 240,245 L272,245 C272,180 272,150 256,150 Z" fill="#F0C020" />
+
+  <!-- Texto SSMA na base do ícone -->
+  <text x="256" y="365" 
+        fill="#FFFFFF" 
+        font-family="system-ui, -apple-system, sans-serif" 
+        font-size="62" 
+        font-weight="900" 
+        text-anchor="middle" 
+        letter-spacing="4">SSMA</text>
+        
+  <!-- Tag BAVGRU secundária -->
+  <text x="256" y="405" 
+        fill="#FFC72C" 
+        font-family="system-ui, -apple-system, sans-serif" 
+        font-size="30" 
+        font-weight="900" 
+        text-anchor="middle" 
+        letter-spacing="2">BAVGRU</text>
 </svg>

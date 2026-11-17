@@ -55,9 +55,12 @@
       .no-print { display: none !important; }
     }
     canvas { touch-action: none; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    header { padding-top: max(1rem, env(safe-area-inset-top)); }
+    /* Scrollbar moderna e sutil */
+    ::-webkit-scrollbar { height: 6px; width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    header { padding-top: max(0.5rem, env(safe-area-inset-top)); }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col select-none md:select-auto">
@@ -85,39 +88,59 @@
 
   <!-- CABEÇALHO PADRÃO VIBRA -->
   <header class="bg-vibraGreen text-white shadow-lg border-b-4 border-vibraYellow no-print">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
-      <div class="flex items-center justify-between w-full md:w-auto">
-        <div class="flex items-center gap-3">
-          <div class="text-white font-extrabold px-2 py-1 text-2xl tracking-widest flex items-center gap-2">
-            <span>VIBRA</span>
-            <span class="text-xs bg-vibraYellow text-vibraDark px-2 py-0.5 rounded font-black tracking-normal uppercase">App</span>
-          </div>
-          <div class="border-l border-emerald-400 pl-3">
-            <div class="flex items-center gap-2">
-              <h1 class="text-base md:text-xl font-bold tracking-tight leading-tight">SSMA BAVGRU</h1>
-              <span id="badge-status-nuvem" class="text-[10px] bg-emerald-900/90 text-emerald-200 border border-emerald-400/80 px-2 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-sm">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span id="texto-status-nuvem">Nuvem Conectada</span>
-              </span>
-            </div>
-            <p class="text-[11px] text-emerald-100">Gestão EPIs & Inspeção Trava-Quedas</p>
-          </div>
+    <!-- Linha 1: Identificação, Unidade e Conexão Nuvem -->
+    <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 border-b border-emerald-600/50">
+      <div class="flex items-center gap-3">
+        <div class="text-white font-extrabold px-2 py-0.5 text-2xl tracking-widest flex items-center gap-1.5 shrink-0">
+          <span>VIBRA</span>
+          <span class="text-[11px] bg-vibraYellow text-vibraDark px-1.5 py-0.5 rounded font-black tracking-normal uppercase shadow-sm">App</span>
         </div>
-        <button onclick="abrirModalAjudaApp()" class="md:hidden bg-emerald-800 text-vibraYellow border border-emerald-600 px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
-          📲 App
-        </button>
+        <div class="border-l-2 border-emerald-400/60 pl-3">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="text-base md:text-lg font-extrabold tracking-tight leading-tight">SSMA BAVGRU</h1>
+            <span id="badge-status-nuvem" class="text-[10px] bg-emerald-900/90 text-emerald-200 border border-emerald-400/80 px-2 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-sm">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="texto-status-nuvem">Nuvem Conectada</span>
+            </span>
+          </div>
+          <p class="text-[10px] sm:text-[11px] text-emerald-100 hidden sm:block">Gestão Integrada de EPIs (NR-06) & Inspeção Trava-Quedas (Anexo C)</p>
+        </div>
       </div>
 
-      <!-- NAVEGAÇÃO DE ABAS -->
-      <nav class="w-full md:w-auto overflow-x-auto no-scrollbar flex items-center gap-2 pb-1 md:pb-0">
-        <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="tab-btn whitespace-nowrap bg-white text-vibraDark font-semibold px-3.5 py-2 rounded-lg text-xs md:text-sm shadow transition-all">📊 Painel</button>
-        <button onclick="switchTab('dispensacao')" id="tab-btn-dispensacao" class="tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all">🦺 Dispensar EPI</button>
-        <button onclick="switchTab('inspecao')" id="tab-btn-inspecao" class="tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all">🧗 Inspeção Cinto</button>
-        <button onclick="switchTab('pendencias')" id="tab-btn-pendencias" class="tab-btn whitespace-nowrap bg-amber-600 text-white hover:bg-amber-700 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold">⚠️ Pendências</button>
-        <button onclick="switchTab('nao-cinto')" id="tab-btn-nao-cinto" class="tab-btn whitespace-nowrap bg-purple-700 text-white hover:bg-purple-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold">🚫 Não Utiliza Cinto</button>
-        <button onclick="switchTab('estoque')" id="tab-btn-estoque" class="tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all">📦 Estoque</button>
-        <button onclick="switchTab('colaboradores')" id="tab-btn-colaboradores" class="tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all">👥 Efetivo</button>
-        <button onclick="switchTab('admin')" id="tab-btn-admin" class="tab-btn whitespace-nowrap bg-slate-800 text-white hover:bg-slate-900 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold">⚙️ Admin</button>
+      <div class="flex items-center gap-2">
+        <button onclick="abrirModalAjudaApp()" class="bg-emerald-800 hover:bg-emerald-700 text-vibraYellow border border-emerald-600 px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all">
+          📲 <span>Instalar App</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Linha 2: Barra de Comandos Completa (100% visível em qualquer tela) -->
+    <div class="bg-vibraDark/95 px-3 py-2 border-t border-emerald-700/40">
+      <nav class="max-w-7xl mx-auto flex flex-wrap items-center justify-start sm:justify-center gap-1.5 sm:gap-2">
+        <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="tab-btn bg-white text-vibraDark font-extrabold px-3 py-1.5 rounded-lg text-xs sm:text-sm shadow-md ring-2 ring-vibraYellow transition-all flex items-center gap-1.5">
+          <span>📊</span> <span>Painel</span>
+        </button>
+        <button onclick="switchTab('dispensacao')" id="tab-btn-dispensacao" class="tab-btn bg-emerald-900/80 text-emerald-100 hover:bg-emerald-800 hover:text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all font-semibold flex items-center gap-1.5 shadow-sm">
+          <span>🦺</span> <span>Dispensar EPI</span>
+        </button>
+        <button onclick="switchTab('inspecao')" id="tab-btn-inspecao" class="tab-btn bg-emerald-900/80 text-emerald-100 hover:bg-emerald-800 hover:text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all font-semibold flex items-center gap-1.5 shadow-sm">
+          <span>🧗</span> <span>Inspeção Cinto</span>
+        </button>
+        <button onclick="switchTab('pendencias')" id="tab-btn-pendencias" class="tab-btn bg-amber-600 text-white hover:bg-amber-700 px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all font-bold flex items-center gap-1.5 shadow-sm">
+          <span>⚠️</span> <span>Pendências</span>
+        </button>
+        <button onclick="switchTab('nao-cinto')" id="tab-btn-nao-cinto" class="tab-btn bg-purple-700 text-white hover:bg-purple-800 px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all font-bold flex items-center gap-1.5 shadow-sm">
+          <span>🚫</span> <span>Não Utiliza Cinto</span>
+        </button>
+        <button onclick="switchTab('estoque')" id="tab-btn-estoque" class="tab-btn bg-emerald-900/80 text-emerald-100 hover:bg-emerald-800 hover:text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all font-semibold flex items-center gap-1.5 shadow-sm">
+          <span>📦</span> <span>Estoque</span>
+        </button>
+        <button onclick="switchTab('colaboradores')" id="tab-btn-colaboradores" class="tab-btn bg-emerald-900/80 text-emerald-100 hover:bg-emerald-800 hover:text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all font-semibold flex items-center gap-1.5 shadow-sm">
+          <span>👥</span> <span>Efetivo</span>
+        </button>
+        <button onclick="switchTab('admin')" id="tab-btn-admin" class="tab-btn bg-slate-800 text-white hover:bg-slate-900 px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all font-bold flex items-center gap-1.5 shadow-sm">
+          <span>⚙️</span> <span>Admin</span>
+        </button>
       </nav>
     </div>
   </header>
@@ -1153,6 +1176,7 @@ Casquete	38352	100	10
     // ATUALIZAÇÃO AUTOMÁTICA DA BASE LOCAL
     const VERSAO_BASE = 'bavgru_versao_116colab_v6_multi_epis_naocinto';
     if (localStorage.getItem('bavgru_versao_instalada') !== VERSAO_BASE) {
+      // Migra ou atualiza os colaboradores garantindo naoUtilizaCinto
       let colsExistentes = JSON.parse(localStorage.getItem('bavgru_colaboradores'));
       if (!colsExistentes || colsExistentes.length === 0) {
         localStorage.setItem('bavgru_colaboradores', JSON.stringify(INITIAL_COLABORADORES));
@@ -1272,13 +1296,13 @@ Casquete	38352	100	10
         const btn = document.getElementById('tab-btn-' + t);
         if (btn) {
           if (t === 'admin') {
-            btn.className = "tab-btn whitespace-nowrap bg-slate-800 text-white hover:bg-slate-900 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold";
+            btn.className = "tab-btn bg-slate-800 text-white hover:bg-slate-900 px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all font-bold flex items-center gap-1.5 shadow-sm";
           } else if (t === 'pendencias') {
-            btn.className = "tab-btn whitespace-nowrap bg-amber-600 text-white hover:bg-amber-700 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold";
+            btn.className = "tab-btn bg-amber-600 text-white hover:bg-amber-700 px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all font-bold flex items-center gap-1.5 shadow-sm";
           } else if (t === 'nao-cinto') {
-            btn.className = "tab-btn whitespace-nowrap bg-purple-700 text-white hover:bg-purple-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold";
+            btn.className = "tab-btn bg-purple-700 text-white hover:bg-purple-800 px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all font-bold flex items-center gap-1.5 shadow-sm";
           } else {
-            btn.className = "tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all";
+            btn.className = "tab-btn bg-emerald-900/80 text-emerald-100 hover:bg-emerald-800 hover:text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all font-semibold flex items-center gap-1.5 shadow-sm";
           }
         }
       });
@@ -1287,7 +1311,7 @@ Casquete	38352	100	10
       if (targetSection) targetSection.classList.remove('hidden');
       const targetBtn = document.getElementById('tab-btn-' + tab);
       if (targetBtn) {
-        targetBtn.className = "tab-btn whitespace-nowrap bg-white text-vibraDark font-semibold px-3.5 py-2 rounded-lg text-xs md:text-sm shadow transition-all";
+        targetBtn.className = "tab-btn bg-white text-vibraDark font-extrabold px-3 py-1.5 rounded-lg text-xs sm:text-sm shadow-md ring-2 ring-vibraYellow transition-all flex items-center gap-1.5";
       }
 
       if (tab === 'admin') renderAdminState();
@@ -1450,11 +1474,13 @@ Casquete	38352	100	10
       const itemEstoque = estoque.find(e => e.id === epiId);
       if (!itemEstoque) return alert('Selecione um EPI válido.');
 
+      // Calcula quanto já está no carrinho deste mesmo EPI
       const jaNoCarrinho = carrinhoDispensacao.filter(item => item.id === epiId).reduce((s, i) => s + i.qtd, 0);
       if (itemEstoque.qtd < (jaNoCarrinho + qtd)) {
         return alert(`Estoque insuficiente de ${itemEstoque.nome}! Saldo atual: ${itemEstoque.qtd} un. (Já na lista: ${jaNoCarrinho} un.)`);
       }
 
+      // Se já existe no carrinho, apenas soma
       const itemExistente = carrinhoDispensacao.find(i => i.id === epiId);
       if (itemExistente) {
         itemExistente.qtd += qtd;
@@ -1914,6 +1940,7 @@ Casquete	38352	100	10
         }
       });
 
+      // Filtra apenas quem é obrigado a usar cinto
       const colaboradoresObrigadosCinto = colaboradores.filter(c => !c.naoUtilizaCinto);
       const isentosCount = colaboradores.filter(c => c.naoUtilizaCinto).length;
 
@@ -2000,6 +2027,7 @@ Casquete	38352	100	10
       const colab = colaboradores.find(c => c.matricula === String(matricula));
       if (!colab) return alert("Colaborador não localizado.");
 
+      // Busca todas as entregas assinadas desse colaborador
       const todasEntregas = auditoria.filter(r => String(r.matricula) === String(matricula) && r.tipo.includes('NR-06'));
       const inspecoesCinto = auditoria.filter(r => String(r.matricula) === String(matricula) && r.tipo.includes('Anexo C'));
 
@@ -2013,7 +2041,7 @@ Casquete	38352	100	10
           </tr>
         `;
       } else {
-        tabelaEntregasHtml = todasEntregas.map((entrega) => {
+        tabelaEntregasHtml = todasEntregas.map((entrega, idx) => {
           let detalheItens = '';
           if (entrega.itens && Array.isArray(entrega.itens) && entrega.itens.length > 0) {
             detalheItens = entrega.itens.map(it => `<div>• <strong>${it.nome}</strong> (CA: ${it.ca}) - ${it.qtd} un.</div>`).join('');

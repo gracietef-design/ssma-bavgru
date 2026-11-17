@@ -1,18 +1,17 @@
 {
-  "name": "Portal SSMA BAVGRU - Gestão de EPIs",
+  "name": "Portal SSMA BAVGRU - Vibra",
   "short_name": "SSMA BAVGRU",
-  "description": "Sistema de Gestão de EPIs, Inspeção SPIQ (Anexo C) e Auditoria - Vibra BAVGRU",
+  "description": "Gestão Integrada de EPIs (NR-06) e Inspeção de Trava-Quedas (Anexo C) - Vibra Energia S.A.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "any",
   "background_color": "#00582C",
   "theme_color": "#008542",
-  "categories": ["business", "productivity", "utilities"],
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon.svg",
-      "sizes": "any",
+      "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }

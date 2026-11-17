@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Portal SSMA BAVGRU - Gestão de EPIs, Inspeção SPIQ & Auditoria</title>
   
-  <!-- METATAGS DE APARÊNCIA CORPORATIVA VIBRA (TEAMS, WHATSAPP, SHAREPOINT) -->
+  <!-- METATAGS DE APARÊNCIA CORPORATIVA VIBRA -->
   <meta property="og:title" content="Vibra Energia | Portal SSMA BAVGRU" />
   <meta property="og:description" content="Gestão Integrada de EPIs (NR-06), Inspeção Trava-Quedas (Anexo C) e Auditoria - Unidade BAVGRU" />
-  <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Vibra_Energia_logo.svg/1200px-Vibra_Energia_logo.svg.png" />
+  <meta property="og:image" content="" />
   <meta property="og:site_name" content="Vibra Energia S.A." />
   <meta name="description" content="Portal SSMA BAVGRU - Gestão de EPIs e Inspeção de Trava-Quedas Vibra Energia" />
-
-  <!-- CONFIGURAÇÕES DE PWA (APLICATIVO PARA CELULAR E TABLET) -->
+  
+  <!-- CONFIGURAÇÕES DE PWA -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#008542" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -22,13 +22,16 @@
   <link class="no-print" rel="icon" type="image/svg+xml" href="icon.svg" />
   <link class="no-print" rel="apple-touch-icon" href="icon.svg" />
 
-  <!-- FIREBASE SDK COMPAT (SINCRONIZAÇÃO EM NUVEM MULTI-DISPOSITIVOS EM TEMPO REAL) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-  
-  <!-- BIBLIOTECA INTERNACIONAL DO EXCEL (SHEETJS) - LÊ ARQUIVOS .XLS, .XLSX E .CSV DIRETAMENTE -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- TAILWIND CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FIREBASE SDK COMPAT (SINCRONIZAÇÃO EM NUVEM EM TEMPO REAL) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  
+  <!-- BIBLIOTECA SHEETJS (EXCEL XLSX/CSV) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
   <script>
     tailwind.config = {
       theme: {
@@ -43,29 +46,23 @@
       }
     }
   </script>
+
   <style>
     @media print {
       body * { visibility: hidden; }
-      #modal-print { position: static !important; display: block !important; background: none !important; padding: 0 !important; overflow: visible !important; }
-      #modal-print > div { max-height: none !important; overflow: visible !important; box-shadow: none !important; width: 100% !important; max-width: 100% !important; padding: 0 !important; }
       #print-area, #print-area * { visibility: visible; }
-      #print-area { position: static !important; width: 100% !important; box-shadow: none !important; border: none !important; }
+      #print-area { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none !important; }
       .no-print { display: none !important; }
-      tr { page-break-inside: avoid; }
     }
     canvas { touch-action: none; }
-    
-    /* Barra de rolagem suave para abas no celular */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-    /* Ajuste para telas com entalhe (iPhone Notch / Safe Areas) */
     header { padding-top: max(1rem, env(safe-area-inset-top)); }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col select-none md:select-auto">
 
-  <!-- BANNER DE INSTALAÇÃO DO APP (APARECE NO CELULAR/TABLET) -->
+  <!-- BANNER DE INSTALAÇÃO DO APP (MOBILE/TABLET) -->
   <div id="pwa-install-banner" class="hidden bg-gradient-to-r from-vibraDark to-vibraGreen text-white px-4 py-3 shadow-md border-b-2 border-vibraYellow no-print">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
       <div class="flex items-center gap-3">
@@ -98,26 +95,26 @@
           <div class="border-l border-emerald-400 pl-3">
             <div class="flex items-center gap-2">
               <h1 class="text-base md:text-xl font-bold tracking-tight leading-tight">SSMA BAVGRU</h1>
-              <span id="badge-status-nuvem" onclick="forcarSincronizacaoManual()" title="Clique para forçar sincronização com a nuvem" class="cursor-pointer text-[10px] bg-emerald-900/90 text-emerald-200 border border-emerald-400/80 px-2 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-sm">
-                <span id="bolinha-status-nuvem" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span id="texto-status-nuvem">Conectando...</span>
+              <span id="badge-status-nuvem" class="text-[10px] bg-emerald-900/90 text-emerald-200 border border-emerald-400/80 px-2 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-sm">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="texto-status-nuvem">Nuvem Conectada</span>
               </span>
             </div>
             <p class="text-[11px] text-emerald-100">Gestão EPIs & Inspeção Trava-Quedas</p>
           </div>
         </div>
-        <!-- Botão de Ajuda de Instalação Mobile -->
         <button onclick="abrirModalAjudaApp()" class="md:hidden bg-emerald-800 text-vibraYellow border border-emerald-600 px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
           📲 App
         </button>
       </div>
 
-      <!-- NAVEGAÇÃO DE ABAS: COM ROLAGEM HORIZONTAL SUAVE NO CELULAR -->
+      <!-- NAVEGAÇÃO DE ABAS -->
       <nav class="w-full md:w-auto overflow-x-auto no-scrollbar flex items-center gap-2 pb-1 md:pb-0">
         <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="tab-btn whitespace-nowrap bg-white text-vibraDark font-semibold px-3.5 py-2 rounded-lg text-xs md:text-sm shadow transition-all">📊 Painel</button>
         <button onclick="switchTab('dispensacao')" id="tab-btn-dispensacao" class="tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all">🦺 Dispensar EPI</button>
         <button onclick="switchTab('inspecao')" id="tab-btn-inspecao" class="tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all">🧗 Inspeção Cinto</button>
         <button onclick="switchTab('pendencias')" id="tab-btn-pendencias" class="tab-btn whitespace-nowrap bg-amber-600 text-white hover:bg-amber-700 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold">⚠️ Pendências</button>
+        <button onclick="switchTab('nao-cinto')" id="tab-btn-nao-cinto" class="tab-btn whitespace-nowrap bg-purple-700 text-white hover:bg-purple-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold">🚫 Não Utiliza Cinto</button>
         <button onclick="switchTab('estoque')" id="tab-btn-estoque" class="tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all">📦 Estoque</button>
         <button onclick="switchTab('colaboradores')" id="tab-btn-colaboradores" class="tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all">👥 Efetivo</button>
         <button onclick="switchTab('admin')" id="tab-btn-admin" class="tab-btn whitespace-nowrap bg-slate-800 text-white hover:bg-slate-900 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold">⚙️ Admin</button>
@@ -149,7 +146,7 @@
         <div onclick="switchTab('pendencias')" class="bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-amber-500 cursor-pointer hover:shadow-md transition-shadow">
           <p class="text-[10px] md:text-xs text-slate-500 uppercase font-bold">Pendências Mês</p>
           <p id="kpi-pendencias" class="text-2xl md:text-3xl font-extrabold text-amber-600 mt-1">0</p>
-          <p class="text-[10px] md:text-xs text-amber-700 mt-1">Sem visto</p>
+          <p class="text-[10px] md:text-xs text-amber-700 mt-1">Obrigados a cinto</p>
         </div>
         <div onclick="switchTab('estoque')" class="col-span-2 md:col-span-1 bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-red-600 cursor-pointer hover:shadow-md transition-shadow">
           <p class="text-[10px] md:text-xs text-slate-500 uppercase font-bold">Alertas Estoque</p>
@@ -165,18 +162,18 @@
             <p class="text-xs text-slate-500">Documentos oficiais com validade jurídica e assinatura digital coletada.</p>
           </div>
           <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-            <input type="text" id="busca-auditoria" oninput="renderAuditoria()" placeholder="🔎 Filtrar nome ou CA..." class="border rounded-lg px-3 py-2 text-sm w-full md:w-64 bg-slate-50 border-emerald-300 focus:outline-none focus:ring-2 focus:ring-vibraGreen" />
+            <input type="text" id="busca-auditoria" oninput="renderAuditoria()" placeholder="🔎 Filtrar nome, matrícula ou CA..." class="border rounded-lg px-3 py-2 text-sm w-full md:w-64 bg-slate-50 border-emerald-300 focus:outline-none focus:ring-2 focus:ring-vibraGreen" />
             <button onclick="exportarCSV()" class="bg-vibraGreen hover:bg-vibraDark text-white px-3 py-2 rounded-lg text-xs md:text-sm font-semibold shrink-0">📥 Exportar CSV</button>
           </div>
         </div>
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[600px]">
+          <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[650px]">
             <thead>
               <tr class="bg-slate-100 text-slate-600 border-b">
                 <th class="p-2.5">Data/Hora</th>
                 <th class="p-2.5">Tipo</th>
                 <th class="p-2.5">Colaborador</th>
-                <th class="p-2.5">Equipamento / CA</th>
+                <th class="p-2.5">Equipamentos / CA</th>
                 <th class="p-2.5">Status</th>
                 <th class="p-2.5 text-right">Ação</th>
               </tr>
@@ -187,56 +184,91 @@
       </div>
     </section>
 
-    <!-- ABA 2: DISPENSAÇÃO DE EPI (NR-06) -->
+    <!-- ABA 2: DISPENSAÇÃO DE EPI (NR-06) COM MÚLTIPLOS EPIS -->
     <section id="tab-dispensacao" class="hidden space-y-4 md:space-y-6">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
         <h2 class="text-base md:text-lg font-bold text-vibraDark border-b pb-2 mb-4">🦺 Nova Dispensação de EPI com Assinatura (NR-06)</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+        
+        <!-- Seleção de Colaborador e Motivo -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4">
           <div>
             <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Colaborador (BAVGRU) *</label>
             <select id="disp-colaborador" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50"></select>
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">EPI do Estoque (Com CA Válido) *</label>
-            <select id="disp-epi" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50"></select>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Motivo Geral da Entrega *</label>
+            <select id="disp-motivo" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+              <option value="Substituição por Desgaste Normal">Substituição por Desgaste Normal</option>
+              <option value="Primeira Entrega / Admissão">Primeira Entrega / Admissão</option>
+              <option value="Substituição por Reprovação na Inspeção">Substituição por Reprovação em Inspeção</option>
+              <option value="Perda ou Extravio">Perda / Extravio</option>
+              <option value="Suplementação / Nova Atividade">Suplementação / Nova Atividade</option>
+            </select>
           </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Quantidade *</label>
-              <input type="number" id="disp-qtd" value="1" min="1" class="w-full border rounded-lg p-2.5 text-sm" />
+        </div>
+
+        <!-- SELEÇÃO DE MÚLTIPLOS EPIS -->
+        <div class="border-2 border-emerald-200 bg-emerald-50/50 rounded-xl p-3 md:p-4 mb-4 space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xs md:text-sm font-bold text-vibraDark flex items-center gap-1.5">
+              <span>🛒</span> Selecionar Equipamentos (Permitido Múltiplos EPIs na mesma entrega)
+            </h3>
+            <span class="text-[11px] text-slate-500">Adicione um ou mais EPIs abaixo</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-end">
+            <div class="md:col-span-8">
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">EPI do Estoque (Com CA Válido):</label>
+              <select id="disp-epi" class="w-full border rounded-lg p-2 text-sm bg-white"></select>
             </div>
-            <div>
-              <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Motivo *</label>
-              <select id="disp-motivo" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
-                <option value="Substituição por Desgaste Normal">Substituição por Desgaste</option>
-                <option value="Primeira Entrega / Admissão">Primeira Entrega</option>
-                <option value="Substituição por Reprovação na Inspeção">Reprovação em Inspeção</option>
-                <option value="Perda ou Extravio">Perda / Danificação</option>
-              </select>
+            <div class="md:col-span-2">
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Quantidade:</label>
+              <input type="number" id="disp-qtd" value="1" min="1" class="w-full border rounded-lg p-2 text-sm bg-white" />
+            </div>
+            <div class="md:col-span-2">
+              <button type="button" onclick="adicionarEpiListaDispensacao()" class="w-full bg-vibraGreen hover:bg-vibraDark text-white font-bold p-2 rounded-lg text-sm shadow transition-all flex items-center justify-center gap-1">
+                ➕ Incluir EPI
+              </button>
             </div>
           </div>
-        </div>
 
-        <!-- OPÇÃO DE SELECIONAR MAIS DE UM EPI NA HORA DA DISPENSAÇÃO -->
-        <div class="mt-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-slate-50 p-3 rounded-lg border border-slate-200">
-          <p class="text-xs text-slate-600">💡 <strong>Vários EPIs?</strong> Clique ao lado para montar uma lista de entrega com uma única assinatura:</p>
-          <button type="button" onclick="adicionarEpiNaLista()" class="bg-blue-600 hover:bg-blue-700 text-white px-3.5 py-2 rounded-lg text-xs font-bold shadow shrink-0 flex items-center gap-1">
-            ➕ Incluir EPI na Lista
-          </button>
-        </div>
-
-        <div id="box-carrinho-epis" class="hidden mt-3 border border-emerald-300 rounded-xl p-3 bg-emerald-50/50">
-          <div class="flex justify-between items-center mb-2">
-            <h4 class="text-xs font-bold text-vibraDark uppercase">📋 EPIs Selecionados para esta Entrega (<span id="count-carrinho-epis">0</span>)</h4>
-            <button type="button" onclick="limparCarrinhoEpis()" class="text-[11px] text-red-600 hover:underline font-bold">Limpar Lista</button>
+          <!-- Tabela de EPIs Selecionados -->
+          <div class="bg-white rounded-lg border overflow-hidden mt-2">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-700 font-bold border-b">
+                <tr>
+                  <th class="p-2">EPI Selecionado</th>
+                  <th class="p-2">Nº CA</th>
+                  <th class="p-2 text-center">Quantidade</th>
+                  <th class="p-2 text-right">Ação</th>
+                </tr>
+              </thead>
+              <tbody id="lista-epis-dispensacao" class="divide-y">
+                <tr>
+                  <td colspan="4" class="p-3 text-center text-slate-400 italic">Nenhum EPI adicionado ainda. Escolha o item acima e clique em "➕ Incluir EPI".</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div id="lista-carrinho-epis" class="divide-y divide-emerald-200 text-xs"></div>
         </div>
 
-        <div class="mt-4 bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs text-slate-700 leading-relaxed">
-          <strong>Termo NR-06 (6.5.1 / 6.7.1):</strong> Declaro ter recebido da Vibra Energia (BAVGRU) o EPI especificado, com CA ativo e em perfeito estado, recebendo orientações sobre uso correto, guarda e obrigatoriedade de conservação.
+        <!-- TERMO LEGAL COMPLETO NR-06 & PADRÃO VIBRA -->
+        <div class="bg-emerald-50 border-l-4 border-vibraGreen rounded-lg p-3.5 text-xs text-slate-700 leading-relaxed space-y-2">
+          <p class="font-bold text-vibraDark uppercase tracking-wide text-[11px] flex items-center gap-1">
+            <span>⚖️</span> Enquadramento Legal Incluído no Termo (NR-06 & Padrão Vibra)
+          </p>
+          <p>
+            <strong>NR-06 (Item 6.5.1 - Cabe à Organização):</strong> Fornecer ao empregado, gratuitamente, EPI adequado ao risco, em perfeito estado de conservação e funcionamento, com Certificado de Aprovação (CA) válido, registrando o seu fornecimento por meio de sistema eletrônico ou ficha física e orientando/treinando o trabalhador.
+          </p>
+          <p>
+            <strong>NR-06 (Item 6.7.1 - Cabe ao Trabalhador):</strong> Utilizar o EPI apenas para a finalidade a que se destina; responsabilizar-se pela limpeza, guarda e conservação; comunicar à organização qualquer alteração que o torne impróprio para uso (desgaste, avaria ou extravio); e cumprir as determinações sobre o uso adequado.
+          </p>
+          <p>
+            <strong>Padrão Corporativo Vibra & CLT (Art. 158, Parágrafo Único, alínea "b" e Art. 462, § 1º):</strong> Compromisso de devolução do EPI em caso de substituição, mudança de função ou desligamento da companhia, ciente de que a recusa injustificada ao uso constitui ato faltoso e que o extravio ou dano doloso/culposo sujeita à reposição na forma da lei.
+          </p>
         </div>
 
+        <!-- Captura de Foto e Assinatura Digital -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
           <div class="border rounded-xl p-3 md:p-4 bg-slate-50">
             <div class="flex justify-between items-center mb-2">
@@ -269,7 +301,7 @@
         </div>
 
         <div class="mt-6 flex justify-end">
-          <button onclick="salvarDispensacao()" class="w-full md:w-auto bg-vibraGreen hover:bg-vibraDark text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm">
+          <button onclick="salvarDispensacao()" class="w-full md:w-auto bg-vibraGreen hover:bg-vibraDark text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm flex items-center justify-center gap-2">
             ✅ Confirmar Entrega e Gerar Ficha NR-06
           </button>
         </div>
@@ -290,7 +322,10 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4">
           <div>
             <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Colaborador Executante *</label>
-            <select id="insp-colaborador" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50"></select>
+            <select id="insp-colaborador" onchange="verificarAvisoCinto()" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50"></select>
+            <p id="aviso-nao-usa-cinto" class="hidden text-[11px] text-purple-700 font-bold mt-1 bg-purple-50 p-1.5 rounded border border-purple-200">
+              ℹ️ Este colaborador está cadastrado como "Não Utiliza Cinto".
+            </p>
           </div>
           <div>
             <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nº C.A. do Cinto *</label>
@@ -343,7 +378,7 @@
       </div>
     </section>
 
-    <!-- ABA 4: PENDÊNCIAS DE INSPEÇÃO -->
+    <!-- ABA 4: PENDÊNCIAS DE INSPEÇÃO (CONSIDERANDO QUEM NÃO UTILIZA CINTO) -->
     <section id="tab-pendencias" class="hidden space-y-4 md:space-y-6">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-amber-500">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 border-b pb-3">
@@ -351,7 +386,7 @@
             <h2 class="text-base md:text-lg font-bold text-slate-800 flex items-center gap-2">
               <span class="text-amber-500 text-xl">⚠️</span> Pendências Mensais: Trava-Quedas (SPIQ)
             </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Colaboradores que <strong>utilizam cinto</strong> e <strong>não realizaram</strong> a inspeção do Anexo C no mês selecionado.</p>
+            <p class="text-xs text-slate-500 mt-0.5">Colaboradores ativos obrigados a cinto que <strong>não realizaram</strong> a inspeção do Anexo C no mês selecionado.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
             <input type="month" id="pendencias-mes-ano" onchange="renderPendencias()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs md:text-sm font-semibold bg-slate-50" />
@@ -359,7 +394,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-2 md:gap-4 mb-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4">
           <div class="bg-amber-50 border border-amber-200 p-2.5 md:p-4 rounded-xl text-center md:text-left">
             <p class="text-[10px] md:text-xs text-amber-800 font-bold uppercase">Pendentes</p>
             <p id="total-pendentes-num" class="text-xl md:text-3xl font-extrabold text-amber-700 mt-1">0</p>
@@ -371,6 +406,10 @@
           <div class="bg-slate-50 border border-slate-200 p-2.5 md:p-4 rounded-xl text-center md:text-left">
             <p class="text-[10px] md:text-xs text-slate-600 font-bold uppercase">Conformidade</p>
             <p id="taxa-adesao-num" class="text-xl md:text-3xl font-extrabold text-slate-800 mt-1">0%</p>
+          </div>
+          <div class="bg-purple-50 border border-purple-200 p-2.5 md:p-4 rounded-xl text-center md:text-left">
+            <p class="text-[10px] md:text-xs text-purple-800 font-bold uppercase">Isentos de Cinto</p>
+            <p id="total-isentos-cinto-num" class="text-xl md:text-3xl font-extrabold text-purple-700 mt-1">0</p>
           </div>
         </div>
 
@@ -395,7 +434,59 @@
       </div>
     </section>
 
-    <!-- ABA 5: CONTROLE DE ESTOQUE (INTEGRADA COM BOTAO DE IMPORTAÇÃO DE EPIs) -->
+    <!-- ABA NOVA: NÃO UTILIZA CINTO (EDITADA SOMENTE PELO ADMINISTRADOR) -->
+    <section id="tab-nao-cinto" class="hidden space-y-4 md:space-y-6">
+      <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-purple-700">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 border-b pb-3">
+          <div>
+            <h2 class="text-base md:text-lg font-bold text-slate-800 flex items-center gap-2">
+              <span class="text-purple-700 text-xl">🚫</span> Gestão de Colaboradores: Isenção / Não Utiliza Cinto
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">Colaboradores marcados aqui não são cobrados na inspeção mensal do cinto (Anexo C) e saem da lista de pendências.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="badge-lock-nao-cinto" class="text-xs px-2.5 py-1 rounded-lg font-bold bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1">
+              🔒 Somente Leitura (Bloqueado)
+            </span>
+            <button id="btn-login-rapido-admin" onclick="solicitarAcessoAdminNaoCinto()" class="bg-purple-700 hover:bg-purple-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow">
+              🔑 Desbloquear Edição (Admin)
+            </button>
+          </div>
+        </div>
+
+        <div id="aviso-admin-nao-cinto" class="bg-purple-50 border border-purple-200 rounded-lg p-3 text-xs text-purple-900 flex justify-between items-center">
+          <div>
+            <strong>Aviso de Permissão:</strong> Esta aba só pode ser alterada pelo <strong>Administrador do Sistema</strong>. Digite a senha administrativa para marcar ou desmarcar colaboradores.
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-2 justify-between items-center">
+          <input type="text" id="busca-nao-cinto" oninput="renderNaoUtilizaCinto()" placeholder="🔎 Filtrar colaborador..." class="w-full sm:w-80 border rounded-lg px-3 py-2 text-xs md:text-sm bg-slate-50 border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-600" />
+          <div class="flex gap-2">
+            <button onclick="filtrarTabelaNaoCinto('todos')" class="px-2.5 py-1 text-xs font-bold rounded bg-slate-200 hover:bg-slate-300">Todos</button>
+            <button onclick="filtrarTabelaNaoCinto('isentos')" class="px-2.5 py-1 text-xs font-bold rounded bg-purple-100 text-purple-800 hover:bg-purple-200">Apenas Não Usa</button>
+            <button onclick="filtrarTabelaNaoCinto('usam')" class="px-2.5 py-1 text-xs font-bold rounded bg-emerald-100 text-emerald-800 hover:bg-emerald-200">Apenas Usa Cinto</button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[550px]">
+            <thead>
+              <tr class="bg-slate-100 text-slate-600 border-b">
+                <th class="p-2.5">Matrícula</th>
+                <th class="p-2.5">Colaborador</th>
+                <th class="p-2.5">Função</th>
+                <th class="p-2.5 text-center">Status Atual</th>
+                <th class="p-2.5 text-right">Alterar (Admin)</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-nao-cinto" class="divide-y"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 5: CONTROLE DE ESTOQUE -->
     <section id="tab-estoque" class="hidden space-y-4 md:space-y-6">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 border-b pb-3">
@@ -407,6 +498,7 @@
             📥 Importar Planilha de EPIs (Excel)
           </button>
         </div>
+
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[500px]">
             <thead>
@@ -424,31 +516,33 @@
       </div>
     </section>
 
-    <!-- ABA 6: EFETIVO BAVGRU -->
+    <!-- ABA 6: EFETIVO BAVGRU (COM ACESSO À FICHA ÚNICA NR-06) -->
     <section id="tab-colaboradores" class="hidden space-y-4 md:space-y-6">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-3 border-b pb-3">
           <div>
             <h2 class="text-base md:text-lg font-bold text-vibraDark">👥 Banco de Colaboradores - BAVGRU</h2>
-            <p class="text-xs text-slate-500">Base oficial para dispensação de EPI e inspeção do SPIQ Anexo C. Clique no status do cinto para alternar quem está dispensado da inspeção.</p>
+            <p class="text-xs text-slate-500">Base oficial para dispensação de EPI e emissão de Ficha Única NR-06.</p>
           </div>
           <button onclick="abrirModalImportarColaboradores()" class="bg-vibraGreen hover:bg-vibraDark text-white px-3.5 py-2 rounded-lg text-xs md:text-sm font-bold shadow flex items-center gap-2 transition-all">
             📥 Importar Lista / Planilha do Excel
           </button>
         </div>
+
         <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg mb-4 flex gap-2 items-center">
           <span>🔍</span>
           <input type="text" id="busca-colab" oninput="renderColaboradores()" placeholder="Pesquise por nome ou matrícula..." class="w-full border-none rounded bg-white px-3 py-2 text-xs md:text-sm shadow-sm focus:ring-2 focus:ring-vibraGreen outline-none" />
         </div>
+
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[550px]">
+          <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[500px]">
             <thead>
               <tr class="bg-slate-100 text-slate-600 border-b">
                 <th class="p-2.5">Matrícula</th>
                 <th class="p-2.5">Nome</th>
                 <th class="p-2.5">Função</th>
                 <th class="p-2.5 text-center">Cinto (SPIQ)</th>
-                <th class="p-2.5 text-right">Ação</th>
+                <th class="p-2.5 text-right">Relatório / Ficha</th>
               </tr>
             </thead>
             <tbody id="tabela-colaboradores" class="divide-y"></tbody>
@@ -472,12 +566,12 @@
         <div class="bg-emerald-50 border border-emerald-300 p-3 md:p-4 rounded-xl flex justify-between items-center">
           <div>
             <span class="font-bold text-emerald-900 text-sm">Sessão Administrativa Ativa</span>
-            <p class="text-xs text-emerald-700">Controles de estoque, funcionários e auditoria liberados.</p>
+            <p class="text-xs text-emerald-700">Controles de estoque, funcionários, isenção de cinto e auditoria liberados.</p>
           </div>
           <button onclick="sairAdmin()" class="bg-emerald-200 text-emerald-800 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-300">Sair ✕</button>
         </div>
 
-        <!-- ENTRADA DE ESTOQUE E CADASTRO DE EPIs (INTEGRADA COM IMPORTAÇÃO) -->
+        <!-- ENTRADA DE ESTOQUE E CADASTRO DE EPIs -->
         <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-blue-600 space-y-4">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b pb-2">
             <div>
@@ -508,7 +602,7 @@
             </div>
           </div>
 
-          <!-- Formulário para cadastrar novo tipo de EPI individualmente -->
+          <!-- Cadastrar novo tipo de EPI individualmente -->
           <div class="pt-3 border-t">
             <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Cadastrar Novo Tipo de EPI Individualmente</label>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -531,37 +625,12 @@
               📥 Importar Planilha do Excel
             </button>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
             <input type="text" id="novo-colab-nome" placeholder="Nome Completo" class="border rounded-lg p-2 text-sm" />
             <input type="text" id="novo-colab-matricula" placeholder="Matrícula" class="border rounded-lg p-2 text-sm" />
             <input type="text" id="novo-colab-funcao" placeholder="Função" class="border rounded-lg p-2 text-sm" />
-            <div class="flex gap-2">
-              <input type="email" id="novo-colab-email" placeholder="E-mail (@vibraenergia.com.br)" class="border rounded-lg p-2 text-sm flex-1" />
-              <button onclick="cadastrarNovoColaborador()" class="bg-vibraGreen hover:bg-vibraDark text-white font-bold px-4 py-2 rounded-lg text-sm shrink-0">+ Incluir</button>
-            </div>
-          </div>
-          <div class="mt-2.5 flex items-center gap-2">
-            <label class="flex items-center gap-2 text-xs text-slate-700 font-semibold cursor-pointer">
-              <input type="checkbox" id="novo-colab-nao-usa-cinto" class="rounded border-slate-300 text-vibraGreen focus:ring-vibraGreen" />
-              <span>🚫 Não utiliza Cinto Trava-Quedas (Dispensado de realizar a inspeção mensal do Anexo C)</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- HISTÓRICO CONSOLIDADO DE ENTREGA POR FUNCIONÁRIO EM PDF ÚNICO -->
-        <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-emerald-600">
-          <div class="mb-3">
-            <h2 class="text-base font-bold text-vibraDark">📑 Histórico de Entrega de EPIs por Funcionário (PDF Único)</h2>
-            <p class="text-xs text-slate-500">Puxe em um único PDF todas as entregas de EPI (Ficha NR-06) registradas para o colaborador selecionado.</p>
-          </div>
-          <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
-            <div class="flex-1">
-              <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Selecionar Funcionário *</label>
-              <select id="admin-historico-colab" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50"></select>
-            </div>
-            <button onclick="gerarPdfHistoricoFuncionario()" class="bg-vibraGreen hover:bg-vibraDark text-white font-bold px-5 py-2.5 rounded-lg text-sm shadow shrink-0">
-              📄 Gerar PDF Único do Histórico
-            </button>
+            <input type="email" id="novo-colab-email" placeholder="E-mail (@vibraenergia.com.br)" class="border rounded-lg p-2 text-sm" />
+            <button onclick="cadastrarNovoColaborador()" class="bg-vibraGreen hover:bg-vibraDark text-white font-bold px-4 py-2 rounded-lg text-sm shrink-0">+ Incluir</button>
           </div>
         </div>
 
@@ -601,20 +670,19 @@
         </div>
       </div>
     </section>
-
   </main>
 
-  <!-- MODAL DE COMPROVANTE / IMPRESSÃO -->
+  <!-- MODAL DE COMPROVANTE / IMPRESSÃO / FICHA ÚNICA -->
   <div id="modal-print" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-3 z-50">
-    <div class="bg-white rounded-xl max-w-2xl w-full p-4 md:p-6 max-h-[92vh] overflow-y-auto shadow-2xl relative">
+    <div class="bg-white rounded-xl max-w-3xl w-full p-4 md:p-6 max-h-[92vh] overflow-y-auto shadow-2xl relative">
       <div class="flex justify-between items-center mb-3 pb-2 border-b no-print">
-        <h3 class="font-bold text-vibraDark text-sm md:text-base">📄 Comprovante Oficial SSMA</h3>
+        <h3 id="modal-print-title" class="font-bold text-vibraDark text-sm md:text-base">📄 Documento Oficial SSMA BAVGRU</h3>
         <div class="flex gap-2">
           <button onclick="window.print()" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow hover:bg-vibraDark">📥 Imprimir / PDF</button>
           <button onclick="fecharModalPrint()" class="bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-slate-300">Fechar ✕</button>
         </div>
       </div>
-      <div id="print-area" class="p-4 border border-slate-300 rounded-lg text-xs space-y-3 bg-white pointer-events-none"></div>
+      <div id="print-area" class="p-4 border border-slate-300 rounded-lg text-xs space-y-3 bg-white"></div>
     </div>
   </div>
 
@@ -638,7 +706,6 @@
             <li>Confirme. O ícone do SSMA BAVGRU aparecerá como aplicativo instalado no celular!</li>
           </ol>
         </div>
-
         <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl">
           <p class="font-bold text-blue-900 text-sm mb-1">🍎 No iPhone / iPad (Safari):</p>
           <ol class="list-decimal pl-4 space-y-1">
@@ -647,17 +714,15 @@
             <li>Toque em <strong>"Adicionar"</strong> no canto superior direito. Pronto!</li>
           </ol>
         </div>
-
         <p class="text-[11px] text-slate-400 text-center">Uma vez adicionado, ele abre em tela cheia sem a barra de endereço do navegador, funcionando como um app de verdade!</p>
       </div>
-
       <div class="mt-5">
         <button onclick="fecharModalAjudaApp()" class="w-full bg-vibraGreen text-white py-2.5 rounded-xl font-bold text-xs shadow hover:bg-vibraDark">Entendido!</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL IMPORTAÇÃO EM LOTE DE EPIs (NATIVO EXCEL E COPIAR/COLAR) -->
+  <!-- MODAL IMPORTAÇÃO EM LOTE DE EPIs (EXCEL) -->
   <div id="modal-importar-epis" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-3 z-50">
     <div class="bg-white rounded-2xl max-w-2xl w-full p-5 md:p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-3 pb-2 border-b">
@@ -670,16 +735,14 @@
         </div>
         <button onclick="fecharModalImportarEpis()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
       </div>
-
       <div class="space-y-4 text-xs">
         <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-slate-700 leading-relaxed">
           <p class="font-bold text-vibraDark mb-1">Como importar em poucos segundos:</p>
           <ol class="list-decimal pl-4 space-y-1">
             <li><strong>Importar arquivo:</strong> Clique em <strong>"📁 Carregar planilha .xlsx / .xls"</strong> e selecione o arquivo.</li>
-            <li><strong>Copiar e Colar:</strong> No Excel, selecione as colunas com <strong>Nome do EPI | CA | Quantidade | Mínimo</strong>, copie (`Ctrl + C`) e cole abaixo!</li>
+            <li><strong>Copiar e Colar:</strong> No Excel, selecione as colunas com <strong>Nome do EPI | CA | Quantidade | Mínimo</strong>, copie (Ctrl + C) e cole abaixo!</li>
           </ol>
         </div>
-
         <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between bg-slate-50 p-2.5 rounded-lg border">
           <span class="font-bold text-slate-700 font-sans">Modo de Importação no Estoque:</span>
           <div class="flex flex-wrap gap-4">
@@ -697,7 +760,6 @@
             </label>
           </div>
         </div>
-
         <div>
           <div class="flex justify-between items-center mb-1">
             <label class="font-bold text-slate-700 uppercase text-[11px]">Selecione a planilha ou cole as linhas copiadas:</label>
@@ -711,7 +773,6 @@ Luva Nitrílica Verde G	40189	30	5
 Casquete	38352	100	10
 Óculos de Segurança Cinza	18821	40	5" class="w-full border rounded-xl p-3 font-mono text-xs bg-slate-50 border-slate-300 focus:outline-none focus:ring-2 focus:ring-vibraGreen"></textarea>
         </div>
-
         <div id="preview-importar-epi" class="hidden bg-slate-100 p-3 rounded-lg border text-slate-700">
           <div class="flex justify-between items-center mb-1">
             <p class="font-bold text-emerald-800" id="preview-epi-count">0 EPIs reconhecidos</p>
@@ -719,7 +780,6 @@ Casquete	38352	100	10
           </div>
           <div class="max-h-32 overflow-y-auto mt-1 divide-y divide-slate-200 text-[11px]" id="preview-epi-lista"></div>
         </div>
-
         <div class="flex justify-between items-center pt-2 border-t gap-2">
           <button type="button" onclick="fecharModalImportarEpis()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-xl font-bold">
             Cancelar
@@ -732,7 +792,7 @@ Casquete	38352	100	10
     </div>
   </div>
 
-  <!-- MODAL IMPORTAÇÃO EM LOTE DE COLABORADORES (EXCEL / CSV) -->
+  <!-- MODAL IMPORTAÇÃO EM LOTE DE COLABORADORES (EXCEL) -->
   <div id="modal-importar-colaboradores" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-3 z-50">
     <div class="bg-white rounded-2xl max-w-2xl w-full p-5 md:p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-3 pb-2 border-b">
@@ -745,7 +805,6 @@ Casquete	38352	100	10
         </div>
         <button onclick="fecharModalImportarColaboradores()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
       </div>
-
       <div class="space-y-4 text-xs">
         <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-slate-700 leading-relaxed">
           <p class="font-bold text-vibraDark mb-1">Como fazer em 3 passos:</p>
@@ -755,7 +814,6 @@ Casquete	38352	100	10
             <li>Aperte <strong>Ctrl + C</strong> no Excel e dê <strong>Ctrl + V</strong> no campo abaixo!</li>
           </ol>
         </div>
-
         <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between bg-slate-50 p-2.5 rounded-lg border">
           <span class="font-bold text-slate-700">Modo de Gravação:</span>
           <div class="flex gap-4">
@@ -769,7 +827,6 @@ Casquete	38352	100	10
             </label>
           </div>
         </div>
-
         <div>
           <div class="flex justify-between items-center mb-1">
             <label class="font-bold text-slate-700 uppercase text-[11px]">Cole as linhas copiadas do Excel:</label>
@@ -783,7 +840,6 @@ Casquete	38352	100	10
 129028	ADILSON MARQUES ESCANHOLATO	OPERADOR DE ABASTECIMENTO SR	adilsonescanholato@vibraenergia.com.br
 134770	ADRIANO APARECIDO GONZAGA	OPERADOR DE ABASTECIMENTO SR	adrianocosta@vibraenergia.com.br" class="w-full border rounded-xl p-3 font-mono text-xs bg-slate-50 border-slate-300 focus:outline-none focus:ring-2 focus:ring-vibraGreen"></textarea>
         </div>
-
         <div id="preview-importar-colab" class="hidden bg-slate-100 p-3 rounded-lg border text-slate-700">
           <div class="flex justify-between items-center mb-1">
             <p class="font-bold text-emerald-800" id="preview-colab-count">0 colaboradores reconhecidos</p>
@@ -791,7 +847,6 @@ Casquete	38352	100	10
           </div>
           <div class="max-h-32 overflow-y-auto mt-1 divide-y divide-slate-200 text-[11px]" id="preview-colab-lista"></div>
         </div>
-
         <div class="flex justify-between items-center pt-2 border-t gap-2">
           <button type="button" onclick="fecharModalImportarColaboradores()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-xl font-bold">
             Cancelar
@@ -851,7 +906,7 @@ Casquete	38352	100	10
       document.getElementById('modal-ajuda-app').classList.remove('flex');
     }
 
-    // 3. ITENS OFICIAIS DO PADRÃO VIBRA ANEXO C
+    // 3. ITENS DO PADRÃO VIBRA ANEXO C
     const PERGUNTAS_ANEXO_C = [
       { id: "c1", grupo: "Cinto Paraquedista", texto: "1. As costuras apresentam boas condições sem ponto de rompimento ou desgastes?" },
       { id: "c2", grupo: "Cinto Paraquedista", texto: "2. As fitas não apresentam rompimentos ou aparência desgastadas?" },
@@ -868,129 +923,130 @@ Casquete	38352	100	10
 
     // 4. BANCO OFICIAL DE COLABORADORES BAVGRU (116 COLABORADORES)
     const INITIAL_COLABORADORES = [
-      { id: "c_128660", matricula: "128660", nome: "ADAUTO RIBEIRO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adautosantos@vibraenergia.com.br" },
-      { id: "c_129028", matricula: "129028", nome: "ADILSON MARQUES ESCANHOLATO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adilsonescanholato@vibraenergia.com.br" },
-      { id: "c_189584", matricula: "189584", nome: "ADOLFO DE SOUSA OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "adolfooliveira@vibraenergia.com.br" },
-      { id: "c_134770", matricula: "134770", nome: "ADRIANO APARECIDO GONZAGA DA COSTA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adrianocosta@vibraenergia.com.br" },
-      { id: "c_128578", matricula: "128578", nome: "ALECSANDER RODRIGUES LOPES CAVALCANTI", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "alecsandercavalcanti@vibraenergia.com.br" },
-      { id: "c_123480", matricula: "123480", nome: "ALEX BARBOSA DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "alexsantos@vibraenergia.com.br" },
-      { id: "c_129298", matricula: "129298", nome: "ALEX SILVERIO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "alexsilverio@vibraenergia.com.br" },
-      { id: "c_123233", matricula: "123233", nome: "ALEXANDRE CORREIA ALVES", funcao: "ASSISTENTE ADMINISTRATIVO JR", email: "alexandrealves@vibraenergia.com.br" },
-      { id: "c_132101", matricula: "132101", nome: "ALEXANDRE PIRES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "alexandrepires@vibraenergia.com.br" },
-      { id: "c_128241", matricula: "128241", nome: "ALEXANDRO TORRES FERREIRA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "alexandroferreira@vibraenergia.com.br" },
-      { id: "c_177470", matricula: "177470", nome: "ALIEN PETTINELLI", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "alienpettinelli@vibraenergia.com.br" },
-      { id: "c_71126590", matricula: "71126590", nome: "ANA MARIA GOMES DOS SANTOS", funcao: "CONTRATADO", email: "" },
-      { id: "c_123048", matricula: "123048", nome: "ANDERSON DOS SANTOS DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "andersonsilva@vibraenergia.com.br" },
-      { id: "c_128216", matricula: "128216", nome: "ANDERSON HORACIO PIRES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "andersonpires@vibraenergia.com.br" },
-      { id: "c_128542", matricula: "128542", nome: "ANDERSON ZAGO DE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "andersonsouza@vibraenergia.com.br" },
-      { id: "c_189572", matricula: "189572", nome: "ANDRE ALVES DE PAULA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "andrepaula@vibraenergia.com.br" },
-      { id: "c_127059", matricula: "127059", nome: "ANDRE DO NASCIMENTO SANTOS", funcao: "LIDER DE ABASTECIMENTO", email: "andresantos@vibraenergia.com.br" },
-      { id: "c_128806", matricula: "128806", nome: "ANTONIO NORIVAL RIBEIRO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "antonioribeiro@vibraenergia.com.br" },
-      { id: "c_71176703", matricula: "71176703", nome: "BRUNA VIEIRA DE SOUZA", funcao: "CONTRATADO", email: "" },
-      { id: "c_185131", matricula: "185131", nome: "BRUNO DE ALMEIDA DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "brunoalmeida@vibraenergia.com.br" },
-      { id: "c_185813", matricula: "185813", nome: "BRUNO EVANGELISTA CERQUEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "brunocerqueira@vibraenergia.com.br" },
-      { id: "c_179959", matricula: "179959", nome: "CAIO FIALHO DE CASTRO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "caiocastro@vibraenergia.com.br" },
-      { id: "c_183727", matricula: "183727", nome: "CARLOS ALBERTO BASTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "carlosbastos@vibraenergia.com.br" },
-      { id: "c_131210", matricula: "131210", nome: "CARLOS ALBERTO DE JESUS SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "carlosalberto@vibraenergia.com.br" },
-      { id: "c_128449", matricula: "128449", nome: "CARLOS EDUARDO PAVAO", funcao: "ASSISTENTE ADMINISTRATIVO JR", email: "carlospavao@vibraenergia.com.br" },
-      { id: "c_127465", matricula: "127465", nome: "CESAR MOREIRA DOURADO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "cesardourado@vibraenergia.com.br" },
-      { id: "c_133853", matricula: "133853", nome: "CESARIO RODRIGUES DE MEDEIROS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "cesariomedeiros@vibraenergia.com.br" },
-      { id: "c_150641", matricula: "150641", nome: "CLAUDIANA QUEIROZ SILVA", funcao: "TECNICA DE SEGURANCA DO TRABALHO PL", email: "claudianasilva@vibraenergia.com.br" },
-      { id: "c_136413", matricula: "136413", nome: "CLAUDIO ALVES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "claudioalves@vibraenergia.com.br" },
-      { id: "c_133423", matricula: "133423", nome: "CLAYTON DOUGLAS IGREJA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "claytonigreja@vibraenergia.com.br" },
-      { id: "c_136610", matricula: "136610", nome: "CLEBER RICARDO RIBEIRO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "cleberribeiro@vibraenergia.com.br" },
-      { id: "c_149433", matricula: "149433", nome: "DIOGO DA SILVA FEITOSA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "diogofeitosa@vibraenergia.com.br" },
-      { id: "c_133400", matricula: "133400", nome: "DIOGO SABATELLI", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "diogosabatelli@vibraenergia.com.br" },
-      { id: "c_127060", matricula: "127060", nome: "DIONISIO FRANCISCO DE MORAIS", funcao: "LIDER DE TURMA", email: "dionisiomorais@vibraenergia.com.br" },
-      { id: "c_150260", matricula: "150260", nome: "DOUGLAS PROCOPIO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "douglasprocopio@vibraenergia.com.br" },
-      { id: "c_127594", matricula: "127594", nome: "EDUARDO BRASILEIRO", funcao: "LIDER DE ABASTECIMENTO", email: "eduardobrasileiro@vibraenergia.com.br" },
-      { id: "c_133632", matricula: "133632", nome: "EDUARDO LOYOLA DE MELO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "eduardomelo@vibraenergia.com.br" },
-      { id: "c_175912", matricula: "175912", nome: "EULES SOUSA OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "eulesoliveira@vibraenergia.com.br" },
-      { id: "c_182073", matricula: "182073", nome: "EVANDRO FERREIRA CAIPPES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "evandrocaippes@vibraenergia.com.br" },
-      { id: "c_174731", matricula: "174731", nome: "EWERTON COTRIM CARDEAL", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "ewertoncardeal@vibraenergia.com.br" },
-      { id: "c_131638", matricula: "131638", nome: "FERNANDO GOMES DA COSTA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "fernandocosta@vibraenergia.com.br" },
-      { id: "c_133908", matricula: "133908", nome: "FERNANDO VIEIRA MARTINEZ", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "fernandomartinez@vibraenergia.com.br" },
-      { id: "c_149863", matricula: "149863", nome: "FLAVIO RENATO DE ARRUDA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "flavioarruda@vibraenergia.com.br" },
-      { id: "c_188483", matricula: "188483", nome: "FRANCIELDO FRANCISCO DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "francieldosilva@vibraenergia.com.br" },
-      { id: "c_170314", matricula: "170314", nome: "FREDISON AMADEUS DO NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "fredisonnascimento@vibraenergia.com.br" },
-      { id: "c_134708", matricula: "134708", nome: "GABRIEL LUIZ DE SOUZA SPEDINI", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "gabrielspedini@vibraenergia.com.br" },
-      { id: "c_124870", matricula: "124870", nome: "GILVAN BARBOSA CASTRO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "gilvancastro@vibraenergia.com.br" },
-      { id: "c_124045", matricula: "124045", nome: "GIVANI CORDEIRO DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "givanisilva@vibraenergia.com.br" },
-      { id: "c_147913", matricula: "147913", nome: "GRACIETE MARTINS FERREIRA", funcao: "TECNICA DE SEGURANCA DO TRABALHO PL", email: "gracietef@vibraenergia.com.br" },
-      { id: "c_123731", matricula: "123731", nome: "GUILHERME FREIRE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "guilhermesouza@vibraenergia.com.br" },
-      { id: "c_189025", matricula: "189025", nome: "GUILHERME GOMES DE NOVAIS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "guilhermenovais@vibraenergia.com.br" },
-      { id: "c_189013", matricula: "189013", nome: "GUSTAVO DA SILVA RODRIGUES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "gustavorodrigues@vibraenergia.com.br" },
-      { id: "c_134862", matricula: "134862", nome: "GUSTAVO GOMES DE FARIAS JUNIOR", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "gustavojunior@vibraenergia.com.br" },
-      { id: "c_124186", matricula: "124186", nome: "HENRIQUE FLORENTINO ALVES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "henriquealves@vibraenergia.com.br" },
-      { id: "c_202316", matricula: "202316", nome: "HERIK MORAES RIBEIRO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "herikribeiro@vibraenergia.com.br" },
-      { id: "c_123442", matricula: "123442", nome: "HUAN CARLOS NASCIMENTO SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "huansantos@vibraenergia.com.br" },
-      { id: "c_150259", matricula: "150259", nome: "IDENILSON PEREIRA COSTA", funcao: "LIDER DE ABASTECIMENTO", email: "idenilsoncosta@vibraenergia.com.br" },
-      { id: "c_130377", matricula: "130377", nome: "ILDO LUIZ DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "ildosilva@vibraenergia.com.br" },
-      { id: "c_150653", matricula: "150653", nome: "ITAYLON TAVARES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "itaylonsilva@vibraenergia.com.br" },
-      { id: "c_130040", matricula: "130040", nome: "JOAO MARCOS DE JESUS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "joaomarcos@vibraenergia.com.br" },
-      { id: "c_128843", matricula: "128843", nome: "JONATAN ALVES DE BARROS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "jonatanbarros@vibraenergia.com.br" },
-      { id: "c_134223", matricula: "134223", nome: "JOSE EDSON GONCALVES DIAS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "josedias@vibraenergia.com.br" },
-      { id: "c_155151", matricula: "155151", nome: "JOSE RAMOS GALDINO DE ARAUJO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "josearaujo@vibraenergia.com.br" },
-      { id: "c_188981", matricula: "188981", nome: "JOVELINO ANTONIO DE SOUZA JUNIOR", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "jovelinojunior@vibraenergia.com.br" },
-      { id: "c_128683", matricula: "128683", nome: "JOVINIANO ANDRADE DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "jovinianosilva@vibraenergia.com.br" },
-      { id: "c_123429", matricula: "123429", nome: "JULIO CESAR CAMARGO DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "juliosilva@vibraenergia.com.br" },
-      { id: "c_144787", matricula: "144787", nome: "JULIO CESAR DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "juliooliveira@vibraenergia.com.br" },
-      { id: "c_189062", matricula: "189062", nome: "JULIO CESAR MARQUES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "juliomarques@vibraenergia.com.br" },
-      { id: "c_128879", matricula: "128879", nome: "JUNIOR TOZETTI DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "juniortozetti@vibraenergia.com.br" },
-      { id: "c_80048881", matricula: "80048881", nome: "KAMILA MORENO VIDAL", funcao: "APRENDIZ", email: "kamilamvidal@vibraenergia.com.br" },
-      { id: "c_179610", matricula: "179610", nome: "KLEYSSON LUZ DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "kleyssonoliveira@vibraenergia.com.br" },
-      { id: "c_127127", matricula: "127127", nome: "LAERCIO VITAL MARTINS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "laerciomartins@vibraenergia.com.br" },
-      { id: "c_80048900", matricula: "80048900", nome: "LAVINIA SOUZA DE ALMEIDA", funcao: "APRENDIZ", email: "laviniasalmeida@vibraenergia.com.br" },
-      { id: "c_128462", matricula: "128462", nome: "LEANDRO ARAUJO DE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "leandrosouza@vibraenergia.com.br" },
-      { id: "c_123602", matricula: "123602", nome: "LEONARDO WEBERT DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "leonardosilva@vibraenergia.com.br" },
-      { id: "c_158478", matricula: "158478", nome: "LUCAS EVARISTO GOMES DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "lucasevaristo@vibraenergia.com.br" },
-      { id: "c_189001", matricula: "189001", nome: "LUCAS VIEIRA SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "lucasvsantos@vibraenergia.com.br" },
-      { id: "c_122200", matricula: "122200", nome: "LUCIANO COSTA DE JESUS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "lucianojesus@vibraenergia.com.br" },
-      { id: "c_127140", matricula: "127140", nome: "LUIS FRANCISCO DO NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "luisnascimento@vibraenergia.com.br" },
-      { id: "c_134420", matricula: "134420", nome: "MANOEL BAZILIO DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "manoelsilva@vibraenergia.com.br" },
-      { id: "c_134597", matricula: "134597", nome: "MARCIO EDIVAL SILVA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "marcioedival@vibraenergia.com.br" },
-      { id: "c_182964", matricula: "182964", nome: "MARCOS BARBOSA LEITE", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "marcosleite@vibraenergia.com.br" },
-      { id: "c_125761", matricula: "125761", nome: "MARCOS VINICIUS DA SILVA VIRGINIO", funcao: "SUPERVISOR DE PISTA", email: "marcosvirginio@vibraenergia.com.br" },
-      { id: "c_135072", matricula: "135072", nome: "MICHEL DE CASTRO PEREIRA DO CARMO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "michelcarmo@vibraenergia.com.br" },
-      { id: "c_134364", matricula: "134364", nome: "MILTON OLIVEIRA DE ASSIS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "miltonassis@vibraenergia.com.br" },
-      { id: "c_189500", matricula: "189500", nome: "NATAN PEREIRA DO CARMO CRUZ", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "natancruz@vibraenergia.com.br" },
-      { id: "c_124727", matricula: "124727", nome: "NORMAN TADAO DE MORAIS MORI", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "normanmori@vibraenergia.com.br" },
-      { id: "c_134340", matricula: "134340", nome: "PAULO HENRIQUE MARTINS BENTO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "paulobento@vibraenergia.com.br" },
-      { id: "c_188502", matricula: "188502", nome: "PEDRO HENRIQUE SOUZA SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "pedrohenriquess@vibraenergia.com.br" },
-      { id: "c_123417", matricula: "123417", nome: "PETERSON GASPARINI", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "petersongasparini@vibraenergia.com.br" },
-      { id: "c_140832", matricula: "140832", nome: "RAFAEL CALAZANS DE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rafaelcalazans@vibraenergia.com.br" },
-      { id: "c_134303", matricula: "134303", nome: "RAFAEL MOURA DOS SANTOS ARAUJO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rafaelaraujo@vibraenergia.com.br" },
-      { id: "c_80048912", matricula: "80048912", nome: "RAFAELA RIBEIRO DOS SANTOS", funcao: "APRENDIZ", email: "rafaelarsantos@vibraenergia.com.br" },
-      { id: "c_134327", matricula: "134327", nome: "REGIS BRITO DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "regisoliveira@vibraenergia.com.br" },
-      { id: "c_157838", matricula: "157838", nome: "RENATA RODRIGUES DOS SANTOS", funcao: "OPERADORA DE ABASTECIMENTO JR", email: "renatarodrigues@vibraenergia.com.br" },
-      { id: "c_123454", matricula: "123454", nome: "RENATO LOPES DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "renatosantos@vibraenergia.com.br" },
-      { id: "c_134296", matricula: "134296", nome: "RENATO PASCHOAL", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "renatopaschoal@vibraenergia.com.br" },
-      { id: "c_134315", matricula: "134315", nome: "RENILSON ALVES SIMAO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "renilsonsimao@vibraenergia.com.br" },
-      { id: "c_189492", matricula: "189492", nome: "RICARDO RODRIGUES DE PAIVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "ricardopaiva@vibraenergia.com.br" },
-      { id: "c_186778", matricula: "186778", nome: "ROBSON FERNANDES ARRUDA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "robsonarruda@vibraenergia.com.br" },
-      { id: "c_134339", matricula: "134339", nome: "RODOLFO LEONEL", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "rodolfoleonel@vibraenergia.com.br" },
-      { id: "c_188993", matricula: "188993", nome: "RODRIGO CALDEIRA LOPES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rodrigolopes@vibraenergia.com.br" },
-      { id: "c_185120", matricula: "185120", nome: "RODRIGO COSTA DE HOLANDA CAVALCANTE", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rodrigocavalcante@vibraenergia.com.br" },
-      { id: "c_135000", matricula: "135000", nome: "RODRIGO EXPEDITO BELENTANI DE SOUSA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rodrigosousa@vibraenergia.com.br" },
-      { id: "c_134825", matricula: "134825", nome: "RODRIGO SANTOS DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "rodrigos@vibraenergia.com.br" },
-      { id: "c_138812", matricula: "138812", nome: "RODRIGO VENANCIO DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rodrigovenancio@vibraenergia.com.br" },
-      { id: "c_179357", matricula: "179357", nome: "RONALD SILVA LIMA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "ronaldlima@vibraenergia.com.br" },
-      { id: "c_908884", matricula: "908884", nome: "RUAN CARLOS BORGES ALVES", funcao: "GERENTE DE OPERACAO DE AEROPORTOS", email: "ruan@vibraenergia.com.br" },
-      { id: "c_134710", matricula: "134710", nome: "SANDRO RUIZ BELINI", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "sandrobelini@vibraenergia.com.br" },
-      { id: "c_80048868", matricula: "80048868", nome: "SARA PEREIRA DE SOUZA", funcao: "APRENDIZ", email: "sarapsouza@vibraenergia.com.br" },
-      { id: "c_134087", matricula: "134087", nome: "SERGIO GOMES PEREIRA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "sergiopereira@vibraenergia.com.br" },
-      { id: "c_130709", matricula: "130709", nome: "SERGIO JOSE DO NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "sergionascimento@vibraenergia.com.br" },
-      { id: "c_189480", matricula: "189480", nome: "SHELINTON ROBERTO MARQUES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "shelintonsilva@vibraenergia.com.br" },
-      { id: "c_134524", matricula: "134524", nome: "SOLANGE GOMES DE SOUSA", funcao: "OPERADORA DE ABASTECIMENTO JR", email: "solangesousa@vibraenergia.com.br" },
-      { id: "c_123491", matricula: "123491", nome: "VAGNER LOPES DE CASTRO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "vagnercastro@vibraenergia.com.br" },
-      { id: "c_71112246", matricula: "71112246", nome: "VALDENICE MARIA DA CONCEICAO", funcao: "CONTRATADO", email: "" },
-      { id: "c_150628", matricula: "150628", nome: "VALDINA ROSA DE OLIVEIRA PINHEIRO", funcao: "OPERADORA DE ABASTECIMENTO JR", email: "valdinapinheiro@vibraenergia.com.br" },
-      { id: "c_123767", matricula: "123767", nome: "VINICIUS LUNA FERNANDES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "viniciusfernandes@vibraenergia.com.br" },
-      { id: "c_134470", matricula: "134470", nome: "WESLEY VALIM MOREIRA RAFAEL", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "wesleyrafael@vibraenergia.com.br" },
-      { id: "c_124555", matricula: "124555", nome: "WILLIAM KOLODZIEJSKI JUNIOR", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "williamjunior@vibraenergia.com.br" },
-      { id: "c_191776", matricula: "191776", nome: "WILSON FERREIRA NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "wilsonnascimento@vibraenergia.com.br" }
+      { id: "c_128660", matricula: "128660", nome: "ADAUTO RIBEIRO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adautosantos@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_129028", matricula: "129028", nome: "ADILSON MARQUES ESCANHOLATO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adilsonescanholato@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_189584", matricula: "189584", nome: "ADOLFO DE SOUSA OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "adolfooliveira@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134770", matricula: "134770", nome: "ADRIANO APARECIDO GONZAGA DA COSTA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "adrianocosta@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_128578", matricula: "128578", nome: "ALECSANDER RODRIGUES LOPES CAVALCANTI", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "alecsandercavalcanti@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_123480", matricula: "123480", nome: "ALEX BARBOSA DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "alexsantos@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_129298", matricula: "129298", nome: "ALEX SILVERIO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "alexsilverio@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_123233", matricula: "123233", nome: "ALEXANDRE CORREIA ALVES", funcao: "ASSISTENTE ADMINISTRATIVO JR", email: "alexandrealves@vibraenergia.com.br", naoUtilizaCinto: true },
+      { id: "c_132101", matricula: "132101", nome: "ALEXANDRE PIRES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "alexandrepires@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_128241", matricula: "128241", nome: "ALEXANDRO TORRES FERREIRA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "alexandroferreira@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_177470", matricula: "177470", nome: "ALIEN PETTINELLI", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "alienpettinelli@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_71126590", matricula: "71126590", nome: "ANA MARIA GOMES DOS SANTOS", funcao: "CONTRATADO", email: "", naoUtilizaCinto: true },
+      { id: "c_123048", matricula: "123048", nome: "ANDERSON DOS SANTOS DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "andersonsilva@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_128216", matricula: "128216", nome: "ANDERSON HORACIO PIRES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "andersonpires@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_128542", matricula: "128542", nome: "ANDERSON ZAGO DE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "andersonsouza@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_189572", matricula: "189572", nome: "ANDRE ALVES DE PAULA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "andrepaula@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_127059", matricula: "127059", nome: "ANDRE DO NASCIMENTO SANTOS", funcao: "LIDER DE ABASTECIMENTO", email: "andresantos@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_128806", matricula: "128806", nome: "ANTONIO NORIVAL RIBEIRO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "antonioribeiro@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_71176703", matricula: "71176703", nome: "BRUNA VIEIRA DE SOUZA", funcao: "CONTRATADO", email: "", naoUtilizaCinto: true },
+      { id: "c_185131", matricula: "185131", nome: "BRUNO DE ALMEIDA DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "brunoalmeida@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_185813", matricula: "185813", nome: "BRUNO EVANGELISTA CERQUEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "brunocerqueira@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_179959", matricula: "179959", nome: "CAIO FIALHO DE CASTRO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "caiocastro@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_183727", matricula: "183727", nome: "CARLOS ALBERTO BASTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "carlosbastos@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_131210", matricula: "131210", nome: "CARLOS ALBERTO DE JESUS SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "carlosalberto@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_128449", matricula: "128449", nome: "CARLOS EDUARDO PAVAO", funcao: "ASSISTENTE ADMINISTRATIVO JR", email: "carlospavao@vibraenergia.com.br", naoUtilizaCinto: true },
+      { id: "c_127465", matricula: "127465", nome: "CESAR MOREIRA DOURADO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "cesardourado@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_133853", matricula: "133853", nome: "CESARIO RODRIGUES DE MEDEIROS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "cesariomedeiros@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_150641", matricula: "150641", nome: "CLAUDIANA QUEIROZ SILVA", funcao: "TECNICA DE SEGURANCA DO TRABALHO PL", email: "claudianasilva@vibraenergia.com.br", naoUtilizaCinto: true },
+      { id: "c_136413", matricula: "136413", nome: "CLAUDIO ALVES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "claudioalves@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_133423", matricula: "133423", nome: "CLAYTON DOUGLAS IGREJA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "claytonigreja@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_136610", matricula: "136610", nome: "CLEBER RICARDO RIBEIRO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "cleberribeiro@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_149433", matricula: "149433", nome: "DIOGO DA SILVA FEITOSA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "diogofeitosa@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_133400", matricula: "133400", nome: "DIOGO SABATELLI", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "diogosabatelli@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_127060", matricula: "127060", nome: "DIONISIO FRANCISCO DE MORAIS", funcao: "LIDER DE TURMA", email: "dionisiomorais@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_150260", matricula: "150260", nome: "DOUGLAS PROCOPIO DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "douglasprocopio@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_127594", matricula: "127594", nome: "EDUARDO BRASILEIRO", funcao: "LIDER DE ABASTECIMENTO", email: "eduardobrasileiro@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_133632", matricula: "133632", nome: "EDUARDO LOYOLA DE MELO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "eduardomelo@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_175912", matricula: "175912", nome: "EULES SOUSA OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "eulesoliveira@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_182073", matricula: "182073", nome: "EVANDRO FERREIRA CAIPPES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "evandrocaippes@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_174731", matricula: "174731", nome: "EWERTON COTRIM CARDEAL", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "ewertoncardeal@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_131638", matricula: "131638", nome: "FERNANDO GOMES DA COSTA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "fernandocosta@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_133908", matricula: "133908", nome: "FERNANDO VIEIRA MARTINEZ", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "fernandomartinez@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_149863", matricula: "149863", nome: "FLAVIO RENATO DE ARRUDA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "flavioarruda@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_188483", matricula: "188483", nome: "FRANCIELDO FRANCISCO DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "francieldosilva@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_170314", matricula: "170314", nome: "FREDISON AMADEUS DO NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "fredisonnascimento@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134708", matricula: "134708", nome: "GABRIEL LUIZ DE SOUZA SPEDINI", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "gabrielspedini@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_124870", matricula: "124870", nome: "GILVAN BARBOSA CASTRO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "gilvancastro@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_124045", matricula: "124045", nome: "GIVANI CORDEIRO DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "givanisilva@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_147913", matricula: "147913", nome: "GRACIETE MARTINS FERREIRA", funcao: "TECNICA DE SEGURANCA DO TRABALHO PL", email: "gracietef@vibraenergia.com.br", naoUtilizaCinto: true },
+      { id: "c_123731", matricula: "123731", nome: "GUILHERME FREIRE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "guilhermesouza@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_189025", matricula: "189025", nome: "GUILHERME GOMES DE NOVAIS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "guilhermenovais@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_189013", matricula: "189013", nome: "GUSTAVO DA SILVA RODRIGUES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "gustavorodrigues@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134862", matricula: "134862", nome: "GUSTAVO GOMES DE FARIAS JUNIOR", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "gustavojunior@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_124186", matricula: "124186", nome: "HENRIQUE FLORENTINO ALVES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "henriquealves@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_202316", matricula: "202316", nome: "HERIK MORAES RIBEIRO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "herikribeiro@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_123442", matricula: "123442", nome: "HUAN CARLOS NASCIMENTO SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "huansantos@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_150259", matricula: "150259", nome: "IDENILSON PEREIRA COSTA", funcao: "LIDER DE ABASTECIMENTO", email: "idenilsoncosta@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_130377", matricula: "130377", nome: "ILDO LUIZ DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "ildosilva@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_150653", matricula: "150653", nome: "ITAYLON TAVARES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "itaylonsilva@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_130040", matricula: "130040", nome: "JOAO MARCOS DE JESUS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "joaomarcos@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_128843", matricula: "128843", nome: "JONATAN ALVES DE BARROS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "jonatanbarros@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134223", matricula: "134223", nome: "JOSE EDSON GONCALVES DIAS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "josedias@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_155151", matricula: "155151", nome: "JOSE RAMOS GALDINO DE ARAUJO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "josearaujo@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_188981", matricula: "188981", nome: "JOVELINO ANTONIO DE SOUZA JUNIOR", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "jovelinojunior@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_128683", matricula: "128683", nome: "JOVINIANO ANDRADE DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "jovinianosilva@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_123429", matricula: "123429", nome: "JULIO CESAR CAMARGO DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "juliosilva@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_144787", matricula: "144787", nome: "JULIO CESAR DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "juliooliveira@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_189062", matricula: "189062", nome: "JULIO CESAR MARQUES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "juliomarques@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_128879", matricula: "128879", nome: "JUNIOR TOZETTI DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "juniortozetti@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_80048881", matricula: "80048881", nome: "KAMILA MORENO VIDAL", funcao: "APRENDIZ", email: "kamilamvidal@vibraenergia.com.br", naoUtilizaCinto: true },
+      { id: "c_179610", matricula: "179610", nome: "KLEYSSON LUZ DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "kleyssonoliveira@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_127127", matricula: "127127", nome: "LAERCIO VITAL MARTINS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "laerciomartins@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_80048900", matricula: "80048900", nome: "LAVINIA SOUZA DE ALMEIDA", funcao: "APRENDIZ", email: "laviniasalmeida@vibraenergia.com.br", naoUtilizaCinto: true },
+      { id: "c_128462", matricula: "128462", nome: "LEANDRO ARAUJO DE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "leandrosouza@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_123602", matricula: "123602", nome: "LEONARDO WEBERT DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "leonardosilva@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_158478", matricula: "158478", nome: "LUCAS EVARISTO GOMES DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "lucasevaristo@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_189001", matricula: "189001", nome: "LUCAS VIEIRA SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "lucasvsantos@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_122200", matricula: "122200", nome: "LUCIANO COSTA DE JESUS", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "lucianojesus@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_127140", matricula: "127140", nome: "LUIS FRANCISCO DO NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "luisnascimento@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134420", matricula: "134420", nome: "MANOEL BAZILIO DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "manoelsilva@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134597", matricula: "134597", nome: "MARCIO EDIVAL SILVA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "marcioedival@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_182964", matricula: "182964", nome: "MARCOS BARBOSA LEITE", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "marcosleite@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_125761", matricula: "125761", nome: "MARCOS VINICIUS DA SILVA VIRGINIO", funcao: "SUPERVISOR DE PISTA", email: "marcosvirginio@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_135072", matricula: "135072", nome: "MICHEL DE CASTRO PEREIRA DO CARMO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "michelcarmo@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134364", matricula: "134364", nome: "MILTON OLIVEIRA DE ASSIS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "miltonassis@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_189500", matricula: "189500", nome: "NATAN PEREIRA DO CARMO CRUZ", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "natancruz@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_124727", matricula: "124727", nome: "NORMAN TADAO DE MORAIS MORI", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "normanmori@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134340", matricula: "134340", nome: "PAULO HENRIQUE MARTINS BENTO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "paulobento@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_188502", matricula: "188502", nome: "PEDRO HENRIQUE SOUZA SANTOS", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "pedrohenriquess@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_123417", matricula: "123417", nome: "PETERSON GASPARINI", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "petersongasparini@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_140832", matricula: "140832", nome: "RAFAEL CALAZANS DE SOUZA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rafaelcalazans@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134303", matricula: "134303", nome: "RAFAEL MOURA DOS SANTOS ARAUJO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rafaelaraujo@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_80048912", matricula: "80048912", nome: "RAFAELA RIBEIRO DOS SANTOS", funcao: "APRENDIZ", email: "rafaelarsantos@vibraenergia.com.br", naoUtilizaCinto: true },
+      { id: "c_134327", matricula: "134327", nome: "REGIS BRITO DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "regisoliveira@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_157838", matricula: "157838", nome: "RENATA RODRIGUES DOS SANTOS", funcao: "OPERADORA DE ABASTECIMENTO JR", email: "renatarodrigues@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_123454", matricula: "123454", nome: "RENATO LOPES DOS SANTOS", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "renatosantos@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134296", matricula: "134296", nome: "RENATO PASCHOAL", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "renatopaschoal@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134315", matricula: "134315", nome: "RENILSON ALVES SIMAO", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "renilsonsimao@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_189492", matricula: "189492", nome: "RICARDO RODRIGUES DE PAIVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "ricardopaiva@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_186778", matricula: "186778", nome: "ROBSON FERNANDES ARRUDA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "robsonarruda@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134339", matricula: "134339", nome: "RODOLFO LEONEL", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "rodolfoleonel@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_188993", matricula: "188993", nome: "RODRIGO CALDEIRA LOPES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rodrigolopes@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_185120", matricula: "185120", nome: "RODRIGO COSTA DE HOLANDA CAVALCANTE", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rodrigocavalcante@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_135000", matricula: "135000", nome: "RODRIGO EXPEDITO BELENTANI DE SOUSA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rodrigosousa@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134825", matricula: "134825", nome: "RODRIGO SANTOS DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "rodrigos@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_138812", matricula: "138812", nome: "RODRIGO VENANCIO DE OLIVEIRA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "rodrigovenancio@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_179357", matricula: "179357", nome: "RONALD SILVA LIMA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "ronaldlima@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_908884", matricula: "908884", nome: "RUAN CARLOS BORGES ALVES", funcao: "GERENTE DE OPERACAO DE AEROPORTOS", email: "ruan@vibraenergia.com.br", naoUtilizaCinto: true },
+      { id: "c_134710", matricula: "134710", nome: "SANDRO RUIZ BELINI", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "sandrobelini@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_80048868", matricula: "80048868", nome: "SARA PEREIRA DE SOUZA", funcao: "APRENDIZ", email: "sarapsouza@vibraenergia.com.br", naoUtilizaCinto: true },
+      { id: "c_134087", matricula: "134087", nome: "SERGIO GOMES PEREIRA", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "sergiopereira@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_130709", matricula: "130709", nome: "SERGIO JOSE DO NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO SR", email: "sergionascimento@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_189480", matricula: "189480", nome: "SHELINTON ROBERTO MARQUES DA SILVA", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "shelintonsilva@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134524", matricula: "134524", nome: "SOLANGE GOMES DE SOUSA", funcao: "OPERADORA DE ABASTECIMENTO JR", email: "solangesousa@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_123491", matricula: "123491", nome: "VAGNER LOPES DE CASTRO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "vagnercastro@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_71112246", matricula: "71112246", nome: "VALDENICE MARIA DA CONCEICAO", funcao: "CONTRATADO", email: "", naoUtilizaCinto: true },
+      { id: "c_150628", matricula: "150628", nome: "VALDINA ROSA DE OLIVEIRA PINHEIRO", funcao: "OPERADORA DE ABASTECIMENTO JR", email: "valdinapinheiro@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_123767", matricula: "123767", nome: "VINICIUS LUNA FERNANDES", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "viniciusfernandes@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_134470", matricula: "134470", nome: "WESLEY VALIM MOREIRA RAFAEL", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "wesleyrafael@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_124555", matricula: "124555", nome: "WILLIAM KOLODZIEJSKI JUNIOR", funcao: "OPERADOR DE ABASTECIMENTO PL", email: "williamjunior@vibraenergia.com.br", naoUtilizaCinto: false },
+      { id: "c_191776", matricula: "191776", nome: "WILSON FERREIRA NASCIMENTO", funcao: "OPERADOR DE ABASTECIMENTO JR", email: "wilsonnascimento@vibraenergia.com.br", naoUtilizaCinto: false }
     ];
 
+    // 5. BANCO OFICIAL DE ESTOQUE (78 EPIS)
     const INITIAL_ESTOQUE = [
       { id: "e1", nome: "Luva Nitrílica", ca: "42760", validade: "2029-12-31", qtd: 15, min: 5 },
       { id: "e2", nome: "Luva Nitrílica Manga Longa G", ca: "S/C.A.", validade: "2029-12-31", qtd: 15, min: 5 },
@@ -1072,7 +1128,7 @@ Casquete	38352	100	10
       { id: "e78", nome: "Óculos de Segurança Com Grau", ca: "33594", validade: "2029-12-31", qtd: 15, min: 5 }
     ];
 
-    // 0. CONFIGURAÇÃO DA NUVEM FIREBASE (SINCRONIZAÇÃO EM TEMPO REAL)
+    // 6. CONFIGURAÇÃO DA NUVEM FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyDTMDXAbh2zx7d55kwjV1LTMCZ9eNIz4hs",
       authDomain: "ssma-bavgru.firebaseapp.com",
@@ -1094,15 +1150,30 @@ Casquete	38352	100	10
       console.warn("Erro ao iniciar Firebase:", e);
     }
 
-    // ATUALIZAÇÃO AUTOMÁTICA DA BASE PARA 116 COLABORADORES
-    const VERSAO_BASE = 'bavgru_versao_116colab_78epis_v4';
+    // ATUALIZAÇÃO AUTOMÁTICA DA BASE LOCAL
+    const VERSAO_BASE = 'bavgru_versao_116colab_v6_multi_epis_naocinto';
     if (localStorage.getItem('bavgru_versao_instalada') !== VERSAO_BASE) {
-      localStorage.setItem('bavgru_colaboradores', JSON.stringify(INITIAL_COLABORADORES));
-      localStorage.setItem('bavgru_estoque', JSON.stringify(INITIAL_ESTOQUE));
+      let colsExistentes = JSON.parse(localStorage.getItem('bavgru_colaboradores'));
+      if (!colsExistentes || colsExistentes.length === 0) {
+        localStorage.setItem('bavgru_colaboradores', JSON.stringify(INITIAL_COLABORADORES));
+      } else {
+        colsExistentes = colsExistentes.map(c => {
+          if (c.naoUtilizaCinto === undefined) {
+            const inicial = INITIAL_COLABORADORES.find(ic => ic.matricula === c.matricula);
+            c.naoUtilizaCinto = inicial ? !!inicial.naoUtilizaCinto : false;
+          }
+          return c;
+        });
+        localStorage.setItem('bavgru_colaboradores', JSON.stringify(colsExistentes));
+      }
+
+      if (!localStorage.getItem('bavgru_estoque')) {
+        localStorage.setItem('bavgru_estoque', JSON.stringify(INITIAL_ESTOQUE));
+      }
       localStorage.setItem('bavgru_versao_instalada', VERSAO_BASE);
     }
 
-    // ESTADO LOCAL E NUVEM
+    // ESTADOS
     let colaboradores = JSON.parse(localStorage.getItem('bavgru_colaboradores')) || INITIAL_COLABORADORES;
     let estoque = JSON.parse(localStorage.getItem('bavgru_estoque')) || INITIAL_ESTOQUE;
     let auditoria = JSON.parse(localStorage.getItem('bavgru_auditoria')) || [];
@@ -1110,159 +1181,78 @@ Casquete	38352	100	10
     let senhaAdmin = localStorage.getItem('bavgru_senha_admin') || 'vibra@2025';
     let adminAutenticado = false;
 
+    // Carrinho de EPIs para Dispensação Múltipla
+    let carrinhoDispensacao = [];
+
+    // Câmeras e Assinatura
     let fotosCapturadas = { disp: null, insp: null };
     let streamsCamera = { disp: null, insp: null };
     let cameraFacing = { disp: 'user', insp: 'environment' };
+    let filtroTabelaNaoCinto = 'todos';
     let primeiraCargaNuvem = true;
-    let carrinhoDispensacao = [];
 
-    // Limpa campos undefined ou null que o Firebase rejeita
-    function limparObjetoParaFirebase(obj) {
-      return JSON.parse(JSON.stringify(obj, (k, v) => (v === undefined || v === null) ? "" : v));
-    }
-
-    // Extrai timestamp numérico do ID (Ex: NR06-1710000000 -> 1710000000) para ordenar sempre do mais recente para o mais antigo
-    function extrairTimestampId(id) {
-      if (!id) return 0;
-      const partes = String(id).split('-');
-      const num = parseInt(partes[partes.length - 1], 10);
-      return isNaN(num) ? 0 : num;
-    }
-
+    // BANCO E SINCRONIZAÇÃO
     function salvarBancoLocal() {
-      // 1. Salva localmente como backup e suporte offline
-      try {
-        localStorage.setItem('bavgru_colaboradores', JSON.stringify(colaboradores));
-        localStorage.setItem('bavgru_estoque', JSON.stringify(estoque));
-        localStorage.setItem('bavgru_auditoria', JSON.stringify(auditoria));
-        localStorage.setItem('bavgru_log_exclusoes', JSON.stringify(logExclusoes));
-        localStorage.setItem('bavgru_senha_admin', senhaAdmin);
-      } catch (err) {
-        console.warn('Alerta de armazenamento local:', err);
-      }
+      localStorage.setItem('bavgru_colaboradores', JSON.stringify(colaboradores));
+      localStorage.setItem('bavgru_estoque', JSON.stringify(estoque));
+      localStorage.setItem('bavgru_auditoria', JSON.stringify(auditoria));
+      localStorage.setItem('bavgru_log_exclusoes', JSON.stringify(logExclusoes));
+      localStorage.setItem('bavgru_senha_admin', senhaAdmin);
 
-      // 2. Transmite em tempo real para todos os outros computadores e celulares (sem perder dados)
       if (dbNuvem) {
-        // Envia cada registro de auditoria individualmente por ID para nunca sobrescrever nem estourar limite de pacote
-        auditoria.forEach(reg => {
-          if (reg && reg.id) {
-            dbNuvem.ref('bavgru/auditoria_itens/' + reg.id).set(limparObjetoParaFirebase(reg)).catch(e => console.warn('Sync item auditoria:', e));
-          }
-        });
-        dbNuvem.ref('bavgru/auditoria').set(limparObjetoParaFirebase(auditoria)).catch(e => console.warn('Sync auditoria:', e));
-        dbNuvem.ref('bavgru/estoque').set(limparObjetoParaFirebase(estoque)).catch(e => console.warn('Sync estoque:', e));
-        dbNuvem.ref('bavgru/colaboradores').set(limparObjetoParaFirebase(colaboradores)).catch(e => console.warn('Sync colaboradores:', e));
-        dbNuvem.ref('bavgru/logExclusoes').set(limparObjetoParaFirebase(logExclusoes)).catch(e => console.warn('Sync log:', e));
+        dbNuvem.ref('bavgru/auditoria').set(auditoria).catch(e => console.warn('Sync auditoria:', e));
+        dbNuvem.ref('bavgru/estoque').set(estoque).catch(e => console.warn('Sync estoque:', e));
+        dbNuvem.ref('bavgru/colaboradores').set(colaboradores).catch(e => console.warn('Sync colaboradores:', e));
+        dbNuvem.ref('bavgru/logExclusoes').set(logExclusoes).catch(e => console.warn('Sync log:', e));
       }
-
       atualizarTudo();
-    }
-
-    function forcarSincronizacaoManual() {
-      salvarBancoLocal();
-      alert('🔄 Sincronização com a nuvem enviada! Verifique se o celular e o computador estão com internet ativa.');
-    }
-
-    function mesclarAuditoriaLocalENuvem(listaNuvem) {
-      const mapa = new Map();
-      // 1º: Carrega o que já está no aparelho (ex: entregas feitas no celular offline/4G)
-      auditoria.forEach(r => {
-        if (r && r.id) mapa.set(r.id, r);
-      });
-      // 2º: Junta com o que veio da nuvem (computador / outros celulares)
-      listaNuvem.forEach(r => {
-        if (r && r.id) mapa.set(r.id, r);
-      });
-      // 3º: Remove registros que constam no log de exclusões
-      const idsExcluidos = new Set(logExclusoes.map(l => l.idOriginal));
-      const unificada = Array.from(mapa.values()).filter(r => !idsExcluidos.has(r.id));
-      unificada.sort((a, b) => extrairTimestampId(b.id) - extrairTimestampId(a.id));
-      return unificada;
     }
 
     function iniciarSincronizacaoNuvem() {
       if (!dbNuvem) return;
-
       const textoBadge = document.getElementById('texto-status-nuvem');
-      const bolinhaBadge = document.getElementById('bolinha-status-nuvem');
-
-      // Monitor de conexão com a nuvem
       dbNuvem.ref('.info/connected').on('value', (snap) => {
         if (snap.val() === true) {
           if (textoBadge) textoBadge.textContent = 'Nuvem Conectada';
-          if (bolinhaBadge) bolinhaBadge.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
-          // Assim que o celular conecta, empurra qualquer entrega feita nele para a nuvem!
-          auditoria.forEach(reg => {
-            if (reg && reg.id) {
-              dbNuvem.ref('bavgru/auditoria_itens/' + reg.id).set(limparObjetoParaFirebase(reg));
-            }
-          });
         } else {
-          if (textoBadge) textoBadge.textContent = 'Modo Offline (Local)';
-          if (bolinhaBadge) bolinhaBadge.className = 'w-1.5 h-1.5 rounded-full bg-amber-400';
+          if (textoBadge) textoBadge.textContent = 'Reconectando...';
         }
       });
 
-      // 1A. Escuta itens individuais de Auditoria (Garante sincronização 100% confiável celular <-> PC)
-      dbNuvem.ref('bavgru/auditoria_itens').on('value', (snapshot) => {
-        const val = snapshot.val();
-        if (val) {
-          const listaNuvem = Object.values(val);
-          auditoria = mesclarAuditoriaLocalENuvem(listaNuvem);
-          localStorage.setItem('bavgru_auditoria', JSON.stringify(auditoria));
-          atualizarTudo();
-        }
-      });
-
-      // 1B. Escuta nó antigo 'bavgru/auditoria' e mescla sem apagar entregas locais do celular
       dbNuvem.ref('bavgru/auditoria').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
-          const listaNuvem = Array.isArray(val) ? val : Object.values(val);
-          const qtdAntes = auditoria.length;
-          auditoria = mesclarAuditoriaLocalENuvem(listaNuvem);
+          auditoria = Array.isArray(val) ? val : Object.values(val);
           localStorage.setItem('bavgru_auditoria', JSON.stringify(auditoria));
           atualizarTudo();
-          // Se o celular tinha fichas que ainda não estavam na lista da nuvem, reenvia a lista unificada
-          if (auditoria.length > listaNuvem.length || auditoria.length !== qtdAntes) {
-            dbNuvem.ref('bavgru/auditoria').set(limparObjetoParaFirebase(auditoria));
-          }
-        } else if (auditoria.length > 0) {
-          dbNuvem.ref('bavgru/auditoria').set(limparObjetoParaFirebase(auditoria));
         }
       });
 
-      // 2. Escuta Estoque em Tempo Real
       dbNuvem.ref('bavgru/estoque').on('value', (snapshot) => {
         const val = snapshot.val();
-        if (val) {
-          const lista = Array.isArray(val) ? val : Object.values(val);
-          if (lista.length > 0) {
-            estoque = lista;
-            localStorage.setItem('bavgru_estoque', JSON.stringify(estoque));
-            atualizarTudo();
-          }
+        if (val && Array.isArray(val) && val.length > 0) {
+          estoque = val;
+          localStorage.setItem('bavgru_estoque', JSON.stringify(estoque));
+          atualizarTudo();
         } else if (primeiraCargaNuvem) {
-          dbNuvem.ref('bavgru/estoque').set(limparObjetoParaFirebase(INITIAL_ESTOQUE));
+          dbNuvem.ref('bavgru/estoque').set(INITIAL_ESTOQUE);
         }
       });
 
-      // 3. Escuta Colaboradores em Tempo Real
       dbNuvem.ref('bavgru/colaboradores').on('value', (snapshot) => {
         const val = snapshot.val();
-        if (val) {
-          const lista = Array.isArray(val) ? val : Object.values(val);
-          if (lista.length > 0) {
-            colaboradores = lista;
-            localStorage.setItem('bavgru_colaboradores', JSON.stringify(colaboradores));
-            atualizarTudo();
-          }
+        if (val && Array.isArray(val) && val.length > 0) {
+          colaboradores = val.map(c => ({
+            ...c,
+            naoUtilizaCinto: c.naoUtilizaCinto === true
+          }));
+          localStorage.setItem('bavgru_colaboradores', JSON.stringify(colaboradores));
+          atualizarTudo();
         } else if (primeiraCargaNuvem) {
-          dbNuvem.ref('bavgru/colaboradores').set(limparObjetoParaFirebase(INITIAL_COLABORADORES));
+          dbNuvem.ref('bavgru/colaboradores').set(INITIAL_COLABORADORES);
         }
       });
 
-      // 4. Escuta Log de Exclusões
       dbNuvem.ref('bavgru/logExclusoes').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -1271,13 +1261,12 @@ Casquete	38352	100	10
           atualizarTudo();
         }
       });
-
       primeiraCargaNuvem = false;
     }
 
-    // NAVEGAÇÃO
+    // NAVEGAÇÃO DE ABAS
     function switchTab(tab) {
-      ['dashboard', 'dispensacao', 'inspecao', 'pendencias', 'estoque', 'colaboradores', 'admin'].forEach(t => {
+      ['dashboard', 'dispensacao', 'inspecao', 'pendencias', 'nao-cinto', 'estoque', 'colaboradores', 'admin'].forEach(t => {
         const section = document.getElementById('tab-' + t);
         if (section) section.classList.add('hidden');
         const btn = document.getElementById('tab-btn-' + t);
@@ -1286,6 +1275,8 @@ Casquete	38352	100	10
             btn.className = "tab-btn whitespace-nowrap bg-slate-800 text-white hover:bg-slate-900 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold";
           } else if (t === 'pendencias') {
             btn.className = "tab-btn whitespace-nowrap bg-amber-600 text-white hover:bg-amber-700 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold";
+          } else if (t === 'nao-cinto') {
+            btn.className = "tab-btn whitespace-nowrap bg-purple-700 text-white hover:bg-purple-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all font-bold";
           } else {
             btn.className = "tab-btn whitespace-nowrap bg-vibraDark text-white hover:bg-emerald-800 px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all";
           }
@@ -1294,7 +1285,6 @@ Casquete	38352	100	10
 
       const targetSection = document.getElementById('tab-' + tab);
       if (targetSection) targetSection.classList.remove('hidden');
-
       const targetBtn = document.getElementById('tab-btn-' + tab);
       if (targetBtn) {
         targetBtn.className = "tab-btn whitespace-nowrap bg-white text-vibraDark font-semibold px-3.5 py-2 rounded-lg text-xs md:text-sm shadow transition-all";
@@ -1302,6 +1292,7 @@ Casquete	38352	100	10
 
       if (tab === 'admin') renderAdminState();
       else if (tab === 'pendencias') renderPendencias();
+      else if (tab === 'nao-cinto') renderNaoUtilizaCinto();
       else if (tab === 'dispensacao' || tab === 'inspecao') redimensionarCanvas();
     }
 
@@ -1312,6 +1303,8 @@ Casquete	38352	100	10
         adminAutenticado = true;
         document.getElementById('admin-input-senha').value = '';
         renderAdminState();
+        renderNaoUtilizaCinto();
+        alert('✅ Sessão de Administrador iniciada com sucesso!');
       } else {
         alert('❌ Senha de Administrador incorreta.');
       }
@@ -1320,6 +1313,7 @@ Casquete	38352	100	10
     function sairAdmin() {
       adminAutenticado = false;
       renderAdminState();
+      renderNaoUtilizaCinto();
     }
 
     function renderAdminState() {
@@ -1344,40 +1338,982 @@ Casquete	38352	100	10
       alert('✅ Senha de Administrador alterada com sucesso!');
     }
 
+    // CONTROLE DA ABA "NÃO UTILIZA CINTO" (EDITÁVEL SOMENTE POR ADMIN)
+    function solicitarAcessoAdminNaoCinto() {
+      if (adminAutenticado) {
+        alert('Você já está autenticado como Administrador.');
+        return;
+      }
+      const senha = prompt("🔒 Digite a Senha do Administrador para desbloquear as edições de cinto:");
+      if (senha === senhaAdmin) {
+        adminAutenticado = true;
+        renderAdminState();
+        renderNaoUtilizaCinto();
+        alert("✅ Acesso de Administrador liberado para edição!");
+      } else if (senha !== null) {
+        alert("❌ Senha incorreta.");
+      }
+    }
+
+    function alternarStatusCinto(colabId) {
+      if (!adminAutenticado) {
+        alert("🔒 Apenas o Administrador pode alterar se o colaborador utiliza ou não cinto.\nClique em 'Desbloquear Edição' e digite a senha.");
+        return;
+      }
+      const colab = colaboradores.find(c => c.id === colabId);
+      if (!colab) return;
+      colab.naoUtilizaCinto = !colab.naoUtilizaCinto;
+      salvarBancoLocal();
+      renderNaoUtilizaCinto();
+    }
+
+    function filtrarTabelaNaoCinto(tipo) {
+      filtroTabelaNaoCinto = tipo;
+      renderNaoUtilizaCinto();
+    }
+
+    function renderNaoUtilizaCinto() {
+      const tbody = document.getElementById('tabela-nao-cinto');
+      if (!tbody) return;
+
+      const badgeLock = document.getElementById('badge-lock-nao-cinto');
+      const btnLoginRapido = document.getElementById('btn-login-rapido-admin');
+      const avisoAdmin = document.getElementById('aviso-admin-nao-cinto');
+
+      if (adminAutenticado) {
+        if (badgeLock) {
+          badgeLock.className = "text-xs px-2.5 py-1 rounded-lg font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1";
+          badgeLock.innerHTML = "🔓 Edição Liberada (Admin)";
+        }
+        if (btnLoginRapido) btnLoginRapido.classList.add('hidden');
+        if (avisoAdmin) {
+          avisoAdmin.className = "bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs text-emerald-900 flex justify-between items-center";
+          avisoAdmin.innerHTML = "<div><strong>Modo Administrador Ativo:</strong> Clique nos botões da coluna da direita para alternar quem utiliza ou não o cinto de segurança. As pendências mensais serão recalculadas automaticamente.</div>";
+        }
+      } else {
+        if (badgeLock) {
+          badgeLock.className = "text-xs px-2.5 py-1 rounded-lg font-bold bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1";
+          badgeLock.innerHTML = "🔒 Somente Leitura (Bloqueado)";
+        }
+        if (btnLoginRapido) btnLoginRapido.classList.remove('hidden');
+        if (avisoAdmin) {
+          avisoAdmin.className = "bg-purple-50 border border-purple-200 rounded-lg p-3 text-xs text-purple-900 flex justify-between items-center";
+          avisoAdmin.innerHTML = "<div><strong>Aviso de Permissão:</strong> Esta aba só pode ser alterada pelo <strong>Administrador do Sistema</strong>. Digite a senha administrativa para marcar ou desmarcar colaboradores.</div>";
+        }
+      }
+
+      const termo = (document.getElementById('busca-nao-cinto')?.value || '').toLowerCase();
+      let filtrados = colaboradores.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
+
+      if (filtroTabelaNaoCinto === 'isentos') {
+        filtrados = filtrados.filter(c => c.naoUtilizaCinto);
+      } else if (filtroTabelaNaoCinto === 'usam') {
+        filtrados = filtrados.filter(c => !c.naoUtilizaCinto);
+      }
+
+      tbody.innerHTML = filtrados.length ? filtrados.map(c => `
+        <tr class="border-b hover:bg-slate-50">
+          <td class="p-2.5 font-bold font-mono text-xs text-slate-700">${c.matricula}</td>
+          <td class="p-2.5 font-semibold text-slate-800">${c.nome}</td>
+          <td class="p-2.5 text-xs text-slate-600">${c.funcao}</td>
+          <td class="p-2.5 text-center">
+            ${c.naoUtilizaCinto 
+              ? '<span class="bg-purple-100 text-purple-800 border border-purple-300 px-2 py-0.5 rounded-full text-[11px] font-bold">🚫 Não Utiliza Cinto (Isento)</span>'
+              : '<span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full text-[11px] font-bold">🧗 Utiliza Cinto (Obrigatório)</span>'}
+          </td>
+          <td class="p-2.5 text-right">
+            <button onclick="alternarStatusCinto('${c.id}')" ${!adminAutenticado ? 'title="Desbloqueie com a senha do Admin para editar"' : ''} class="${adminAutenticado ? (c.naoUtilizaCinto ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-purple-700 hover:bg-purple-800 text-white') : 'bg-slate-200 text-slate-400 cursor-not-allowed'} px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm">
+              ${c.naoUtilizaCinto ? '🧗 Marcar: Utiliza Cinto' : '🚫 Marcar: Não Usa Cinto'}
+            </button>
+          </td>
+        </tr>
+      `).join('') : `<tr><td colspan="5" class="p-4 text-center text-slate-400">Nenhum colaborador encontrado com os filtros aplicados.</td></tr>`;
+    }
+
+    function verificarAvisoCinto() {
+      const colabId = document.getElementById('insp-colaborador').value;
+      const colab = colaboradores.find(c => c.id === colabId);
+      const aviso = document.getElementById('aviso-nao-usa-cinto');
+      if (colab && colab.naoUtilizaCinto) {
+        aviso.classList.remove('hidden');
+      } else {
+        aviso.classList.add('hidden');
+      }
+    }
+
+    // GESTÃO DE MÚLTIPLOS EPIS NA DISPENSAÇÃO
+    function adicionarEpiListaDispensacao() {
+      const epiId = document.getElementById('disp-epi').value;
+      const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
+      if (qtd <= 0) return alert('Informe uma quantidade válida maior que 0.');
+
+      const itemEstoque = estoque.find(e => e.id === epiId);
+      if (!itemEstoque) return alert('Selecione um EPI válido.');
+
+      const jaNoCarrinho = carrinhoDispensacao.filter(item => item.id === epiId).reduce((s, i) => s + i.qtd, 0);
+      if (itemEstoque.qtd < (jaNoCarrinho + qtd)) {
+        return alert(`Estoque insuficiente de ${itemEstoque.nome}! Saldo atual: ${itemEstoque.qtd} un. (Já na lista: ${jaNoCarrinho} un.)`);
+      }
+
+      const itemExistente = carrinhoDispensacao.find(i => i.id === epiId);
+      if (itemExistente) {
+        itemExistente.qtd += qtd;
+      } else {
+        carrinhoDispensacao.push({
+          id: itemEstoque.id,
+          nome: itemEstoque.nome,
+          ca: itemEstoque.ca,
+          qtd: qtd
+        });
+      }
+
+      document.getElementById('disp-qtd').value = '1';
+      renderCarrinhoDispensacao();
+    }
+
+    function removerEpiListaDispensacao(index) {
+      carrinhoDispensacao.splice(index, 1);
+      renderCarrinhoDispensacao();
+    }
+
+    function renderCarrinhoDispensacao() {
+      const tbody = document.getElementById('lista-epis-dispensacao');
+      if (!tbody) return;
+
+      if (carrinhoDispensacao.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-400 italic">Nenhum EPI adicionado ainda. Escolha o item acima e clique em "➕ Incluir EPI".</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = carrinhoDispensacao.map((item, idx) => `
+        <tr class="hover:bg-slate-50">
+          <td class="p-2 font-semibold text-slate-800">${item.nome}</td>
+          <td class="p-2"><span class="bg-slate-200 px-1.5 py-0.5 rounded text-[10px] font-bold">CA: ${item.ca}</span></td>
+          <td class="p-2 text-center font-bold text-vibraDark">${item.qtd} un.</td>
+          <td class="p-2 text-right">
+            <button type="button" onclick="removerEpiListaDispensacao(${idx})" class="text-red-600 hover:text-red-800 font-bold px-2 py-0.5 rounded hover:bg-red-50 text-xs">
+              ✕ Remover
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // CHECKLIST ANEXO C
+    function renderChecklistForm() {
+      const container = document.getElementById('checklist-container');
+      container.innerHTML = PERGUNTAS_ANEXO_C.map(p => `
+        <div class="p-3 border rounded-lg bg-slate-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+          <div>
+            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 text-vibraDark">${p.grupo}</span>
+            <p class="text-xs md:text-sm font-medium text-slate-800 mt-1 leading-snug">${p.texto}</p>
+          </div>
+          <div class="flex gap-2 shrink-0 text-xs font-bold w-full md:w-auto justify-between md:justify-end mt-1 md:mt-0">
+            <label class="flex items-center gap-1 cursor-pointer bg-white border px-2.5 py-1.5 rounded-lg flex-1 md:flex-initial justify-center">
+              <input type="radio" name="${p.id}" value="Conforme" checked /> <span class="text-emerald-700">✅ Conf.</span>
+            </label>
+            <label class="flex items-center gap-1 cursor-pointer bg-white border px-2.5 py-1.5 rounded-lg text-red-600 flex-1 md:flex-initial justify-center">
+              <input type="radio" name="${p.id}" value="Não Conforme" /> <span>❌ N.C.</span>
+            </label>
+            <label class="flex items-center gap-1 cursor-pointer bg-white border px-2.5 py-1.5 rounded-lg text-slate-500 flex-1 md:flex-initial justify-center">
+              <input type="radio" name="${p.id}" value="Não Aplicável" /> <span>N/A</span>
+            </label>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // CÂMERA
+    async function iniciarCamera(tipo) {
+      try {
+        if (streamsCamera[tipo]) {
+          streamsCamera[tipo].getTracks().forEach(t => t.stop());
+        }
+        const video = document.getElementById('video-' + tipo);
+        const preview = document.getElementById('foto-' + tipo + '-preview');
+        const placeholder = document.getElementById('foto-' + tipo + '-placeholder');
+
+        const constraints = {
+          video: {
+            facingMode: cameraFacing[tipo]
+          }
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamsCamera[tipo] = stream;
+        video.srcObject = stream;
+        video.classList.remove('hidden');
+        preview.classList.add('hidden');
+        if (placeholder) placeholder.classList.add('hidden');
+      } catch (e) {
+        alert('Câmera indisponível ou permissão não concedida no navegador.\nCertifique-se de acessar via HTTPS ou rede segura.');
+      }
+    }
+
+    function alternarCamera(tipo) {
+      cameraFacing[tipo] = cameraFacing[tipo] === 'user' ? 'environment' : 'user';
+      iniciarCamera(tipo);
+    }
+
+    function capturarFoto(tipo) {
+      const video = document.getElementById('video-' + tipo);
+      const preview = document.getElementById('foto-' + tipo + '-preview');
+      if (!streamsCamera[tipo]) return alert('Ligue primeiro a câmera.');
+
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = video.videoWidth || 320;
+      tempCanvas.height = video.videoHeight || 240;
+      tempCanvas.getContext('2d').drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+
+      const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.85);
+      fotosCapturadas[tipo] = dataUrl;
+      preview.src = dataUrl;
+      preview.classList.remove('hidden');
+      video.classList.add('hidden');
+
+      streamsCamera[tipo].getTracks().forEach(t => t.stop());
+      streamsCamera[tipo] = null;
+    }
+
+    // ASSINATURA DIGITAL CANVAS RESPONSIVA
+    function redimensionarCanvas() {
+      ['canvas-disp', 'canvas-insp'].forEach(id => {
+        const canvas = document.getElementById(id);
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        if (rect.width > 0 && canvas.width !== rect.width) {
+          const temp = canvas.toDataURL();
+          canvas.width = rect.width;
+          canvas.height = 170;
+          if (canvas.dataset.assinado === "true") {
+            const img = new Image();
+            img.onload = () => canvas.getContext('2d').drawImage(img, 0, 0);
+            img.src = temp;
+          }
+        }
+      });
+    }
+
+    function configurarCanvasAssinatura(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      let desenhando = false;
+
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#00582C';
+
+      const obterPos = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: (clientX - rect.left) * (canvas.width / rect.width),
+          y: (clientY - rect.top) * (canvas.height / rect.height)
+        };
+      };
+
+      const iniciar = (e) => {
+        desenhando = true;
+        const p = obterPos(e);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        canvas.dataset.assinado = "true";
+      };
+
+      const mover = (e) => {
+        if (!desenhando) return;
+        if (e.cancelable) e.preventDefault();
+        const p = obterPos(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      };
+
+      const parar = () => { desenhando = false; };
+
+      canvas.addEventListener('mousedown', iniciar);
+      canvas.addEventListener('mousemove', mover);
+      window.addEventListener('mouseup', parar);
+
+      canvas.addEventListener('touchstart', iniciar, { passive: true });
+      canvas.addEventListener('touchmove', mover, { passive: false });
+      window.addEventListener('touchend', parar);
+    }
+
+    function limparAssinatura(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+      canvas.dataset.assinado = "false";
+    }
+
+    // SALVAR DISPENSAÇÃO (COM SUPORTE A MÚLTIPLOS ITENS)
+    function salvarDispensacao() {
+      const colabId = document.getElementById('disp-colaborador').value;
+      const motivo = document.getElementById('disp-motivo').value;
+      const canvas = document.getElementById('canvas-disp');
+
+      // Se não adicionou itens no carrinho ainda, usa o item atualmente selecionado
+      if (carrinhoDispensacao.length === 0) {
+        const epiId = document.getElementById('disp-epi').value;
+        const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
+        const itemEstoque = estoque.find(e => e.id === epiId);
+        if (itemEstoque && qtd > 0) {
+          carrinhoDispensacao.push({
+            id: itemEstoque.id,
+            nome: itemEstoque.nome,
+            ca: itemEstoque.ca,
+            qtd: qtd
+          });
+        }
+      }
+
+      if (carrinhoDispensacao.length === 0) {
+        return alert('Selecione ao menos um EPI para realizar a entrega.');
+      }
+
+      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.disp) {
+        return alert('Colete a assinatura ou a foto para validade jurídica da NR-06.');
+      }
+
+      const colab = colaboradores.find(c => c.id === colabId);
+      if (!colab) return alert('Colaborador não encontrado.');
+
+      // Validação de estoque para todos os itens
+      for (const item of carrinhoDispensacao) {
+        const itemEstoque = estoque.find(e => e.id === item.id);
+        if (!itemEstoque || itemEstoque.qtd < item.qtd) {
+          return alert(`Estoque insuficiente para o item "${item.nome}". Saldo: ${itemEstoque ? itemEstoque.qtd : 0} un.`);
+        }
+      }
+
+      // Baixa no estoque
+      for (const item of carrinhoDispensacao) {
+        const itemEstoque = estoque.find(e => e.id === item.id);
+        if (itemEstoque) {
+          itemEstoque.qtd -= item.qtd;
+        }
+      }
+
+      const resumoEquipamentos = carrinhoDispensacao.map(i => `${i.nome} (${i.qtd}x)`).join('; ');
+      const resumoCAs = carrinhoDispensacao.map(i => i.ca).join(', ');
+      const totalQtd = carrinhoDispensacao.reduce((acc, i) => acc + i.qtd, 0);
+
+      const registro = {
+        id: 'NR06-' + Date.now(),
+        tipo: 'Dispensação EPI (NR-06)',
+        dataHora: new Date().toLocaleString('pt-BR'),
+        colaborador: colab.nome,
+        matricula: colab.matricula,
+        funcao: colab.funcao,
+        equipamento: resumoEquipamentos,
+        ca: resumoCAs,
+        quantidade: totalQtd,
+        itens: JSON.parse(JSON.stringify(carrinhoDispensacao)),
+        motivo: motivo,
+        status: 'ENTREGUE',
+        foto: fotosCapturadas.disp,
+        assinatura: canvas.toDataURL('image/png'),
+        hash: 'VIBRA-BAVGRU-' + Math.random().toString(36).substring(2, 10).toUpperCase()
+      };
+
+      auditoria.unshift(registro);
+
+      // Limpa formulário
+      carrinhoDispensacao = [];
+      renderCarrinhoDispensacao();
+      limparAssinatura('canvas-disp');
+      fotosCapturadas.disp = null;
+      document.getElementById('foto-disp-preview').src = '';
+      document.getElementById('foto-disp-preview').classList.add('hidden');
+      document.getElementById('foto-disp-placeholder').classList.remove('hidden');
+
+      salvarBancoLocal();
+      abrirComprovante(registro.id);
+    }
+
+    // SALVAR INSPEÇÃO DE CINTO
+    function salvarInspecao() {
+      const colabId = document.getElementById('insp-colaborador').value;
+      const ca = document.getElementById('insp-ca').value;
+      const dataInsp = document.getElementById('insp-data').value;
+      const canvas = document.getElementById('canvas-insp');
+
+      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.insp) {
+        return alert('Colete assinatura ou foto para validação do Anexo C.');
+      }
+
+      const colab = colaboradores.find(c => c.id === colabId);
+      if (!colab) return alert('Colaborador não encontrado.');
+
+      let reprovado = false;
+      const respostas = PERGUNTAS_ANEXO_C.map(p => {
+        const sel = document.querySelector(`input[name="${p.id}"]:checked`).value;
+        if (sel === 'Não Conforme') reprovado = true;
+        return { pergunta: p.texto, resposta: sel };
+      });
+
+      const statusFinal = reprovado ? 'INTERDITADO / SUBSTITUIR' : 'APROVADO PARA USO';
+      const registro = {
+        id: 'ANEXOC-' + Date.now(),
+        tipo: 'Inspeção Cinto (Anexo C)',
+        dataHora: new Date().toLocaleString('pt-BR'),
+        dataReferencia: dataInsp,
+        colaborador: colab.nome,
+        matricula: colab.matricula,
+        funcao: colab.funcao,
+        equipamento: 'Cinto Paraquedista / Trava-Quedas',
+        ca: ca,
+        quantidade: 1,
+        status: statusFinal,
+        respostasChecklist: respostas,
+        foto: fotosCapturadas.insp,
+        assinatura: canvas.toDataURL('image/png'),
+        hash: 'ANEXOC-BAVGRU-' + Math.random().toString(36).substring(2, 10).toUpperCase()
+      };
+
+      auditoria.unshift(registro);
+      limparAssinatura('canvas-insp');
+      fotosCapturadas.insp = null;
+      document.getElementById('foto-insp-preview').src = '';
+      document.getElementById('foto-insp-preview').classList.add('hidden');
+      document.getElementById('foto-insp-placeholder').classList.remove('hidden');
+
+      salvarBancoLocal();
+      if (reprovado) alert('⚠️ ATENÇÃO: Equipamento reprovado na inspeção visual. INTERDITADO imediatamente!');
+      abrirComprovante(registro.id);
+    }
+
+    function abrirInspecaoDireta(colabId) {
+      switchTab('inspecao');
+      document.getElementById('insp-colaborador').value = colabId;
+      verificarAvisoCinto();
+    }
+
+    // REGISTRO DE ENTRADA NO ESTOQUE
+    function registrarEntrada() {
+      const epiId = document.getElementById('entrada-epi').value;
+      const qtd = parseInt(document.getElementById('entrada-qtd').value || '0', 10);
+      if (!epiId || qtd <= 0) return alert("Selecione o EPI e informe uma quantidade válida de entrada.");
+      const itemEstoque = estoque.find(e => e.id === epiId);
+      if (itemEstoque) {
+        itemEstoque.qtd += qtd;
+        alert(`Entrada registrada! O saldo de ${itemEstoque.nome} agora é ${itemEstoque.qtd} un.`);
+        document.getElementById('entrada-qtd').value = '10';
+        document.getElementById('entrada-nf').value = '';
+        salvarBancoLocal();
+      }
+    }
+
+    // EXCLUSÃO COM TRILHA DE AUDITORIA E ESTORNO
+    function excluirRegistro(id) {
+      const senha = prompt("🔒 Digite a senha do Administrador para excluir o registro:");
+      if (senha !== senhaAdmin) {
+        if (senha !== null) alert("❌ Senha incorreta.");
+        return;
+      }
+      const index = auditoria.findIndex(r => r.id === id);
+      if (index === -1) return;
+      const reg = auditoria[index];
+      const justificativa = prompt(`📝 MOTIVO DA EXCLUSÃO (${reg.colaborador}):\n(Obrigatório para conformidade de auditoria)`);
+      if (!justificativa || justificativa.trim().length < 5) {
+        return alert("❌ Cancelado. É obrigatório fornecer uma justificativa (mínimo 5 letras).");
+      }
+      const adminNome = prompt("👤 Digite seu Nome / Matrícula como Administrador:");
+      if (!adminNome || adminNome.trim().length === 0) return alert("❌ Identificação obrigatória.");
+
+      let estornoMsg = "Nenhum estorno necessário.";
+      if (reg.tipo.includes('Dispensação EPI')) {
+        if (reg.itens && Array.isArray(reg.itens) && reg.itens.length > 0) {
+          const msgs = [];
+          reg.itens.forEach(it => {
+            const itemEstoque = estoque.find(e => e.id === it.id || (e.nome === it.nome && e.ca === it.ca));
+            if (itemEstoque) {
+              itemEstoque.qtd += (it.qtd || 1);
+              msgs.push(`+${it.qtd} un. para ${itemEstoque.nome}`);
+            }
+          });
+          estornoMsg = msgs.length ? msgs.join(', ') : estornoMsg;
+        } else {
+          const itemEstoque = estoque.find(e => e.nome === reg.equipamento && e.ca === reg.ca);
+          if (itemEstoque) {
+            const qtdEstornada = parseInt(reg.quantidade, 10) || 1;
+            itemEstoque.qtd += qtdEstornada;
+            estornoMsg = `Estornado +${qtdEstornada} un. para ${itemEstoque.nome}`;
+          }
+        }
+      }
+
+      const logEntry = {
+        idLog: 'LOG-' + Date.now(),
+        dataHoraExclusao: new Date().toLocaleString('pt-BR'),
+        idOriginal: reg.id,
+        tipoRegistro: reg.tipo,
+        colaboradorAfetado: `${reg.colaborador} (${reg.matricula})`,
+        itemAfetado: `${reg.equipamento} (CA: ${reg.ca})`,
+        estornoRealizado: estornoMsg,
+        responsavelExclusao: adminNome.trim(),
+        justificativa: justificativa.trim()
+      };
+
+      logExclusoes.unshift(logEntry);
+      auditoria.splice(index, 1);
+      salvarBancoLocal();
+      alert(`✅ Registro excluído e estornado no estoque com protocolo ${logEntry.idLog}.`);
+    }
+
+    function renderLogExclusoes() {
+      const container = document.getElementById('tabela-log-exclusoes');
+      if (!container) return;
+      container.innerHTML = logExclusoes.length ? logExclusoes.map(l => `
+        <tr class="hover:bg-red-50">
+          <td class="p-2 font-mono text-slate-500">${l.dataHoraExclusao}</td>
+          <td class="p-2 font-bold text-slate-700">${l.idOriginal}</td>
+          <td class="p-2">${l.colaboradorAfetado}</td>
+          <td class="p-2"><span class="bg-red-100 text-red-800 px-1.5 py-0.5 rounded">${l.itemAfetado}</span></td>
+          <td class="p-2 font-bold text-slate-800">${l.responsavelExclusao}</td>
+          <td class="p-2 text-slate-600 italic">"${l.justificativa}"</td>
+        </tr>
+      `).join('') : `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nenhuma exclusão registrada até o momento.</td></tr>`;
+    }
+
+    function exportarLogExclusoesCSV() {
+      if (!logExclusoes.length) return alert("Não há registros de exclusão para exportar.");
+      const headers = ['Data_Hora', 'Protocolo', 'Tipo', 'Colaborador', 'Item', 'Estorno', 'Responsavel', 'Justificativa'];
+      const lines = logExclusoes.map(l => [l.dataHoraExclusao, l.idOriginal, l.tipoRegistro, l.colaboradorAfetado, l.itemAfetado, l.estornoRealizado, l.responsavelExclusao, l.justificativa].map(v => `"${v || ''}"`).join(';'));
+      const csv = '\uFEFF' + [headers.join(';'), ...lines].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `Log_Auditoria_BAVGRU_${new Date().toISOString().slice(0,10)}.csv`;
+      link.click();
+    }
+
+    // PENDÊNCIAS DE INSPEÇÃO (CONSIDERANDO QUEM NÃO UTILIZA CINTO)
+    function obterMesAnoSelecionado() {
+      const input = document.getElementById('pendencias-mes-ano');
+      if (input && input.value) return input.value;
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    function renderPendencias() {
+      const mesAno = obterMesAnoSelecionado();
+      const termo = (document.getElementById('busca-pendencias')?.value || '').toLowerCase();
+      const inspecionadosMes = new Set();
+
+      auditoria.forEach(r => {
+        if (r.tipo.includes('Inspeção Cinto')) {
+          let dataRef = r.dataReferencia;
+          if (!dataRef && r.dataHora) {
+            const partes = r.dataHora.split(',')[0].split('/');
+            if (partes.length === 3) dataRef = `${partes[2].trim()}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
+          }
+          if (dataRef && dataRef.startsWith(mesAno)) {
+            inspecionadosMes.add(r.matricula);
+          }
+        }
+      });
+
+      const colaboradoresObrigadosCinto = colaboradores.filter(c => !c.naoUtilizaCinto);
+      const isentosCount = colaboradores.filter(c => c.naoUtilizaCinto).length;
+
+      const pendentes = colaboradoresObrigadosCinto.filter(c => !inspecionadosMes.has(c.matricula));
+      const inspecionadosCount = colaboradoresObrigadosCinto.length - pendentes.length;
+      const taxa = colaboradoresObrigadosCinto.length ? Math.round((inspecionadosCount / colaboradoresObrigadosCinto.length) * 100) : 100;
+
+      document.getElementById('total-pendentes-num').textContent = pendentes.length;
+      document.getElementById('total-inspecionados-num').textContent = inspecionadosCount;
+      document.getElementById('taxa-adesao-num').textContent = `${taxa}%`;
+      document.getElementById('total-isentos-cinto-num').textContent = isentosCount;
+      document.getElementById('kpi-pendencias').textContent = pendentes.length;
+
+      const pendentesFiltrados = pendentes.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
+      const tbody = document.getElementById('tabela-pendencias');
+      if (!tbody) return;
+
+      tbody.innerHTML = pendentesFiltrados.length ? pendentesFiltrados.map(c => `
+        <tr class="border-b hover:bg-amber-50/50">
+          <td class="p-2.5 font-mono font-bold text-xs text-slate-700">${c.matricula}</td>
+          <td class="p-2.5 font-semibold text-slate-800">${c.nome}</td>
+          <td class="p-2.5 text-xs text-slate-600">${c.funcao}</td>
+          <td class="p-2.5 text-center">
+            <span class="bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 rounded-full text-[11px] font-bold">
+              ⚠️ Pendente (${mesAno})
+            </span>
+          </td>
+          <td class="p-2.5 text-right">
+            <button onclick="abrirInspecaoDireta('${c.id}')" class="bg-vibraGreen hover:bg-vibraDark text-white px-2.5 py-1.5 rounded-lg text-xs font-bold shadow">
+              Inspecionar ↗
+            </button>
+          </td>
+        </tr>
+      `).join('') : `
+        <tr>
+          <td colspan="5" class="p-6 text-center text-emerald-700 bg-emerald-50 font-bold">
+            🎉 Parabéns! Todos os colaboradores obrigados ao uso do cinto realizaram a inspeção no mês ${mesAno}! (${isentosCount} colaboradores isentos)
+          </td>
+        </tr>
+      `;
+    }
+
+    function exportarPendenciasCSV() {
+      const mesAno = obterMesAnoSelecionado();
+      const inspecionadosMes = new Set();
+      auditoria.forEach(r => {
+        if (r.tipo.includes('Inspeção Cinto')) {
+          let dataRef = r.dataReferencia;
+          if (!dataRef && r.dataHora) {
+            const partes = r.dataHora.split(',')[0].split('/');
+            if (partes.length === 3) dataRef = `${partes[2].trim()}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
+          }
+          if (dataRef && dataRef.startsWith(mesAno)) inspecionadosMes.add(r.matricula);
+        }
+      });
+
+      const pendentes = colaboradores.filter(c => !c.naoUtilizaCinto && !inspecionadosMes.has(c.matricula));
+      if (!pendentes.length) return alert(`Nenhuma pendência no mês ${mesAno}!`);
+
+      const headers = ['Matricula', 'Nome', 'Funcao', 'Email', 'Mes_Referencia', 'Status'];
+      const linhas = pendentes.map(c => [c.matricula, c.nome, c.funcao, c.email || '', mesAno, 'PENDENTE'].map(v => `"${v || ''}"`).join(';'));
+      const csv = '\uFEFF' + [headers.join(';'), ...linhas].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `Pendencias_Cinto_BAVGRU_${mesAno}.csv`;
+      link.click();
+    }
+
+    // TERMO LEGAL CORPORATIVO VIBRA E NR-06
+    function obterHtmlTermoLegal() {
+      return `
+        <div class="border border-slate-300 rounded p-2.5 bg-slate-50 text-[10px] text-slate-700 leading-tight space-y-1.5 mt-2">
+          <p class="font-bold text-vibraDark uppercase tracking-tight">Enquadramento Legal Incluído no Termo (NR-06 & Padrão Vibra)</p>
+          <p><strong>NR-06 (Item 6.5.1 - Cabe à Organização):</strong> Fornecer ao empregado, gratuitamente, EPI adequado ao risco, em perfeito estado de conservação e funcionamento, com Certificado de Aprovação (CA) válido, registrando o seu fornecimento por meio de sistema eletrônico ou ficha física e orientando/treinando o trabalhador.</p>
+          <p><strong>NR-06 (Item 6.7.1 - Cabe ao Trabalhador):</strong> Utilizar o EPI apenas para a finalidade a que se destina; responsabilizar-se pela limpeza, guarda e conservação; comunicar à organização qualquer alteração que o torne impróprio para uso (desgaste, avaria ou extravio); e cumprir as determinações sobre o uso adequado.</p>
+          <p><strong>Padrão Corporativo Vibra & CLT (Art. 158, Parágrafo Único, alínea "b" e Art. 462, § 1º):</strong> Compromisso de devolução do EPI em caso de substituição, mudança de função ou desligamento da companhia, ciente de que a recusa injustificada ao uso constitui ato faltoso e que o extravio ou dano doloso/culposo sujeita à reposição na forma da lei.</p>
+        </div>
+      `;
+    }
+
+    // FICHA ÚNICA COM TODAS AS ENTREGAS ASSINADAS DO COLABORADOR
+    function gerarFichaUnicaColaborador(matricula) {
+      const colab = colaboradores.find(c => c.matricula === String(matricula));
+      if (!colab) return alert("Colaborador não localizado.");
+
+      const todasEntregas = auditoria.filter(r => String(r.matricula) === String(matricula) && r.tipo.includes('NR-06'));
+      const inspecoesCinto = auditoria.filter(r => String(r.matricula) === String(matricula) && r.tipo.includes('Anexo C'));
+
+      let tabelaEntregasHtml = '';
+      if (todasEntregas.length === 0) {
+        tabelaEntregasHtml = `
+          <tr>
+            <td colspan="6" class="p-4 text-center text-slate-500 italic">
+              Nenhuma entrega de EPI registrada até o momento para este colaborador.
+            </td>
+          </tr>
+        `;
+      } else {
+        tabelaEntregasHtml = todasEntregas.map((entrega) => {
+          let detalheItens = '';
+          if (entrega.itens && Array.isArray(entrega.itens) && entrega.itens.length > 0) {
+            detalheItens = entrega.itens.map(it => `<div>• <strong>${it.nome}</strong> (CA: ${it.ca}) - ${it.qtd} un.</div>`).join('');
+          } else {
+            detalheItens = `<strong>${entrega.equipamento}</strong> (CA: ${entrega.ca}) - ${entrega.quantidade || 1} un.`;
+          }
+
+          return `
+            <tr class="border-b text-[10px]">
+              <td class="p-2 font-mono">${entrega.dataHora}</td>
+              <td class="p-2">${detalheItens}</td>
+              <td class="p-2 text-slate-600">${entrega.motivo || 'Fornecimento Regular'}</td>
+              <td class="p-2 text-center font-bold text-emerald-700">${entrega.status}</td>
+              <td class="p-2 text-center">
+                ${entrega.assinatura ? `<img src="${entrega.assinatura}" class="h-10 mx-auto object-contain" />` : '<span class="text-slate-400">Sem assinatura</span>'}
+              </td>
+              <td class="p-2 text-center">
+                ${entrega.foto ? `<img src="${entrega.foto}" class="h-10 w-10 mx-auto rounded object-cover border" />` : '<span class="text-slate-400">-</span>'}
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      let tabelaInspecoesHtml = '';
+      if (inspecoesCinto.length > 0) {
+        tabelaInspecoesHtml = `
+          <div class="mt-4">
+            <h4 class="font-bold text-xs uppercase bg-slate-100 p-1.5 border rounded-t text-slate-800">
+              🧗 Histórico de Inspeções de Cinto / Trava-Quedas (Anexo C)
+            </h4>
+            <table class="w-full text-[10px] border-collapse border border-t-0">
+              <thead>
+                <tr class="bg-slate-50 border-b">
+                  <th class="p-1.5 text-left">Data/Hora</th>
+                  <th class="p-1.5 text-left">CA Cinto</th>
+                  <th class="p-1.5 text-left">Resultado / Status</th>
+                  <th class="p-1.5 text-center">Assinatura / Visto</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y">
+                ${inspecoesCinto.map(insp => `
+                  <tr>
+                    <td class="p-1.5 font-mono">${insp.dataHora}</td>
+                    <td class="p-1.5 font-bold">${insp.ca}</td>
+                    <td class="p-1.5 font-bold ${insp.status.includes('INTERDITADO') ? 'text-red-600' : 'text-emerald-700'}">${insp.status}</td>
+                    <td class="p-1.5 text-center">
+                      ${insp.assinatura ? `<img src="${insp.assinatura}" class="h-8 mx-auto object-contain" />` : '-'}
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      document.getElementById('modal-print-title').textContent = `📄 Ficha Única de EPI (NR-06) - ${colab.nome}`;
+      document.getElementById('print-area').innerHTML = `
+        <div class="border-b-2 border-vibraGreen pb-3">
+          <div class="flex justify-between items-start">
+            <div>
+              <h2 class="text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A.</h2>
+              <p class="text-xs font-bold text-slate-700">UNIDADE BAVGRU - AEROPORTO INTERNACIONAL DE GUARULHOS</p>
+              <h3 class="text-sm font-bold text-emerald-800 mt-1 uppercase">FICHA DE CONTROLE E ENTREGA INDIVIDUAL DE EPI (NR-06)</h3>
+            </div>
+            <div class="text-right text-[10px] text-slate-500">
+              <p><strong>Emissão:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
+              <p><strong>Padrão:</strong> SSMA-NR06-VIBRA</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- DADOS DO COLABORADOR -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 bg-slate-50 p-2.5 border rounded mt-2 text-[11px]">
+          <div><strong>Colaborador:</strong><br>${colab.nome}</div>
+          <div><strong>Matrícula:</strong><br>${colab.matricula}</div>
+          <div><strong>Função:</strong><br>${colab.funcao}</div>
+          <div><strong>Uso de Cinto:</strong><br>${colab.naoUtilizaCinto ? '<span class="text-purple-700 font-bold">🚫 Isento / Não Utiliza</span>' : '<span class="text-emerald-700 font-bold">🧗 Obrigatório (SPIQ)</span>'}</div>
+        </div>
+
+        <!-- TERMO LEGAL NR-06 -->
+        ${obterHtmlTermoLegal()}
+
+        <!-- HISTÓRICO DE TODAS AS ENTREGAS DO COLABORADOR -->
+        <div class="mt-3">
+          <div class="flex justify-between items-center bg-vibraDark text-white px-2.5 py-1.5 rounded-t">
+            <h4 class="font-bold text-xs uppercase tracking-wide">📦 Histórico Completo de Entregas de EPIs Realizadas (${todasEntregas.length} registros)</h4>
+            <span class="text-[10px] text-emerald-200">Assinaturas Registradas</span>
+          </div>
+          <table class="w-full text-left border-collapse border border-t-0">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 font-bold border-b text-[10px]">
+                <th class="p-2">Data / Hora</th>
+                <th class="p-2">Equipamentos / C.A. / Qtd</th>
+                <th class="p-2">Motivo</th>
+                <th class="p-2 text-center">Status</th>
+                <th class="p-2 text-center">Assinatura do Empregado</th>
+                <th class="p-2 text-center">Foto</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y">
+              ${tabelaEntregasHtml}
+            </tbody>
+          </table>
+        </div>
+
+        ${tabelaInspecoesHtml}
+
+        <div class="text-[9px] text-slate-500 border-t pt-3 flex flex-col md:flex-row justify-between gap-1 mt-4">
+          <span>Documento eletrônico auditável em conformidade com o Item 6.5.1 da NR-06 (Portaria MTP).</span>
+          <span>Responsável Técnico SSMA: <strong>Graciete Martins Ferreira (TST PL)</strong></span>
+        </div>
+      `;
+
+      document.getElementById('modal-print').classList.remove('hidden');
+      document.getElementById('modal-print').classList.add('flex');
+    }
+
+    // COMPROVANTE MODAL INDIVIDUAL (COM BOTÃO DIRETO PARA VER FICHA ÚNICA)
+    function abrirComprovante(id) {
+      const reg = auditoria.find(r => r.id === id);
+      if (!reg) return;
+
+      document.getElementById('modal-print-title').textContent = `📄 Comprovante Oficial SSMA - ${reg.tipo}`;
+
+      let itensDetalheHtml = '';
+      if (reg.itens && Array.isArray(reg.itens) && reg.itens.length > 0) {
+        itensDetalheHtml = `
+          <div class="mt-2 border rounded overflow-hidden">
+            <table class="w-full text-[11px] text-left">
+              <thead class="bg-slate-100 font-bold border-b">
+                <tr>
+                  <th class="p-1.5">Equipamento Fornecido</th>
+                  <th class="p-1.5">Certificado de Aprovação (CA)</th>
+                  <th class="p-1.5 text-center">Quantidade</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y">
+                ${reg.itens.map(it => `
+                  <tr>
+                    <td class="p-1.5 font-medium">${it.nome}</td>
+                    <td class="p-1.5 font-bold font-mono">CA ${it.ca}</td>
+                    <td class="p-1.5 text-center font-bold">${it.qtd} un.</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      const checklistHtml = reg.respostasChecklist ? `
+        <div class="mt-2">
+          <h4 class="font-bold text-[11px] uppercase bg-slate-100 p-1 border">Checklist Padrão Vibra (Anexo C)</h4>
+          <table class="w-full text-[11px] border-collapse border mt-1">
+            ${reg.respostasChecklist.map(r => `
+              <tr class="border-b">
+                <td class="p-1 border-r">${r.pergunta}</td>
+                <td class="p-1 font-bold ${r.resposta === 'Não Conforme' ? 'text-red-600' : 'text-emerald-700'}">${r.resposta}</td>
+              </tr>
+            `).join('')}
+          </table>
+        </div>
+      ` : obterHtmlTermoLegal();
+
+      document.getElementById('print-area').innerHTML = `
+        <div class="flex justify-between items-center border-b-2 border-vibraGreen pb-2">
+          <div>
+            <h2 class="text-sm md:text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A. - BAVGRU (GUARULHOS)</h2>
+            <p class="text-[11px] text-slate-600">${reg.tipo} | Comprovante Oficial</p>
+          </div>
+          <div class="text-right text-[10px]">
+            <p><strong>Nº:</strong> ${reg.id}</p>
+            <p><strong>Data:</strong> ${reg.dataHora}</p>
+          </div>
+        </div>
+
+        <div class="flex justify-end no-print my-1">
+          <button onclick="gerarFichaUnicaColaborador('${reg.matricula}')" class="bg-vibraDark hover:bg-vibraGreen text-white text-[11px] font-bold px-3 py-1 rounded shadow flex items-center gap-1">
+            📋 Abrir Ficha Única com TODAS as Entregas de ${reg.colaborador} ↗
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-1.5 text-[11px] bg-slate-50 p-2.5 border rounded mt-2">
+          <p><strong>Colaborador:</strong> ${reg.colaborador}</p>
+          <p><strong>Matrícula:</strong> ${reg.matricula}</p>
+          <p><strong>Função:</strong> ${reg.funcao}</p>
+          <p><strong>Motivo:</strong> ${reg.motivo || 'Fornecimento Regular'}</p>
+          <p class="col-span-2"><strong>Equipamento(s):</strong> ${reg.equipamento}</p>
+          <p><strong>Nº CA:</strong> ${reg.ca}</p>
+          <p><strong>Status:</strong> <span class="font-bold ${reg.status.includes('INTERDITADO') ? 'text-red-600' : 'text-emerald-700'}">${reg.status}</span></p>
+        </div>
+
+        ${itensDetalheHtml}
+        ${checklistHtml}
+
+        <div class="grid grid-cols-2 gap-3 pt-3 items-center">
+          <div class="text-center border p-2 rounded bg-slate-50">
+            <p class="text-[10px] font-bold text-slate-600 mb-1">Evidência Fotográfica</p>
+            ${reg.foto ? `<img src="${reg.foto}" class="h-24 mx-auto rounded border object-cover" />` : `<p class="text-[10px] text-slate-400 py-6">Sem foto</p>`}
+          </div>
+          <div class="text-center border p-2 rounded bg-slate-50">
+            <p class="text-[10px] font-bold text-slate-600 mb-1">Assinatura Digital</p>
+            <img src="${reg.assinatura}" class="h-24 mx-auto object-contain" />
+          </div>
+        </div>
+
+        <div class="text-[9px] text-slate-500 border-t pt-2 flex justify-between mt-3">
+          <span>Autenticador SSMA: <strong>${reg.hash}</strong></span>
+          <span>Responsável Legal: Graciete Martins Ferreira</span>
+        </div>
+      `;
+
+      document.getElementById('modal-print').classList.remove('hidden');
+      document.getElementById('modal-print').classList.add('flex');
+    }
+
+    function fecharModalPrint() {
+      document.getElementById('modal-print').classList.add('hidden');
+      document.getElementById('modal-print').classList.remove('flex');
+    }
+
+    // RENDERIZAÇÃO DE COLABORADORES (COM BOTÃO DE FICHA ÚNICA)
+    function renderColaboradores() {
+      const termo = (document.getElementById('busca-colab').value || '').toLowerCase();
+      const filtrados = colaboradores.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
+      document.getElementById('tabela-colaboradores').innerHTML = filtrados.map(c => `
+        <tr class="border-b hover:bg-slate-50">
+          <td class="p-2.5 font-bold font-mono text-xs">${c.matricula}</td>
+          <td class="p-2.5 font-medium">${c.nome}</td>
+          <td class="p-2.5 text-xs text-slate-600">${c.funcao}</td>
+          <td class="p-2.5 text-center">
+            ${c.naoUtilizaCinto ? '<span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-[10px] font-bold">🚫 Não Usa</span>' : '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">🧗 Sim</span>'}
+          </td>
+          <td class="p-2.5 text-right flex gap-1 justify-end">
+            <button onclick="gerarFichaUnicaColaborador('${c.matricula}')" class="bg-vibraGreen hover:bg-vibraDark text-white px-2.5 py-1 rounded text-xs font-bold shadow flex items-center gap-1">
+              📄 Ficha Única
+            </button>
+            <button onclick="buscarFichasDoColaborador('${c.nome}')" class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-semibold hover:bg-slate-300">
+              Histórico
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function buscarFichasDoColaborador(nome) {
+      switchTab('dashboard');
+      document.getElementById('busca-auditoria').value = nome;
+      renderAuditoria();
+    }
+
+    // RENDERIZAÇÃO DA TABELA DE AUDITORIA
+    function renderAuditoria() {
+      const termo = (document.getElementById('busca-auditoria').value || '').toLowerCase();
+      const filtrados = auditoria.filter(r => 
+        r.colaborador.toLowerCase().includes(termo) || 
+        r.matricula.toLowerCase().includes(termo) || 
+        r.ca.toLowerCase().includes(termo) ||
+        r.equipamento.toLowerCase().includes(termo)
+      );
+
+      document.getElementById('tabela-auditoria').innerHTML = filtrados.length ? filtrados.map(r => `
+        <tr class="hover:bg-slate-50">
+          <td class="p-2.5 text-xs font-mono">${r.dataHora}</td>
+          <td class="p-2.5 font-semibold">${r.tipo}</td>
+          <td class="p-2.5">
+            ${r.colaborador} <span class="text-xs text-slate-400">(${r.matricula})</span>
+          </td>
+          <td class="p-2.5 max-w-xs truncate" title="${r.equipamento}">
+            ${r.equipamento} <span class="bg-slate-200 px-1.5 py-0.5 rounded text-[10px] font-bold">CA ${r.ca}</span>
+          </td>
+          <td class="p-2.5"><span class="px-2 py-0.5 rounded text-xs font-bold ${r.status.includes('INTERDITADO') ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-800'}">${r.status}</span></td>
+          <td class="p-2.5 text-right flex gap-1 justify-end">
+            <button onclick="abrirComprovante('${r.id}')" class="bg-vibraDark text-white px-2 py-1 rounded text-xs font-bold hover:bg-vibraGreen">PDF</button>
+            <button onclick="gerarFichaUnicaColaborador('${r.matricula}')" class="bg-vibraGreen text-white px-2 py-1 rounded text-xs font-bold hover:bg-emerald-700" title="Ver Ficha com todas as entregas">Ficha Única</button>
+            <button onclick="excluirRegistro('${r.id}')" class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold hover:bg-red-800" title="Excluir">🗑️</button>
+          </td>
+        </tr>
+      `).join('') : `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nenhum registro encontrado.</td></tr>`;
+    }
+
+    // CADASTRO DE NOVO COLABORADOR
     function cadastrarNovoColaborador() {
       const nome = document.getElementById('novo-colab-nome').value.trim();
       const matricula = document.getElementById('novo-colab-matricula').value.trim();
       const funcao = document.getElementById('novo-colab-funcao').value.trim() || 'OPERADOR BAVGRU';
       const email = document.getElementById('novo-colab-email').value.trim();
-      const naoUsaCinto = document.getElementById('novo-colab-nao-usa-cinto')?.checked || false;
       if (!nome || !matricula) return alert('Informe Nome e Matrícula.');
-      colaboradores.push({ id: 'c' + Date.now(), matricula, nome, funcao, email, usaCinto: !naoUsaCinto });
+      colaboradores.push({ id: 'c' + Date.now(), matricula, nome, funcao, email, naoUtilizaCinto: false });
       document.getElementById('novo-colab-nome').value = '';
       document.getElementById('novo-colab-matricula').value = '';
       document.getElementById('novo-colab-funcao').value = '';
       document.getElementById('novo-colab-email').value = '';
-      if (document.getElementById('novo-colab-nao-usa-cinto')) document.getElementById('novo-colab-nao-usa-cinto').checked = false;
       salvarBancoLocal();
       alert(`Colaborador ${nome} cadastrado com sucesso!`);
     }
 
-         // ALTERNAR SE O COLABORADOR UTILIZA CINTO TRAVA-QUEDAS (RESTRITO AO ADMINISTRADOR)
-    function alternarUsoCinto(colabId) {
-      if (!adminAutenticado) {
-        const senha = prompt("🔒 Ação restrita ao Administrador!\nDigite a senha de Administrador para alterar a obrigatoriedade do Cinto (SPIQ):");
-        if (senha !== senhaAdmin) {
-          if (senha !== null) alert("❌ Senha incorreta. Apenas o Administrador pode dispensar colaboradores da inspeção do cinto.");
-          return;
-        }
-      }
-      const colab = colaboradores.find(c => c.id === colabId);
-      if (!colab) return;
-      colab.usaCinto = colab.usaCinto === false ? true : false;
-      salvarBancoLocal();
-    }
-
-
-    // FUNÇÕES DE IMPORTAÇÃO EM LOTE DE COLABORADORES
+    // IMPORTAÇÃO DE COLABORADORES
     function abrirModalImportarColaboradores() {
       document.getElementById('modal-importar-colaboradores').classList.remove('hidden');
       document.getElementById('modal-importar-colaboradores').classList.add('flex');
@@ -1393,13 +2329,11 @@ Casquete	38352	100	10
       const linhas = texto.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
       const resultado = [];
       const vistos = new Set();
-
       for (const linha of linhas) {
         const lower = linha.toLowerCase();
         if (lower.startsWith('matricula') || lower.startsWith('matrícula') || lower.startsWith('código') || lower.startsWith('chapa')) {
           continue;
         }
-
         let separador = '\t';
         if (linha.includes('\t')) separador = '\t';
         else if (linha.includes(';')) separador = ';';
@@ -1413,7 +2347,6 @@ Casquete	38352	100	10
         let nome = '';
         let funcao = 'OPERADOR BAVGRU';
         let email = '';
-
         const ehNumero = (str) => /^\d+$/.test(str.replace(/[-.]/g, ''));
 
         if (ehNumero(partes[0])) {
@@ -1453,7 +2386,8 @@ Casquete	38352	100	10
             matricula: matricula.trim().toUpperCase(),
             nome: nome.trim().toUpperCase(),
             funcao: (funcao || 'OPERADOR BAVGRU').trim().toUpperCase(),
-            email: (email || '').trim().toLowerCase()
+            email: (email || '').trim().toLowerCase(),
+            naoUtilizaCinto: false
           });
         }
       }
@@ -1466,7 +2400,6 @@ Casquete	38352	100	10
       const container = document.getElementById('preview-importar-colab');
       const countEl = document.getElementById('preview-colab-count');
       const listaEl = document.getElementById('preview-colab-lista');
-
       if (extraidos.length > 0) {
         container.classList.remove('hidden');
         countEl.textContent = `✅ ${extraidos.length} colaboradores identificados`;
@@ -1495,13 +2428,10 @@ Casquete	38352	100	10
     function executarImportacaoColaboradores() {
       const texto = document.getElementById('texto-importar-colab').value;
       const novos = extrairColaboradoresDoTexto(texto);
-
       if (novos.length === 0) {
         return alert('Nenhum colaborador foi identificado. Verifique se copiou as colunas de Matrícula e Nome da sua planilha.');
       }
-
       const modo = document.querySelector('input[name="modo-importacao-colab"]:checked').value;
-
       if (modo === 'substituir') {
         const confirma = confirm(`Tem certeza que deseja substituir todo o efetivo atual por estes ${novos.length} novos colaboradores?`);
         if (!confirma) return;
@@ -1524,833 +2454,20 @@ Casquete	38352	100	10
         });
         alert(`✅ Sucesso! ${adicionados} novos colaboradores adicionados e ${atualizados} atualizados.`);
       }
-
       document.getElementById('texto-importar-colab').value = '';
       document.getElementById('preview-importar-colab').classList.add('hidden');
       fecharModalImportarColaboradores();
       salvarBancoLocal();
     }
 
-    // CHECKLIST ANEXO C
-    function renderChecklistForm() {
-      const container = document.getElementById('checklist-container');
-      container.innerHTML = PERGUNTAS_ANEXO_C.map(p => `
-        <div class="p-3 border rounded-lg bg-slate-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-          <div>
-            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 text-vibraDark">${p.grupo}</span>
-            <p class="text-xs md:text-sm font-medium text-slate-800 mt-1 leading-snug">${p.texto}</p>
-          </div>
-          <div class="flex gap-2 shrink-0 text-xs font-bold w-full md:w-auto justify-between md:justify-end mt-1 md:mt-0">
-            <label class="flex items-center gap-1 cursor-pointer bg-white border px-2.5 py-1.5 rounded-lg flex-1 md:flex-initial justify-center">
-              <input type="radio" name="${p.id}" value="Conforme" checked /> <span class="text-emerald-700">✅ Conf.</span>
-            </label>
-            <label class="flex items-center gap-1 cursor-pointer bg-white border px-2.5 py-1.5 rounded-lg text-red-600 flex-1 md:flex-initial justify-center">
-              <input type="radio" name="${p.id}" value="Não Conforme" /> <span>❌ N.C.</span>
-            </label>
-            <label class="flex items-center gap-1 cursor-pointer bg-white border px-2.5 py-1.5 rounded-lg text-slate-500 flex-1 md:flex-initial justify-center">
-              <input type="radio" name="${p.id}" value="Não Aplicável" /> <span>N/A</span>
-            </label>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // CÂMERA COM SUPORTE A TROCA FRONTAL / TRASEIRA E COMPRESSÃO PARA NUVEM
-    async function iniciarCamera(tipo) {
-      try {
-        if (streamsCamera[tipo]) {
-          streamsCamera[tipo].getTracks().forEach(t => t.stop());
-        }
-        const video = document.getElementById('video-' + tipo);
-        const preview = document.getElementById('foto-' + tipo + '-preview');
-        const placeholder = document.getElementById('foto-' + tipo + '-placeholder');
-        
-        const constraints = {
-          video: {
-            facingMode: cameraFacing[tipo]
-          }
-        };
-
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        streamsCamera[tipo] = stream;
-        video.srcObject = stream;
-        video.classList.remove('hidden');
-        preview.classList.add('hidden');
-        if (placeholder) placeholder.classList.add('hidden');
-      } catch (e) {
-        alert('Câmera indisponível ou permissão não concedida no navegador.\nCertifique-se de acessar via HTTPS ou rede segura.');
-      }
-    }
-
-    function alternarCamera(tipo) {
-      cameraFacing[tipo] = cameraFacing[tipo] === 'user' ? 'environment' : 'user';
-      iniciarCamera(tipo);
-    }
-
-    function capturarFoto(tipo) {
-      const video = document.getElementById('video-' + tipo);
-      const preview = document.getElementById('foto-' + tipo + '-preview');
-      if (!streamsCamera[tipo]) return alert('Ligue primeiro a câmera.');
-      
-      // Redimensiona proporcionalmente para máx 480px para envio rápido no 4G e Firebase
-      const origW = video.videoWidth || 320;
-      const origH = video.videoHeight || 240;
-      const maxDim = 480;
-      const escala = Math.min(1, maxDim / Math.max(origW, origH));
-
-      const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = Math.round(origW * escala);
-      tempCanvas.height = Math.round(origH * escala);
-      tempCanvas.getContext('2d').drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
-      
-      const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.65);
-      fotosCapturadas[tipo] = dataUrl;
-      preview.src = dataUrl;
-      preview.classList.remove('hidden');
-      video.classList.add('hidden');
-      
-      streamsCamera[tipo].getTracks().forEach(t => t.stop());
-      streamsCamera[tipo] = null;
-    }
-
-    // ASSINATURA DIGITAL TOUCH TOTALMENTE RESPONSIVA
-    function redimensionarCanvas() {
-      ['canvas-disp', 'canvas-insp'].forEach(id => {
-        const canvas = document.getElementById(id);
-        if (!canvas) return;
-        const rect = canvas.getBoundingClientRect();
-        if (rect.width > 0 && canvas.width !== rect.width) {
-          const temp = canvas.toDataURL();
-          canvas.width = rect.width;
-          canvas.height = 170;
-          if (canvas.dataset.assinado === "true") {
-            const img = new Image();
-            img.onload = () => canvas.getContext('2d').drawImage(img, 0, 0);
-            img.src = temp;
-          }
-        }
-      });
-    }
-
-    function configurarCanvasAssinatura(canvasId) {
-      const canvas = document.getElementById(canvasId);
-      const ctx = canvas.getContext('2d');
-      let desenhando = false;
-      
-      ctx.lineWidth = 2.5;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#00582C';
-
-      const obterPos = (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return {
-          x: (clientX - rect.left) * (canvas.width / rect.width),
-          y: (clientY - rect.top) * (canvas.height / rect.height)
-        };
-      };
-
-      const iniciar = (e) => {
-        desenhando = true;
-        ctx.lineWidth = 2.5;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.strokeStyle = '#00582C';
-        const p = obterPos(e);
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        canvas.dataset.assinado = "true";
-      };
-
-      const mover = (e) => {
-        if (!desenhando) return;
-        if (e.cancelable) e.preventDefault();
-        const p = obterPos(e);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
-      };
-
-      const parar = () => { desenhando = false; };
-
-      canvas.addEventListener('mousedown', iniciar);
-      canvas.addEventListener('mousemove', mover);
-      window.addEventListener('mouseup', parar);
-      canvas.addEventListener('touchstart', iniciar, { passive: true });
-      canvas.addEventListener('touchmove', mover, { passive: false });
-      window.addEventListener('touchend', parar);
-    }
-
-    function limparAssinatura(canvasId) {
-      const canvas = document.getElementById(canvasId);
-      canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-      canvas.dataset.assinado = "false";
-    }
-
-    // FUNÇÕES DE MÚLTIPLOS EPIS NA DISPENSAÇÃO
-    function adicionarEpiNaLista() {
-      const epiId = document.getElementById('disp-epi').value;
-      const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
-      if (!epiId || qtd <= 0) return alert('Selecione um EPI e informe uma quantidade válida.');
-
-      const itemEstoque = estoque.find(e => e.id === epiId);
-      if (!itemEstoque) return;
-
-      const existente = carrinhoDispensacao.find(i => i.epiId === epiId);
-      const qtdTotalPretendida = (existente ? existente.quantidade : 0) + qtd;
-
-      if (itemEstoque.qtd < qtdTotalPretendida) {
-        return alert(`Estoque insuficiente para ${itemEstoque.nome} (Saldo disponível: ${itemEstoque.qtd} un).`);
-      }
-
-      if (existente) {
-        existente.quantidade += qtd;
-      } else {
-        carrinhoDispensacao.push({
-          epiId: itemEstoque.id,
-          nome: itemEstoque.nome,
-          ca: itemEstoque.ca,
-          quantidade: qtd
-        });
-      }
-
-      document.getElementById('disp-qtd').value = '1';
-      renderCarrinhoEpis();
-    }
-
-    function removerEpiDaLista(idx) {
-      carrinhoDispensacao.splice(idx, 1);
-      renderCarrinhoEpis();
-    }
-
-    function limparCarrinhoEpis() {
-      carrinhoDispensacao = [];
-      renderCarrinhoEpis();
-    }
-
-    function renderCarrinhoEpis() {
-      const box = document.getElementById('box-carrinho-epis');
-      const lista = document.getElementById('lista-carrinho-epis');
-      const count = document.getElementById('count-carrinho-epis');
-      if (!box || !lista || !count) return;
-
-      if (carrinhoDispensacao.length === 0) {
-        box.classList.add('hidden');
-        lista.innerHTML = '';
-        count.textContent = '0';
-        return;
-      }
-
-      box.classList.remove('hidden');
-      count.textContent = carrinhoDispensacao.length;
-      lista.innerHTML = carrinhoDispensacao.map((item, idx) => `
-        <div class="py-1.5 flex justify-between items-center">
-          <div>
-            <span class="font-bold text-slate-800">${item.quantidade}x ${item.nome}</span>
-            <span class="ml-1 bg-white border border-emerald-300 px-1.5 py-0.5 rounded text-[10px] font-bold text-emerald-800">CA: ${item.ca}</span>
-          </div>
-          <button type="button" onclick="removerEpiDaLista(${idx})" class="text-red-600 hover:text-red-800 font-bold text-xs px-2">✕ Remover</button>
-        </div>
-      `).join('');
-    }
-
-    // AÇÕES DE GRAVAÇÃO
-    function salvarDispensacao() {
-      const colabId = document.getElementById('disp-colaborador').value;
-      const motivo = document.getElementById('disp-motivo').value;
-      const canvas = document.getElementById('canvas-disp');
-
-      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.disp) {
-        return alert('Colete a assinatura ou a foto para validade legal da NR-06.');
-      }
-
-      const colab = colaboradores.find(c => c.id === colabId);
-
-      let itensParaEntregar = [];
-      if (carrinhoDispensacao.length > 0) {
-        itensParaEntregar = [...carrinhoDispensacao];
-      } else {
-        const epiId = document.getElementById('disp-epi').value;
-        const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
-        const itemEstoque = estoque.find(e => e.id === epiId);
-        if (!itemEstoque) return alert('Selecione um EPI válido.');
-        itensParaEntregar.push({
-          epiId: itemEstoque.id,
-          nome: itemEstoque.nome,
-          ca: itemEstoque.ca,
-          quantidade: qtd
-        });
-      }
-
-      // Valida saldo de todos os itens antes de dar baixa
-      for (const item of itensParaEntregar) {
-        const est = estoque.find(e => e.id === item.epiId);
-        if (!est || est.qtd < item.quantidade) {
-          return alert(`Estoque insuficiente para ${item.nome}!`);
-        }
-      }
-
-      // Deduz do estoque
-      itensParaEntregar.forEach(item => {
-        const est = estoque.find(e => e.id === item.epiId);
-        if (est) est.qtd -= item.quantidade;
-      });
-
-      const equipamentoStr = itensParaEntregar.length === 1
-        ? itensParaEntregar[0].nome
-        : itensParaEntregar.map(i => `${i.quantidade}x ${i.nome}`).join(' + ');
-
-      const caStr = itensParaEntregar.length === 1
-        ? itensParaEntregar[0].ca
-        : itensParaEntregar.map(i => i.ca).join(', ');
-
-      const qtdTotal = itensParaEntregar.reduce((acc, i) => acc + i.quantidade, 0);
-
-      const registro = {
-        id: 'NR06-' + Date.now(),
-        tipo: 'Dispensação EPI (NR-06)',
-        dataHora: new Date().toLocaleString('pt-BR'),
-        colaborador: colab.nome,
-        matricula: colab.matricula,
-        funcao: colab.funcao,
-        equipamento: equipamentoStr,
-        ca: caStr,
-        quantidade: qtdTotal,
-        itensDetalhados: itensParaEntregar,
-        motivo: motivo,
-        status: 'ENTREGUE',
-        foto: fotosCapturadas.disp || "",
-        assinatura: canvas.toDataURL('image/png'),
-        hash: 'VIBRA-BAVGRU-' + Math.random().toString(36).substring(2, 10).toUpperCase()
-      };
-
-      auditoria.unshift(registro);
-      limparCarrinhoEpis();
-      limparAssinatura('canvas-disp');
-      fotosCapturadas.disp = null;
-      document.getElementById('foto-disp-preview').src = '';
-      document.getElementById('foto-disp-preview').classList.add('hidden');
-      document.getElementById('foto-disp-placeholder').classList.remove('hidden');
-
-      salvarBancoLocal();
-      abrirComprovante(registro.id);
-    }
-
-    function salvarInspecao() {
-      const colabId = document.getElementById('insp-colaborador').value;
-      const ca = document.getElementById('insp-ca').value;
-      const dataInsp = document.getElementById('insp-data').value;
-      const canvas = document.getElementById('canvas-insp');
-
-      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.insp) {
-        return alert('Colete assinatura ou foto para o Anexo C.');
-      }
-
-      const colab = colaboradores.find(c => c.id === colabId);
-      let reprovado = false;
-      const respostas = PERGUNTAS_ANEXO_C.map(p => {
-        const sel = document.querySelector(`input[name="${p.id}"]:checked`).value;
-        if (sel === 'Não Conforme') reprovado = true;
-        return { pergunta: p.texto, resposta: sel };
-      });
-
-      const statusFinal = reprovado ? 'INTERDITADO / SUBSTITUIR' : 'APROVADO PARA USO';
-
-      const registro = {
-        id: 'ANEXOC-' + Date.now(),
-        tipo: 'Inspeção Cinto (Anexo C)',
-        dataHora: new Date().toLocaleString('pt-BR'),
-        dataReferencia: dataInsp,
-        colaborador: colab.nome,
-        matricula: colab.matricula,
-        funcao: colab.funcao,
-        equipamento: 'Cinto Paraquedista / Trava-Quedas',
-        ca: ca,
-        quantidade: 1,
-        status: statusFinal,
-        respostasChecklist: respostas,
-        foto: fotosCapturadas.insp || "",
-        assinatura: canvas.toDataURL('image/png'),
-        hash: 'ANEXOC-BAVGRU-' + Math.random().toString(36).substring(2, 10).toUpperCase()
-      };
-
-      auditoria.unshift(registro);
-      limparAssinatura('canvas-insp');
-      fotosCapturadas.insp = null;
-      document.getElementById('foto-insp-preview').src = '';
-      document.getElementById('foto-insp-preview').classList.add('hidden');
-      document.getElementById('foto-insp-placeholder').classList.remove('hidden');
-
-      salvarBancoLocal();
-      if (reprovado) alert('⚠️ ATENÇÃO: Equipamento reprovado na inspeção visual. INTERDITADO imediatamente!');
-      abrirComprovante(registro.id);
-    }
-
-    function abrirInspecaoDireta(colabId) {
-      switchTab('inspecao');
-      document.getElementById('insp-colaborador').value = colabId;
-    }
-
-    function registrarEntrada() {
-      const epiId = document.getElementById('entrada-epi').value;
-      const qtd = parseInt(document.getElementById('entrada-qtd').value || '0', 10);
-      if (!epiId || qtd <= 0) return alert("Selecione o EPI e informe uma quantidade válida de entrada.");
-
-      const itemEstoque = estoque.find(e => e.id === epiId);
-      if(itemEstoque) {
-        itemEstoque.qtd += qtd;
-        alert(`Entrada registrada! O saldo de ${itemEstoque.nome} agora é ${itemEstoque.qtd} un.`);
-        document.getElementById('entrada-qtd').value = '10';
-        document.getElementById('entrada-nf').value = '';
-        salvarBancoLocal();
-      }
-    }
-
-    // EXCLUSÃO COM AUDITORIA
-    function excluirRegistro(id) {
-      const senha = prompt("🔒 Digite a senha do Administrador para excluir o registro:");
-      if (senha !== senhaAdmin) {
-        if (senha !== null) alert("❌ Senha incorreta.");
-        return;
-      }
-
-      const index = auditoria.findIndex(r => r.id === id);
-      if (index === -1) return;
-      const reg = auditoria[index];
-
-      const justificativa = prompt(`📝 MOTIVO DA EXCLUSÃO (${reg.colaborador}):\n(Obrigatório para conformidade de auditoria)`);
-      if (!justificativa || justificativa.trim().length < 5) {
-        return alert("❌ Cancelado. É obrigatório fornecer uma justificativa (mínimo 5 letras).");
-      }
-
-      const adminNome = prompt("👤 Digite seu Nome / Matrícula como Administrador:");
-      if (!adminNome || adminNome.trim().length === 0) return alert("❌ Identificação obrigatória.");
-
-      let estornoMsg = "Nenhum estorno necessário.";
-      if (reg.tipo.includes('Dispensação EPI')) {
-        if (reg.itensDetalhados && Array.isArray(reg.itensDetalhados)) {
-          const estornos = [];
-          reg.itensDetalhados.forEach(it => {
-            const itemEstoque = estoque.find(e => e.id === it.epiId || (e.nome === it.nome && e.ca === it.ca));
-            if (itemEstoque) {
-              const qtdEstornada = parseInt(it.quantidade, 10) || 1;
-              itemEstoque.qtd += qtdEstornada;
-              estornos.push(`+${qtdEstornada} un. (${itemEstoque.nome})`);
-            }
-          });
-          if (estornos.length) estornoMsg = "Estornado: " + estornos.join(', ');
-        } else {
-          const itemEstoque = estoque.find(e => e.nome === reg.equipamento && e.ca === reg.ca);
-          if (itemEstoque) {
-            const qtdEstornada = parseInt(reg.quantidade, 10) || 1;
-            itemEstoque.qtd += qtdEstornada;
-            estornoMsg = `Estornado +${qtdEstornada} un. para ${itemEstoque.nome}`;
-          }
-        }
-      }
-
-      const logEntry = {
-        idLog: 'LOG-' + Date.now(),
-        dataHoraExclusao: new Date().toLocaleString('pt-BR'),
-        idOriginal: reg.id,
-        tipoRegistro: reg.tipo,
-        colaboradorAfetado: `${reg.colaborador} (${reg.matricula})`,
-        itemAfetado: `${reg.equipamento} (CA: ${reg.ca})`,
-        estornoRealizado: estornoMsg,
-        responsavelExclusao: adminNome.trim(),
-        justificativa: justificativa.trim()
-      };
-
-      logExclusoes.unshift(logEntry);
-      auditoria.splice(index, 1);
-      if (dbNuvem && reg.id) {
-        dbNuvem.ref('bavgru/auditoria_itens/' + reg.id).remove().catch(e => console.warn('Remove item:', e));
-      }
-      salvarBancoLocal();
-      alert(`✅ Registro excluído e estornado no estoque com protocolo ${logEntry.idLog}.`);
-    }
-
-    function renderLogExclusoes() {
-      const container = document.getElementById('tabela-log-exclusoes');
-      if (!container) return;
-      container.innerHTML = logExclusoes.length ? logExclusoes.map(l => `
-        <tr class="hover:bg-red-50">
-          <td class="p-2 font-mono text-slate-500">${l.dataHoraExclusao}</td>
-          <td class="p-2 font-bold text-slate-700">${l.idOriginal}</td>
-          <td class="p-2">${l.colaboradorAfetado}</td>
-          <td class="p-2"><span class="bg-red-100 text-red-800 px-1.5 py-0.5 rounded">${l.itemAfetado}</span></td>
-          <td class="p-2 font-bold text-slate-800">${l.responsavelExclusao}</td>
-          <td class="p-2 text-slate-600 italic">"${l.justificativa}"</td>
-        </tr>
-      `).join('') : `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nenhuma exclusão registrada até o momento.</td></tr>`;
-    }
-
-    function exportarLogExclusoesCSV() {
-      if (!logExclusoes.length) return alert("Não há registros de exclusão para exportar.");
-      const headers = ['Data_Hora', 'Protocolo', 'Tipo', 'Colaborador', 'Item', 'Estorno', 'Responsavel', 'Justificativa'];
-      const lines = logExclusoes.map(l => [l.dataHoraExclusao, l.idOriginal, l.tipoRegistro, l.colaboradorAfetado, l.itemAfetado, l.estornoRealizado, l.responsavelExclusao, l.justificativa].map(v => `"${v || ''}"`).join(';'));
-      const csv = '\uFEFF' + [headers.join(';'), ...lines].join('\n');
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `Log_Auditoria_BAVGRU_${new Date().toISOString().slice(0,10)}.csv`;
-      link.click();
-    }
-
-    // PENDÊNCIAS DE INSPEÇÃO
-    function obterMesAnoSelecionado() {
-      const input = document.getElementById('pendencias-mes-ano');
-      if (input && input.value) return input.value;
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    }
-
-    function renderPendencias() {
-      const mesAno = obterMesAnoSelecionado();
-      const termo = (document.getElementById('busca-pendencias')?.value || '').toLowerCase();
-
-      const inspecionadosMes = new Set();
-      auditoria.forEach(r => {
-        if (r.tipo.includes('Inspeção Cinto')) {
-          let dataRef = r.dataReferencia;
-          if (!dataRef && r.dataHora) {
-            const partes = r.dataHora.split(',')[0].split('/');
-            if (partes.length === 3) dataRef = `${partes[2].trim()}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
-          }
-          if (dataRef && dataRef.startsWith(mesAno)) {
-            inspecionadosMes.add(r.matricula);
-          }
-        }
-      });
-
-      const elegiveisCinto = colaboradores.filter(c => c.usaCinto !== false);
-      const pendentes = elegiveisCinto.filter(c => !inspecionadosMes.has(c.matricula));
-      const inspecionadosCount = elegiveisCinto.length - pendentes.length;
-      const taxa = elegiveisCinto.length ? Math.round((inspecionadosCount / elegiveisCinto.length) * 100) : 100;
-
-      document.getElementById('total-pendentes-num').textContent = pendentes.length;
-      document.getElementById('total-inspecionados-num').textContent = inspecionadosCount;
-      document.getElementById('taxa-adesao-num').textContent = `${taxa}%`;
-      document.getElementById('kpi-pendencias').textContent = pendentes.length;
-
-      const pendentesFiltrados = pendentes.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
-      const tbody = document.getElementById('tabela-pendencias');
-      if (!tbody) return;
-
-      tbody.innerHTML = pendentesFiltrados.length ? pendentesFiltrados.map(c => `
-        <tr class="border-b hover:bg-amber-50/50">
-          <td class="p-2.5 text-right flex justify-end gap-1.5">
-            ${adminAutenticado ? `
-              <button onclick="alternarUsoCinto('${c.id}')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold" title="Exclusivo Admin: Marcar como dispensado de usar cinto">
-                🚫 Não Utiliza
-              </button>
-            ` : ''}
-            <button onclick="abrirInspecaoDireta('${c.id}')" class="bg-vibraGreen hover:bg-vibraDark text-white px-2.5 py-1.5 rounded-lg text-xs font-bold shadow">
-              Inspecionar ↗
-            </button>
-          </td>
-          <td class="p-2.5 text-center">
-            <span class="bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 rounded-full text-[11px] font-bold">
-              ⚠️ Pendente (${mesAno})
-            </span>
-          </td>
-          <td class="p-2.5 text-right flex justify-end gap-1.5">
-            <button onclick="alternarUsoCinto('${c.id}')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold" title="Marcar como dispensado de usar cinto">
-              🚫 Não Utiliza
-            </button>
-            <button onclick="abrirInspecaoDireta('${c.id}')" class="bg-vibraGreen hover:bg-vibraDark text-white px-2.5 py-1.5 rounded-lg text-xs font-bold shadow">
-              Inspecionar ↗
-            </button>
-          </td>
-        </tr>
-      `).join('') : `
-        <tr>
-          <td colspan="5" class="p-6 text-center text-emerald-700 bg-emerald-50 font-bold">
-            🎉 Parabéns! Todos os operadores que utilizam cinto realizaram a inspeção obrigatória no mês ${mesAno}!
-          </td>
-        </tr>
-      `;
-    }
-
-    function exportarPendenciasCSV() {
-      const mesAno = obterMesAnoSelecionado();
-      const inspecionadosMes = new Set();
-      auditoria.forEach(r => {
-        if (r.tipo.includes('Inspeção Cinto')) {
-          let dataRef = r.dataReferencia;
-          if (!dataRef && r.dataHora) {
-            const partes = r.dataHora.split(',')[0].split('/');
-            if (partes.length === 3) dataRef = `${partes[2].trim()}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
-          }
-          if (dataRef && dataRef.startsWith(mesAno)) inspecionadosMes.add(r.matricula);
-        }
-      });
-
-      const elegiveisCinto = colaboradores.filter(c => c.usaCinto !== false);
-      const pendentes = elegiveisCinto.filter(c => !inspecionadosMes.has(c.matricula));
-      if (!pendentes.length) return alert(`Nenhuma pendência no mês ${mesAno}!`);
-
-      const headers = ['Matricula', 'Nome', 'Funcao', 'Email', 'Mes_Referencia', 'Status'];
-      const linhas = pendentes.map(c => [c.matricula, c.nome, c.funcao, c.email || '', mesAno, 'PENDENTE'].map(v => `"${v || ''}"`).join(';'));
-      const csv = '\uFEFF' + [headers.join(';'), ...linhas].join('\n');
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `Pendencias_Cinto_BAVGRU_${mesAno}.csv`;
-      link.click();
-    }
-
-    // COMPROVANTE MODAL
-    function abrirComprovante(id) {
-      const reg = auditoria.find(r => r.id === id);
-      if (!reg) return;
-
-      const tabelaMultiplosItens = (reg.itensDetalhados && reg.itensDetalhados.length > 1) ? `
-        <div class="mt-2">
-          <h4 class="font-bold text-[11px] uppercase bg-slate-100 p-1 border">Relação de EPIs Entregues</h4>
-          <table class="w-full text-[11px] border-collapse border mt-1">
-            <thead>
-              <tr class="bg-slate-50 border-b">
-                <th class="p-1 border-r text-left">Equipamento (EPI)</th>
-                <th class="p-1 border-r text-center">Nº C.A.</th>
-                <th class="p-1 text-center">Qtd</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${reg.itensDetalhados.map(it => `
-                <tr class="border-b">
-                  <td class="p-1 border-r font-medium">${it.nome}</td>
-                  <td class="p-1 border-r text-center font-bold">${it.ca}</td>
-                  <td class="p-1 text-center font-bold">${it.quantidade}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      ` : '';
-
-      const checklistHtml = reg.respostasChecklist ? `
-        <div class="mt-2">
-          <h4 class="font-bold text-[11px] uppercase bg-slate-100 p-1 border">Checklist Padrão Vibra (Anexo C)</h4>
-          <table class="w-full text-[11px] border-collapse border mt-1">
-            ${reg.respostasChecklist.map(r => `
-              <tr class="border-b">
-                <td class="p-1 border-r">${r.pergunta}</td>
-                <td class="p-1 font-bold ${r.resposta === 'Não Conforme' ? 'text-red-600' : 'text-emerald-700'}">${r.resposta}</td>
-              </tr>
-            `).join('')}
-          </table>
-        </div>
-      ` : `
-        ${tabelaMultiplosItens}
-        <div class="p-2.5 bg-slate-50 border rounded text-[11px] mt-2">
-          <strong>Termo NR-06:</strong> Declaro recebimento do EPI especificado em perfeitas condições de uso, assumindo o compromisso de zelar pela guarda e conservação.
-        </div>
-      `;
-
-      document.getElementById('print-area').innerHTML = `
-        <div class="flex justify-between items-center border-b-2 border-vibraGreen pb-2">
-          <div>
-            <h2 class="text-sm md:text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A. - BAVGRU (GUARULHOS)</h2>
-            <p class="text-[11px] text-slate-600">${reg.tipo} | Comprovante Oficial</p>
-          </div>
-          <div class="text-right text-[10px]">
-            <p><strong>Nº:</strong> ${reg.id}</p>
-            <p><strong>Data:</strong> ${reg.dataHora}</p>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-1.5 text-[11px] bg-slate-50 p-2.5 border rounded mt-2">
-          <p><strong>Colaborador:</strong> ${reg.colaborador}</p>
-          <p><strong>Matrícula:</strong> ${reg.matricula}</p>
-          <p><strong>Função:</strong> ${reg.funcao}</p>
-          <p><strong>Equipamento:</strong> ${reg.equipamento}</p>
-          <p><strong>Nº CA:</strong> ${reg.ca}</p>
-          <p><strong>Status:</strong> <span class="font-bold ${reg.status.includes('INTERDITADO') ? 'text-red-600' : 'text-emerald-700'}">${reg.status}</span></p>
-        </div>
-        ${checklistHtml}
-        <div class="grid grid-cols-2 gap-3 pt-3 items-center">
-          <div class="text-center border p-2 rounded bg-slate-50">
-            <p class="text-[10px] font-bold text-slate-600 mb-1">Evidência Fotográfica</p>
-            ${reg.foto ? `<img src="${reg.foto}" class="h-24 mx-auto rounded border object-cover" />` : `<p class="text-[10px] text-slate-400 py-6">Sem foto</p>`}
-          </div>
-          <div class="text-center border p-2 rounded bg-slate-50">
-            <p class="text-[10px] font-bold text-slate-600 mb-1">Assinatura Digital</p>
-            <img src="${reg.assinatura}" class="h-24 mx-auto object-contain" />
-          </div>
-        </div>
-        <div class="text-[9px] text-slate-500 border-t pt-2 flex justify-between mt-3">
-          <span>Autenticador SSMA: <strong>${reg.hash}</strong></span>
-          <span>Responsável Legal: Graciete Martins Ferreira</span>
-        </div>
-      `;
-
-      document.getElementById('modal-print').classList.remove('hidden');
-      document.getElementById('modal-print').classList.add('flex');
-    }
-
-    // GERAR PDF ÚNICO DO HISTÓRICO DE ENTREGA POR FUNCIONÁRIO (ADMIN)
-    function gerarPdfHistoricoFuncionario() {
-      const colabId = document.getElementById('admin-historico-colab').value;
-      const colab = colaboradores.find(c => c.id === colabId);
-      if (!colab) return alert('Selecione um funcionário válido.');
-
-      const matriculaAlvo = String(colab.matricula || '').trim().toLowerCase();
-      const nomeAlvo = String(colab.nome || '').trim().toLowerCase();
-
-      const entregas = auditoria.filter(r => {
-        const ehEpi = String(r.tipo || '').toLowerCase().includes('dispensação') || String(r.id || '').startsWith('NR06');
-        const mesmaMatricula = String(r.matricula || '').trim().toLowerCase() === matriculaAlvo;
-        const mesmoNome = String(r.colaborador || '').trim().toLowerCase() === nomeAlvo;
-        return ehEpi && (mesmaMatricula || mesmoNome);
-      });
-
-      if (entregas.length === 0) {
-        return alert(`Nenhuma entrega de EPI registrada para ${colab.nome} até o momento.`);
-      }
-
-      const linhasHtml = [];
-      entregas.forEach(reg => {
-        if (reg.itensDetalhados && Array.isArray(reg.itensDetalhados) && reg.itensDetalhados.length > 0) {
-          reg.itensDetalhados.forEach(it => {
-            linhasHtml.push(`
-              <tr class="border-b">
-                <td class="p-1.5 border-r text-[10px]">${reg.dataHora}</td>
-                <td class="p-1.5 border-r font-semibold">${it.nome}</td>
-                <td class="p-1.5 border-r text-center font-bold">${it.ca}</td>
-                <td class="p-1.5 border-r text-center font-bold">${it.quantidade}</td>
-                <td class="p-1.5 border-r text-[10px]">${reg.motivo || '-'}</td>
-                <td class="p-1.5 text-center">
-                  ${reg.assinatura ? `<img src="${reg.assinatura}" class="h-8 mx-auto object-contain" />` : 'Assinado'}
-                </td>
-              </tr>
-            `);
-          });
-        } else {
-          linhasHtml.push(`
-            <tr class="border-b">
-              <td class="p-1.5 border-r text-[10px]">${reg.dataHora}</td>
-              <td class="p-1.5 border-r font-semibold">${reg.equipamento}</td>
-              <td class="p-1.5 border-r text-center font-bold">${reg.ca}</td>
-              <td class="p-1.5 border-r text-center font-bold">${reg.quantidade || 1}</td>
-              <td class="p-1.5 border-r text-[10px]">${reg.motivo || '-'}</td>
-              <td class="p-1.5 text-center">
-                ${reg.assinatura ? `<img src="${reg.assinatura}" class="h-8 mx-auto object-contain" />` : 'Assinado'}
-              </td>
-            </tr>
-          `);
-        }
-      });
-
-      document.getElementById('print-area').innerHTML = `
-        <div class="flex justify-between items-center border-b-2 border-vibraGreen pb-2">
-          <div>
-            <h2 class="text-sm md:text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A. - BAVGRU (GUARULHOS)</h2>
-            <p class="text-[11px] text-slate-600">FICHA INDIVIDUAL CONSOLIDADA DE ENTREGA DE EPIs (NR-06)</p>
-          </div>
-          <div class="text-right text-[10px]">
-            <p><strong>Emissão:</strong> ${new Date().toLocaleString('pt-BR')}</p>
-            <p><strong>Total de Fichas Assinadas:</strong> ${entregas.length} (${linhasHtml.length} itens)</p>
-          </div>
-        </div>
-        <div class="grid grid-cols-3 gap-2 text-[11px] bg-slate-50 p-2.5 border rounded mt-2">
-          <p><strong>Colaborador:</strong> ${colab.nome}</p>
-          <p><strong>Matrícula:</strong> ${colab.matricula}</p>
-          <p><strong>Função:</strong> ${colab.funcao}</p>
-        </div>
-        <div class="p-2 bg-emerald-50 border border-emerald-200 rounded text-[10px] mt-2 leading-snug">
-          <strong>Termo de Responsabilidade (NR-06 - Portaria 3.214/77):</strong> Declaro ter recebido gratuitamente da Vibra Energia S.A. (Unidade BAVGRU) os Equipamentos de Proteção Individual (EPIs) abaixo discriminados, novos e com C.A. ativo, comprometendo-me a utilizá-los apenas para a finalidade a que se destinam e zelar por sua guarda e conservação.
-        </div>
-        <div class="mt-2">
-          <table class="w-full text-[11px] border-collapse border">
-            <thead>
-              <tr class="bg-slate-100 border-b text-slate-700">
-                <th class="p-1.5 border-r text-left">Data / Hora</th>
-                <th class="p-1.5 border-r text-left">Equipamento (EPI)</th>
-                <th class="p-1.5 border-r text-center">Nº C.A.</th>
-                <th class="p-1.5 border-r text-center">Qtd</th>
-                <th class="p-1.5 border-r text-left">Motivo</th>
-                <th class="p-1.5 text-center">Rubrica Digital</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${linhasHtml.join('')}
-            </tbody>
-          </table>
-        </div>
-        <div class="text-[9px] text-slate-500 border-t pt-2 flex justify-between mt-3">
-          <span>Relatório Unificado de Auditoria NR-06 - BAVGRU</span>
-          <span>Responsável Técnica SSMA: Graciete Martins Ferreira</span>
-        </div>
-      `;
-
-      document.getElementById('modal-print').classList.remove('hidden');
-      document.getElementById('modal-print').classList.add('flex');
-    }
-
-    function fecharModalPrint() {
-      document.getElementById('modal-print').classList.add('hidden');
-      document.getElementById('modal-print').classList.remove('flex');
-    }
-
-    // RENDERIZAÇÕES
-    function renderColaboradores() {
-      const termo = (document.getElementById('busca-colab').value || '').toLowerCase();
-      const filtrados = colaboradores.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
-      document.getElementById('tabela-colaboradores').innerHTML = filtrados.map(c => {
-        const usaCinto = c.usaCinto !== false;
-        return `
-          <tr class="border-b hover:bg-slate-50">
-            <td class="p-2.5 font-bold text-xs">${c.matricula}</td>
-            <td class="p-2.5 font-medium">${c.nome}</td>
-            <td class="p-2.5 text-xs text-slate-600">${c.funcao}</td>
-            <td class="p-2.5 text-center">
-              <button onclick="alternarUsoCinto('${c.id}')" class="px-2.5 py-1 rounded-full text-[11px] font-bold transition-all ${usaCinto ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300' : 'bg-slate-200 text-slate-600 hover:bg-slate-300 border border-slate-300'}" title="Clique para alternar se utiliza ou não cinto trava-quedas">
-                ${usaCinto ? '✅ Utiliza Cinto' : '🚫 Não Utiliza (Isento)'}
-              </button>
-            </td>
-            <td class="p-2.5 text-right">
-              <button onclick="buscarFichasDoColaborador('${c.nome}')" class="bg-vibraDark text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-vibraGreen">Fichas ↗</button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function buscarFichasDoColaborador(nome) {
-      switchTab('dashboard');
-      document.getElementById('busca-auditoria').value = nome;
-      renderAuditoria();
-    }
-
-    function renderAuditoria() {
-      const termo = (document.getElementById('busca-auditoria').value || '').toLowerCase();
-      const filtrados = auditoria.filter(r => r.colaborador.toLowerCase().includes(termo) || r.ca.toLowerCase().includes(termo));
-      document.getElementById('tabela-auditoria').innerHTML = filtrados.length ? filtrados.map(r => `
-        <tr class="hover:bg-slate-50">
-          <td class="p-2.5 text-xs">${r.dataHora}</td>
-          <td class="p-2.5 font-semibold">${r.tipo}</td>
-          <td class="p-2.5">${r.colaborador} <span class="text-xs text-slate-400">(${r.matricula})</span></td>
-          <td class="p-2.5">${r.equipamento} <span class="bg-slate-200 px-1.5 py-0.5 rounded text-[10px] font-bold">CA ${r.ca}</span></td>
-          <td class="p-2.5"><span class="px-2 py-0.5 rounded text-xs font-bold ${r.status.includes('INTERDITADO') ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-800'}">${r.status}</span></td>
-          <td class="p-2.5 text-right flex gap-1 justify-end">
-            <button onclick="abrirComprovante('${r.id}')" class="bg-vibraDark text-white px-2 py-1 rounded text-xs font-bold hover:bg-vibraGreen">PDF</button>
-            <button onclick="excluirRegistro('${r.id}')" class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold hover:bg-red-800" title="Excluir">🗑️</button>
-          </td>
-        </tr>
-      `).join('') : `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nenhum registro encontrado.</td></tr>`;
-    }
-
-    // CADASTRO DE EPI INDIVIDUAL OU EM LOTE (EXCEL)
+    // CADASTRO E IMPORTAÇÃO DE EPIS
     function cadastrarNovoEpi() {
       const nome = document.getElementById('novo-epi-nome').value.trim();
       const ca = document.getElementById('novo-epi-ca').value.trim() || 'S/C.A.';
       const qtd = parseInt(document.getElementById('novo-epi-qtd').value, 10);
       const min = parseInt(document.getElementById('novo-epi-min').value, 10) || 5;
-
       if (!nome) return alert('Por favor, informe o Nome do EPI.');
       const saldoInicial = isNaN(qtd) ? 10 : qtd;
-
       estoque.push({
         id: 'e_' + Date.now(),
         nome: nome,
@@ -2359,7 +2476,6 @@ Casquete	38352	100	10
         qtd: saldoInicial,
         min: min
       });
-
       document.getElementById('novo-epi-nome').value = '';
       document.getElementById('novo-epi-ca').value = '';
       document.getElementById('novo-epi-qtd').value = '';
@@ -2381,13 +2497,11 @@ Casquete	38352	100	10
       if (!texto) return [];
       const linhas = texto.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
       const resultado = [];
-
       for (const linha of linhas) {
         const lower = linha.toLowerCase();
         if (lower.startsWith('nome') || lower.startsWith('epi') || lower.startsWith('equipamento') || lower.startsWith('saldo')) {
           continue;
         }
-
         let separador = '\t';
         if (linha.includes('\t')) separador = '\t';
         else if (linha.includes(';')) separador = ';';
@@ -2421,7 +2535,6 @@ Casquete	38352	100	10
       const container = document.getElementById('preview-importar-epi');
       const countEl = document.getElementById('preview-epi-count');
       const listaEl = document.getElementById('preview-epi-lista');
-
       if (extraidos.length > 0) {
         container.classList.remove('hidden');
         countEl.textContent = `✅ ${extraidos.length} EPIs encontrados`;
@@ -2440,7 +2553,6 @@ Casquete	38352	100	10
       const arquivo = event.target.files[0];
       if (!arquivo) return;
       const extensao = arquivo.name.split('.').pop().toLowerCase();
-
       if (extensao === 'xlsx' || extensao === 'xls') {
         const leitor = new FileReader();
         leitor.onload = function(e) {
@@ -2474,13 +2586,10 @@ Casquete	38352	100	10
     function executarImportacaoEpis() {
       const texto = document.getElementById('texto-importar-epi').value;
       const novosEpis = extrairEpisDoTexto(texto);
-
       if (novosEpis.length === 0) {
         return alert('Nenhum EPI válido encontrado. Copie e cole células da tabela do Excel ou faça o upload de um arquivo .xlsx/.csv.');
       }
-
       const modo = document.querySelector('input[name="modo-importacao-epi"]:checked').value;
-
       if (modo === 'substituir') {
         if (!confirm(`⚠️ ALERTA: Isto apagará TODO o estoque cadastrado atualmente e inserirá os ${novosEpis.length} itens do Excel. Deseja prosseguir?`)) return;
         estoque = novosEpis;
@@ -2488,7 +2597,6 @@ Casquete	38352	100	10
       } else {
         let cadastrados = 0;
         let atualizados = 0;
-
         novosEpis.forEach(novo => {
           const idx = estoque.findIndex(e => e.nome.toLowerCase() === novo.nome.toLowerCase() && e.ca.toLowerCase() === novo.ca.toLowerCase());
           if (idx !== -1) {
@@ -2506,7 +2614,6 @@ Casquete	38352	100	10
         });
         alert(`✅ Sucesso! ${cadastrados} novos tipos de EPI inseridos e ${atualizados} saldos atualizados.`);
       }
-
       document.getElementById('texto-importar-epi').value = '';
       document.getElementById('arquivo-importar-epi').value = '';
       document.getElementById('preview-importar-epi').classList.add('hidden');
@@ -2514,6 +2621,7 @@ Casquete	38352	100	10
       salvarBancoLocal();
     }
 
+    // ATUALIZAR TODOS OS DADOS E TELAS
     function atualizarTudo() {
       document.getElementById('kpi-colaboradores').textContent = colaboradores.length;
       document.getElementById('kpi-dispensacoes').textContent = auditoria.filter(a => a.tipo.includes('NR-06')).length;
@@ -2522,15 +2630,18 @@ Casquete	38352	100	10
       document.getElementById('kpi-alertas').textContent = alertasEstoque;
 
       colaboradores.sort((a, b) => a.nome.localeCompare(b.nome));
-      const opcoesColab = colaboradores.map(c => `<option value="${c.id}">${c.nome} (${c.matricula})</option>`).join('');
-      const opcoesColabCinto = colaboradores.filter(c => c.usaCinto !== false).map(c => `<option value="${c.id}">${c.nome} (${c.matricula})</option>`).join('');
+      const opcoesColab = colaboradores.map(c => `
+        <option value="${c.id}">${c.nome} (${c.matricula})${c.naoUtilizaCinto ? ' - [🚫 Não Usa Cinto]' : ''}</option>
+      `).join('');
 
       document.getElementById('disp-colaborador').innerHTML = opcoesColab;
-      document.getElementById('insp-colaborador').innerHTML = opcoesColabCinto;
-      const selectHistColab = document.getElementById('admin-historico-colab');
-      if (selectHistColab) selectHistColab.innerHTML = opcoesColab;
+      document.getElementById('insp-colaborador').innerHTML = opcoesColab;
+      verificarAvisoCinto();
 
-      const opcoesEpi = estoque.map(e => `<option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>`).join('');
+      const opcoesEpi = estoque.map(e => `
+        <option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>
+      `).join('');
+
       document.getElementById('disp-epi').innerHTML = opcoesEpi;
       document.getElementById('entrada-epi').innerHTML = opcoesEpi;
 
@@ -2548,6 +2659,7 @@ Casquete	38352	100	10
       renderAuditoria();
       renderLogExclusoes();
       renderPendencias();
+      renderNaoUtilizaCinto();
     }
 
     function exportarCSV() {
@@ -2561,6 +2673,7 @@ Casquete	38352	100	10
       link.click();
     }
 
+    // INICIALIZAÇÃO
     window.onload = () => {
       const d = new Date();
       document.getElementById('insp-data').value = d.toISOString().slice(0, 10);
@@ -2572,6 +2685,7 @@ Casquete	38352	100	10
       configurarCanvasAssinatura('canvas-insp');
       atualizarTudo();
       iniciarSincronizacaoNuvem();
+
       window.addEventListener('resize', redimensionarCanvas);
       redimensionarCanvas();
     };

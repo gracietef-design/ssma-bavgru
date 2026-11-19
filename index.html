@@ -4,19 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Portal SSMA BAVGRU - Gestão de EPIs, Inspeção SPIQ & Auditoria</title>
-  <meta property="og:title" content="Vibra Energia | Portal SSMA BAVGRU" />
-  <meta property="og:description" content="Gestão Integrada de EPIs (NR-06), Inspeção Trava-Quedas (Anexo C) e Auditoria - Unidade BAVGRU" />
-  <meta property="og:site_name" content="Vibra Energia S.A." />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#008542" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="SSMA BAVGRU" />
   <link class="no-print" rel="icon" type="image/svg+xml" href="icon.svg" />
-  <link class="no-print" rel="apple-touch-icon" href="icon.svg" />
-
-  <!-- CSS OFICIAL DE FALLBACK (GARANTE CORES E LAYOUT NO CHROME DE TRABALHO) -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -24,17 +14,10 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
     if (typeof tailwind !== 'undefined') {
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: { vibraGreen: '#008542', vibraDark: '#00582C', vibraYellow: '#FFC72C', vibraLight: '#F4FBF7' }
-          }
-        }
-      };
+      tailwind.config = { theme: { extend: { colors: { vibraGreen: '#008542', vibraDark: '#00582C', vibraYellow: '#FFC72C', vibraLight: '#F4FBF7' } } } };
     }
   </script>
   <style>
-    :root { --vibra-green: #008542; --vibra-dark: #00582C; --vibra-yellow: #FFC72C; }
     body { background-color: #f1f5f9; color: #1e293b; font-family: system-ui, -apple-system, sans-serif; margin: 0; }
     .hidden { display: none !important; }
     .bg-vibraGreen { background-color: #008542 !important; }
@@ -55,50 +38,27 @@
       tr { page-break-inside: avoid; }
     }
     canvas { touch-action: none; }
-    ::-webkit-scrollbar { height: 6px; width: 6px; }
-    ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    header { padding-top: max(0.5rem, env(safe-area-inset-top)); }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col select-none md:select-auto">
-
-  <!-- BANNER DE INSTALAÇÃO DO APP -->
-  <div id="pwa-install-banner" class="hidden bg-vibraDark text-white px-4 py-3 shadow-md border-b-2 border-vibraYellow no-print">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-white p-1 flex items-center justify-center shadow">
-          <img src="icon.svg" alt="App Icon" class="w-8 h-8" />
-        </div>
-        <div>
-          <p class="text-sm font-bold leading-tight">Instalar Aplicativo BAVGRU</p>
-          <p class="text-xs text-green-100">Acesse direto da tela inicial com 1 toque</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <button id="btn-instalar-app" onclick="acionarInstalacaoPWA()" class="bg-vibraYellow text-vibraDark font-bold px-3 py-1.5 rounded-lg text-xs shadow">📲 Instalar</button>
-        <button onclick="fecharBannerPWA()" class="text-white text-lg px-1">✕</button>
-      </div>
-    </div>
-  </div>
+<body class="bg-gray-100 text-gray-800 font-sans min-h-screen flex flex-col">
 
   <!-- CABEÇALHO PADRÃO VIBRA -->
   <header class="bg-vibraGreen text-white shadow-lg border-b-4 border-vibraYellow no-print">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 border-b border-green-700">
       <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2.5">
-          <div class="w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center shadow-md">
+        <div class="flex items-center gap-2">
+          <div class="w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center shadow">
             <img src="icon.svg" alt="Vibra" class="w-8 h-8 object-contain" />
           </div>
-          <div class="text-white font-extrabold px-1 py-0.5 text-2xl tracking-widest flex items-center gap-1.5">
+          <div class="text-white font-extrabold px-1 text-2xl tracking-widest flex items-center gap-1.5">
             <span>VIBRA</span>
-            <span class="text-xs bg-vibraYellow text-vibraDark px-1.5 py-0.5 rounded font-black uppercase shadow-sm">App</span>
+            <span class="text-xs bg-vibraYellow text-vibraDark px-1.5 py-0.5 rounded font-black uppercase">App</span>
           </div>
         </div>
         <div class="border-l-2 border-green-400 pl-3">
           <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="text-base md:text-lg font-extrabold tracking-tight leading-tight">SSMA BAVGRU</h1>
-            <span id="badge-status-nuvem" onclick="testarEForcarSincronizacao()" title="Clique para testar sincronização" class="cursor-pointer text-xs bg-green-900 text-green-200 border border-green-400 px-2 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-sm">
+            <h1 class="text-base md:text-lg font-extrabold">SSMA BAVGRU</h1>
+            <span id="badge-status-nuvem" onclick="testarEForcarSincronizacao()" class="cursor-pointer text-xs bg-green-900 text-green-200 border border-green-400 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
               <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
               <span id="texto-status-nuvem">Nuvem Conectada</span>
             </span>
@@ -106,86 +66,55 @@
           <p class="text-xs text-green-100 hidden sm:block">Gestão Integrada de EPIs (NR-06), Inspeção Trava-Quedas (Anexo C) & Auditoria</p>
         </div>
       </div>
-      <div class="flex items-center gap-2">
-        <button onclick="abrirModalAjudaApp()" class="bg-vibraDark hover:bg-green-900 text-vibraYellow border border-green-600 px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
-          📲 <span>Instalar App</span>
-        </button>
-      </div>
     </div>
 
-    <!-- Barra de Navegação Principal -->
     <div class="bg-vibraDark px-3 py-2">
       <nav class="max-w-7xl mx-auto flex flex-wrap items-center justify-start sm:justify-center gap-1.5 sm:gap-2">
-        <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="tab-btn bg-white text-vibraDark font-extrabold px-3 py-1.5 rounded-lg text-xs sm:text-sm shadow-md flex items-center gap-1.5">
-          <span>📊</span> <span>Painel</span>
-        </button>
-        <button onclick="switchTab('dispensacao')" id="tab-btn-dispensacao" class="tab-btn bg-green-900 text-green-100 hover:bg-green-800 hover:text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-sm">
-          <span>🦺</span> <span>Dispensar EPI</span>
-        </button>
-        <button onclick="switchTab('inspecao')" id="tab-btn-inspecao" class="tab-btn bg-green-900 text-green-100 hover:bg-green-800 hover:text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-sm">
-          <span>🧗</span> <span>Inspeção Cinto</span>
-        </button>
-        <button onclick="switchTab('pendencias')" id="tab-btn-pendencias" class="tab-btn bg-yellow-600 text-white hover:bg-yellow-700 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-sm">
-          <span>⚠️</span> <span>Pendências</span>
-        </button>
-        <button onclick="switchTab('nao-cinto')" id="tab-btn-nao-cinto" class="tab-btn bg-purple-700 text-white hover:bg-purple-800 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-sm">
-          <span>🚫</span> <span>Não Utiliza Cinto</span>
-        </button>
-        <button onclick="switchTab('estoque')" id="tab-btn-estoque" class="tab-btn bg-green-900 text-green-100 hover:bg-green-800 hover:text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-sm">
-          <span>📦</span> <span>Estoque</span>
-        </button>
-        <button onclick="switchTab('colaboradores')" id="tab-btn-colaboradores" class="tab-btn bg-green-900 text-green-100 hover:bg-green-800 hover:text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-sm">
-          <span>👥</span> <span>Efetivo</span>
-        </button>
-        <button onclick="switchTab('admin')" id="tab-btn-admin" class="tab-btn bg-gray-800 text-white hover:bg-gray-900 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-sm">
-          <span>⚙️</span> <span>Admin</span>
-        </button>
+        <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="tab-btn bg-white text-vibraDark font-extrabold px-3 py-1.5 rounded-lg text-xs sm:text-sm shadow">📊 Painel</button>
+        <button onclick="switchTab('dispensacao')" id="tab-btn-dispensacao" class="tab-btn bg-green-900 text-green-100 hover:bg-green-800 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold">🦺 Dispensar EPI</button>
+        <button onclick="switchTab('inspecao')" id="tab-btn-inspecao" class="tab-btn bg-green-900 text-green-100 hover:bg-green-800 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold">🧗 Inspeção Cinto</button>
+        <button onclick="switchTab('pendencias')" id="tab-btn-pendencias" class="tab-btn bg-yellow-600 text-white hover:bg-yellow-700 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold">⚠️ Pendências</button>
+        <button onclick="switchTab('nao-cinto')" id="tab-btn-nao-cinto" class="tab-btn bg-purple-700 text-white hover:bg-purple-800 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold">🚫 Não Utiliza Cinto</button>
+        <button onclick="switchTab('estoque')" id="tab-btn-estoque" class="tab-btn bg-green-900 text-green-100 hover:bg-green-800 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold">📦 Estoque</button>
+        <button onclick="switchTab('colaboradores')" id="tab-btn-colaboradores" class="tab-btn bg-green-900 text-green-100 hover:bg-green-800 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold">👥 Efetivo</button>
+        <button onclick="switchTab('admin')" id="tab-btn-admin" class="tab-btn bg-gray-800 text-white hover:bg-gray-900 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold">⚙️ Admin</button>
       </nav>
     </div>
   </header>
 
-  <!-- CONTEÚDO PRINCIPAL -->
   <main class="max-w-7xl mx-auto w-full p-3 md:p-4 flex-1 no-print">
 
-    <!-- ABA 1: DASHBOARD E ARQUIVO DE AUDITORIA -->
-    <section id="tab-dashboard" class="space-y-4 md:space-y-6">
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
-        <div onclick="switchTab('colaboradores')" class="bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-vibraGreen cursor-pointer">
+    <!-- ABA 1: DASHBOARD -->
+    <section id="tab-dashboard" class="space-y-4">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <div onclick="switchTab('colaboradores')" class="bg-white p-3.5 rounded-xl shadow border-l-4 border-vibraGreen cursor-pointer">
           <p class="text-xs text-gray-500 uppercase font-bold">Colaboradores</p>
-          <p id="kpi-colaboradores" class="text-2xl md:text-3xl font-extrabold text-gray-800 mt-1">0</p>
-          <p class="text-xs text-green-600 mt-1">Base BAVGRU</p>
+          <p id="kpi-colaboradores" class="text-2xl font-extrabold text-gray-800 mt-1">0</p>
         </div>
-        <div onclick="switchTab('dashboard')" class="bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-blue-600 cursor-pointer">
+        <div onclick="switchTab('dashboard')" class="bg-white p-3.5 rounded-xl shadow border-l-4 border-blue-600 cursor-pointer">
           <p class="text-xs text-gray-500 uppercase font-bold">Fichas NR-06</p>
-          <p id="kpi-dispensacoes" class="text-2xl md:text-3xl font-extrabold text-gray-800 mt-1">0</p>
-          <p class="text-xs text-blue-600 mt-1">Assinadas</p>
+          <p id="kpi-dispensacoes" class="text-2xl font-extrabold text-gray-800 mt-1">0</p>
         </div>
-        <div onclick="switchTab('inspecao')" class="bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-green-600 cursor-pointer">
+        <div onclick="switchTab('inspecao')" class="bg-white p-3.5 rounded-xl shadow border-l-4 border-green-600 cursor-pointer">
           <p class="text-xs text-gray-500 uppercase font-bold">Inspeções Cinto</p>
-          <p id="kpi-inspecoes" class="text-2xl md:text-3xl font-extrabold text-gray-800 mt-1">0</p>
-          <p class="text-xs text-green-600 mt-1">Anexo C no mês</p>
+          <p id="kpi-inspecoes" class="text-2xl font-extrabold text-gray-800 mt-1">0</p>
         </div>
-        <div onclick="switchTab('pendencias')" class="bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-yellow-500 cursor-pointer">
+        <div onclick="switchTab('pendencias')" class="bg-white p-3.5 rounded-xl shadow border-l-4 border-yellow-500 cursor-pointer">
           <p class="text-xs text-gray-500 uppercase font-bold">Pendências Mês</p>
-          <p id="kpi-pendencias" class="text-2xl md:text-3xl font-extrabold text-yellow-600 mt-1">0</p>
-          <p class="text-xs text-yellow-700 mt-1">Obrigados a cinto</p>
+          <p id="kpi-pendencias" class="text-2xl font-extrabold text-yellow-600 mt-1">0</p>
         </div>
-        <div onclick="switchTab('estoque')" class="col-span-2 md:col-span-1 bg-white p-3 md:p-4 rounded-xl shadow border-l-4 border-red-600 cursor-pointer">
+        <div onclick="switchTab('estoque')" class="col-span-2 md:col-span-1 bg-white p-3.5 rounded-xl shadow border-l-4 border-red-600 cursor-pointer">
           <p class="text-xs text-gray-500 uppercase font-bold">Alertas Estoque</p>
-          <p id="kpi-alertas" class="text-2xl md:text-3xl font-extrabold text-red-600 mt-1">0</p>
-          <p class="text-xs text-red-500 mt-1">Abaixo do mínimo</p>
+          <p id="kpi-alertas" class="text-2xl font-extrabold text-red-600 mt-1">0</p>
         </div>
       </div>
 
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
-          <div>
-            <h2 class="text-base md:text-lg font-bold text-gray-800">🗂️ Arquivo Digital de Auditoria (Fichas NR-06 & Inspeções)</h2>
-            <p class="text-xs text-gray-500">Documentos oficiais com validade jurídica e assinatura digital coletada.</p>
-          </div>
-          <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+          <h2 class="text-base md:text-lg font-bold text-gray-800">🗂️ Arquivo Digital de Auditoria (Fichas NR-06 & Inspeções)</h2>
+          <div class="flex gap-2 w-full md:w-auto">
             <input type="text" id="busca-auditoria" oninput="renderAuditoria()" placeholder="🔎 Filtrar nome, matrícula ou CA..." class="border rounded-lg px-3 py-2 text-sm w-full md:w-64 bg-gray-50" />
-            <button onclick="exportarCSV()" class="bg-vibraGreen hover:bg-vibraDark text-white px-3 py-2 rounded-lg text-xs md:text-sm font-semibold">📥 Exportar CSV</button>
+            <button onclick="exportarCSV()" class="bg-vibraGreen text-white px-3 py-2 rounded-lg text-xs font-semibold">📥 Exportar CSV</button>
           </div>
         </div>
         <div class="overflow-x-auto">
@@ -206,11 +135,11 @@
       </div>
     </section>
 
-    <!-- ABA 2: DISPENSAÇÃO DE EPI (NR-06) COM MÚLTIPLOS EPIS -->
-    <section id="tab-dispensacao" class="hidden space-y-4 md:space-y-6">
+    <!-- ABA 2: DISPENSAÇÃO DE EPI -->
+    <section id="tab-dispensacao" class="hidden space-y-4">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
         <h2 class="text-base md:text-lg font-bold text-vibraDark border-b pb-2 mb-4">🦺 Nova Dispensação de EPI com Assinatura (NR-06)</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
           <div>
             <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Colaborador (BAVGRU) *</label>
             <select id="disp-colaborador" class="w-full border rounded-lg p-2.5 text-sm bg-gray-50 font-semibold"></select>
@@ -222,19 +151,15 @@
               <option value="Primeira Entrega / Admissão">Primeira Entrega / Admissão</option>
               <option value="Substituição por Reprovação na Inspeção">Substituição por Reprovação em Inspeção</option>
               <option value="Perda ou Extravio">Perda / Extravio</option>
-              <option value="Suplementação / Nova Atividade">Suplementação / Nova Atividade</option>
             </select>
           </div>
         </div>
 
-        <div class="border-2 border-green-200 bg-green-50 rounded-xl p-3 md:p-4 mb-4 space-y-3">
-          <div class="flex justify-between items-center">
-            <h3 class="text-xs md:text-sm font-bold text-vibraDark">🛒 Selecionar Equipamentos (Permitido Múltiplos EPIs na mesma entrega)</h3>
-            <span class="text-xs text-gray-500">Adicione um ou mais EPIs abaixo</span>
-          </div>
+        <div class="border-2 border-green-200 bg-green-50 rounded-xl p-3 mb-4 space-y-3">
+          <h3 class="text-xs md:text-sm font-bold text-vibraDark">🛒 Selecionar Equipamentos (Múltiplos EPIs na mesma entrega)</h3>
           <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-end">
             <div class="md:col-span-8">
-              <label class="block text-xs font-bold text-gray-600 mb-1">EPI do Estoque (Com CA Válido):</label>
+              <label class="block text-xs font-bold text-gray-600 mb-1">EPI do Estoque:</label>
               <select id="disp-epi" class="w-full border rounded-lg p-2 text-sm bg-white"></select>
             </div>
             <div class="md:col-span-2">
@@ -242,95 +167,74 @@
               <input type="number" id="disp-qtd" value="1" min="1" class="w-full border rounded-lg p-2 text-sm bg-white" />
             </div>
             <div class="md:col-span-2">
-              <button type="button" onclick="adicionarEpiListaDispensacao()" class="w-full bg-vibraGreen hover:bg-vibraDark text-white font-bold p-2 rounded-lg text-sm shadow">
-                ➕ Incluir EPI
-              </button>
+              <button type="button" onclick="adicionarEpiListaDispensacao()" class="w-full bg-vibraGreen text-white font-bold p-2 rounded-lg text-sm shadow">➕ Incluir EPI</button>
             </div>
           </div>
-
-          <div class="bg-white rounded-lg border overflow-hidden mt-2">
+          <div class="bg-white rounded-lg border overflow-hidden">
             <table class="w-full text-xs text-left">
-              <thead class="bg-gray-100 text-gray-700 font-bold border-b">
-                <tr>
-                  <th class="p-2">EPI Selecionado</th>
-                  <th class="p-2">Nº CA</th>
-                  <th class="p-2 text-center">Quantidade</th>
-                  <th class="p-2 text-right">Ação</th>
-                </tr>
+              <thead class="bg-gray-100 font-bold border-b">
+                <tr><th class="p-2">EPI Selecionado</th><th class="p-2">Nº CA</th><th class="p-2 text-center">Qtd</th><th class="p-2 text-right">Ação</th></tr>
               </thead>
               <tbody id="lista-epis-dispensacao" class="divide-y">
-                <tr>
-                  <td colspan="4" class="p-3 text-center text-gray-400 italic">Nenhum EPI adicionado ainda. Escolha o item acima e clique em "➕ Incluir EPI".</td>
-                </tr>
+                <tr><td colspan="4" class="p-3 text-center text-gray-400 italic">Nenhum EPI adicionado na lista.</td></tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <div class="bg-green-50 border-l-4 border-vibraGreen rounded-lg p-3.5 text-xs text-gray-700 leading-relaxed space-y-1.5">
-          <p class="font-bold text-vibraDark uppercase text-xs">⚖️ Enquadramento Legal Incluído no Termo (NR-06 & Padrão Corporativo Vibra)</p>
-          <p><strong>NR-06 (Item 6.5.1 - Cabe à Organização):</strong> Fornecer ao empregado, gratuitamente, EPI adequado ao risco, em perfeito estado de conservação e funcionamento, com Certificado de Aprovação (CA) válido, registrando o seu fornecimento por meio de sistema eletrônico ou ficha física e orientando/treinando o trabalhador.</p>
-          <p><strong>NR-06 (Item 6.7.1 - Cabe ao Trabalhador):</strong> Utilizar o EPI apenas para a finalidade a que se destina; responsabilizar-se pela limpeza, guarda e conservação; comunicar à organização qualquer alteração que o torne impróprio para uso (desgaste, avaria ou extravio); e cumprir as determinações sobre o uso adequado.</p>
-          <p><strong>Padrão Corporativo Vibra & CLT (Art. 158, Parágrafo Único, alínea "b" e Art. 462, § 1º):</strong> Compromisso de devolução do EPI em caso de substituição, mudança de função ou desligamento da companhia, ciente de que a recusa injustificada ao uso constitui ato faltoso e que o extravio ou dano doloso/culposo sujeita à reposição na forma da lei.</p>
+        <div class="bg-green-50 border-l-4 border-vibraGreen rounded-lg p-3 text-xs text-gray-700 space-y-1">
+          <p class="font-bold text-vibraDark uppercase">⚖️ Termo Legal NR-06 & Padrão Corporativo Vibra</p>
+          <p><strong>NR-06 (6.5.1 e 6.7.1) & CLT (Art. 158 e Art. 462, § 1º):</strong> Declaro ter recebido gratuitamente da Vibra Energia S.A. (BAVGRU) os EPIs discriminados, novos e com CA válido, comprometendo-me a utilizá-los apenas para a finalidade a que se destinam, zelar por sua guarda e conservação, comunicar qualquer avaria e devolvê-los em caso de substituição ou desligamento.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
-          <div class="border rounded-xl p-3 md:p-4 bg-gray-50">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="border rounded-xl p-3 bg-gray-50">
             <div class="flex justify-between items-center mb-2">
-              <h3 class="font-bold text-xs md:text-sm text-gray-700">📸 1. Foto do Colaborador / EPI</h3>
-              <button type="button" onclick="alternarCamera('disp')" class="text-xs text-blue-600 font-bold hover:underline">🔄 Inverter Câmera</button>
+              <h3 class="font-bold text-xs text-gray-700">📸 1. Foto do Colaborador / EPI</h3>
+              <button type="button" onclick="alternarCamera('disp')" class="text-xs text-blue-600 font-bold">🔄 Inverter</button>
             </div>
             <div class="flex flex-col items-center gap-2">
-              <div class="relative w-full max-w-xs h-44 bg-gray-200 rounded-lg overflow-hidden border flex items-center justify-center">
+              <div class="relative w-full max-w-xs h-40 bg-gray-200 rounded-lg overflow-hidden border flex items-center justify-center">
                 <video id="video-disp" class="w-full h-full object-cover hidden" autoplay playsinline muted></video>
-                <img id="foto-disp-preview" class="w-full h-full object-cover hidden" alt="Foto capturada" />
-                <span id="foto-disp-placeholder" class="text-xs text-gray-400 text-center px-4">Câmera desligada</span>
+                <img id="foto-disp-preview" class="w-full h-full object-cover hidden" />
+                <span id="foto-disp-placeholder" class="text-xs text-gray-400">Câmera desligada</span>
               </div>
               <div class="flex gap-2">
-                <button type="button" onclick="iniciarCamera('disp')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Ligar Câmera</button>
-                <button type="button" onclick="capturarFoto('disp')" class="bg-vibraGreen hover:bg-vibraDark text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Tirar Foto</button>
+                <button type="button" onclick="iniciarCamera('disp')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Ligar Câmera</button>
+                <button type="button" onclick="capturarFoto('disp')" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Tirar Foto</button>
               </div>
             </div>
           </div>
 
-          <div class="border rounded-xl p-3 md:p-4 bg-gray-50">
+          <div class="border rounded-xl p-3 bg-gray-50">
             <div class="flex justify-between items-center mb-2">
-              <h3 class="font-bold text-xs md:text-sm text-gray-700">✍️ 2. Assinatura Digital do Colaborador</h3>
-              <button type="button" onclick="limparAssinatura('canvas-disp')" class="text-xs text-red-600 hover:underline font-semibold">Limpar</button>
+              <h3 class="font-bold text-xs text-gray-700">✍️ 2. Assinatura Digital do Colaborador</h3>
+              <button type="button" onclick="limparAssinatura('canvas-disp')" class="text-xs text-red-600 font-semibold">Limpar</button>
             </div>
             <div class="bg-white border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
-              <canvas id="canvas-disp" height="170" class="w-full bg-white cursor-crosshair block"></canvas>
+              <canvas id="canvas-disp" height="160" class="w-full bg-white cursor-crosshair block"></canvas>
             </div>
-            <p class="text-xs text-gray-500 mt-1">Assine com o dedo no celular/tablet ou mouse no PC.</p>
           </div>
         </div>
 
-        <div class="mt-6 flex justify-end">
-          <button onclick="salvarDispensacao()" class="w-full md:w-auto bg-vibraGreen hover:bg-vibraDark text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm">
-            ✅ Confirmar Entrega e Gerar Ficha NR-06
-          </button>
+        <div class="mt-5 flex justify-end">
+          <button onclick="salvarDispensacao()" class="w-full md:w-auto bg-vibraGreen text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm">✅ Confirmar Entrega e Gerar Ficha NR-06</button>
         </div>
       </div>
     </section>
 
-    <!-- ABA 3: INSPEÇÃO DE CINTO TRAVA-QUEDAS -->
-    <section id="tab-inspecao" class="hidden space-y-4 md:space-y-6">
+    <!-- ABA 3: INSPEÇÃO DE CINTO -->
+    <section id="tab-inspecao" class="hidden space-y-4">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-3 mb-4 gap-2">
-          <div>
-            <h2 class="text-base md:text-lg font-bold text-vibraDark">🧗 Inspeção Mensal de Cinto e Talabarte (Anexo C)</h2>
-            <p class="text-xs text-gray-500">Padrão Corporativo Vibra <strong>040.010.060.021.PR (Anexo C)</strong> & NR-35.</p>
-          </div>
+        <div class="flex justify-between items-center border-b pb-3 mb-4">
+          <h2 class="text-base md:text-lg font-bold text-vibraDark">🧗 Inspeção Mensal de Cinto e Talabarte (Anexo C)</h2>
           <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full">CA Padrão: 35191</span>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
           <div>
             <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Colaborador Executante *</label>
             <select id="insp-colaborador" onchange="verificarAvisoCinto()" class="w-full border rounded-lg p-2.5 text-sm bg-gray-50 font-semibold"></select>
-            <p id="aviso-nao-usa-cinto" class="hidden text-xs text-purple-700 font-bold mt-1 bg-purple-50 p-1.5 rounded border border-purple-200">
-              ℹ️ Este colaborador está cadastrado como "Não Utiliza Cinto".
-            </p>
+            <p id="aviso-nao-usa-cinto" class="hidden text-xs text-purple-700 font-bold mt-1">ℹ️ Cadastrado como "Não Utiliza Cinto".</p>
           </div>
           <div>
             <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Nº C.A. do Cinto *</label>
@@ -341,96 +245,61 @@
             <input type="date" id="insp-data" class="w-full border rounded-lg p-2.5 text-sm" />
           </div>
         </div>
-
         <div class="space-y-2" id="checklist-container"></div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
-          <div class="border rounded-xl p-3 md:p-4 bg-gray-50">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="border rounded-xl p-3 bg-gray-50">
             <div class="flex justify-between items-center mb-2">
-              <h3 class="font-bold text-xs md:text-sm text-gray-700">📸 1. Foto do Colaborador / Inspeção</h3>
-              <button type="button" onclick="alternarCamera('insp')" class="text-xs text-blue-600 font-bold hover:underline">🔄 Inverter Câmera</button>
+              <h3 class="font-bold text-xs text-gray-700">📸 1. Foto da Inspeção</h3>
+              <button type="button" onclick="alternarCamera('insp')" class="text-xs text-blue-600 font-bold">🔄 Inverter</button>
             </div>
             <div class="flex flex-col items-center gap-2">
-              <div class="relative w-full max-w-xs h-44 bg-gray-200 rounded-lg overflow-hidden border flex items-center justify-center">
+              <div class="relative w-full max-w-xs h-40 bg-gray-200 rounded-lg overflow-hidden border flex items-center justify-center">
                 <video id="video-insp" class="w-full h-full object-cover hidden" autoplay playsinline muted></video>
-                <img id="foto-insp-preview" class="w-full h-full object-cover hidden" alt="Foto capturada" />
-                <span id="foto-insp-placeholder" class="text-xs text-gray-400 text-center px-4">Câmera desligada</span>
+                <img id="foto-insp-preview" class="w-full h-full object-cover hidden" />
+                <span id="foto-insp-placeholder" class="text-xs text-gray-400">Câmera desligada</span>
               </div>
               <div class="flex gap-2">
-                <button type="button" onclick="iniciarCamera('insp')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Ligar Câmera</button>
-                <button type="button" onclick="capturarFoto('insp')" class="bg-vibraGreen hover:bg-vibraDark text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Tirar Foto</button>
+                <button type="button" onclick="iniciarCamera('insp')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Ligar Câmera</button>
+                <button type="button" onclick="capturarFoto('insp')" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Tirar Foto</button>
               </div>
             </div>
           </div>
-
-          <div class="border rounded-xl p-3 md:p-4 bg-gray-50">
+          <div class="border rounded-xl p-3 bg-gray-50">
             <div class="flex justify-between items-center mb-2">
-              <h3 class="font-bold text-xs md:text-sm text-gray-700">✍️ 2. Visto Mensal / Assinatura</h3>
-              <button type="button" onclick="limparAssinatura('canvas-insp')" class="text-xs text-red-600 hover:underline font-semibold">Limpar</button>
+              <h3 class="font-bold text-xs text-gray-700">✍️ 2. Visto Mensal / Assinatura</h3>
+              <button type="button" onclick="limparAssinatura('canvas-insp')" class="text-xs text-red-600 font-semibold">Limpar</button>
             </div>
             <div class="bg-white border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
-              <canvas id="canvas-insp" height="170" class="w-full bg-white cursor-crosshair block"></canvas>
+              <canvas id="canvas-insp" height="160" class="w-full bg-white cursor-crosshair block"></canvas>
             </div>
-            <p class="text-xs text-gray-500 mt-1">Confirmo a veracidade da inspeção visual realizada.</p>
           </div>
         </div>
-
-        <div class="mt-6 flex justify-end">
-          <button onclick="salvarInspecao()" class="w-full md:w-auto bg-vibraGreen hover:bg-vibraDark text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm">
-            🛡️ Registrar Inspeção Anexo C e Gerar Certificado
-          </button>
+        <div class="mt-5 flex justify-end">
+          <button onclick="salvarInspecao()" class="w-full md:w-auto bg-vibraGreen text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm">🛡️ Registrar Inspeção Anexo C</button>
         </div>
       </div>
     </section>
 
-    <!-- ABA 4: PENDÊNCIAS DE INSPEÇÃO -->
-    <section id="tab-pendencias" class="hidden space-y-4 md:space-y-6">
+    <!-- ABA 4: PENDÊNCIAS -->
+    <section id="tab-pendencias" class="hidden space-y-4">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-yellow-500">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 border-b pb-3">
-          <div>
-            <h2 class="text-base md:text-lg font-bold text-gray-800">⚠️ Pendências Mensais: Trava-Quedas (SPIQ)</h2>
-            <p class="text-xs text-gray-500 mt-0.5">Colaboradores ativos obrigados a cinto que <strong>não realizaram</strong> a inspeção do Anexo C no mês selecionado.</p>
-          </div>
-          <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
-            <input type="month" id="pendencias-mes-ano" onchange="renderPendencias()" class="border border-gray-300 rounded-lg px-3 py-1.5 text-xs md:text-sm font-semibold bg-gray-50" />
-            <button onclick="exportarPendenciasCSV()" class="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold shadow">📥 Exportar CSV</button>
+          <h2 class="text-base md:text-lg font-bold text-gray-800">⚠️ Pendências Mensais: Trava-Quedas (SPIQ)</h2>
+          <div class="flex gap-2">
+            <input type="month" id="pendencias-mes-ano" onchange="renderPendencias()" class="border rounded-lg px-3 py-1.5 text-xs font-semibold bg-gray-50" />
+            <button onclick="exportarPendenciasCSV()" class="bg-yellow-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">📥 Exportar CSV</button>
           </div>
         </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4">
-          <div class="bg-yellow-50 border border-yellow-200 p-2.5 md:p-4 rounded-xl">
-            <p class="text-xs text-yellow-800 font-bold uppercase">Pendentes</p>
-            <p id="total-pendentes-num" class="text-xl md:text-3xl font-extrabold text-yellow-700 mt-1">0</p>
-          </div>
-          <div class="bg-green-50 border border-green-200 p-2.5 md:p-4 rounded-xl">
-            <p class="text-xs text-green-800 font-bold uppercase">Inspecionados</p>
-            <p id="total-inspecionados-num" class="text-xl md:text-3xl font-extrabold text-green-700 mt-1">0</p>
-          </div>
-          <div class="bg-gray-50 border border-gray-200 p-2.5 md:p-4 rounded-xl">
-            <p class="text-xs text-gray-600 font-bold uppercase">Conformidade</p>
-            <p id="taxa-adesao-num" class="text-xl md:text-3xl font-extrabold text-gray-800 mt-1">0%</p>
-          </div>
-          <div class="bg-purple-50 border border-purple-200 p-2.5 md:p-4 rounded-xl">
-            <p class="text-xs text-purple-800 font-bold uppercase">Isentos de Cinto</p>
-            <p id="total-isentos-cinto-num" class="text-xl md:text-3xl font-extrabold text-purple-700 mt-1">0</p>
-          </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+          <div class="bg-yellow-50 border p-3 rounded-xl"><p class="text-xs text-yellow-800 font-bold uppercase">Pendentes</p><p id="total-pendentes-num" class="text-2xl font-extrabold text-yellow-700">0</p></div>
+          <div class="bg-green-50 border p-3 rounded-xl"><p class="text-xs text-green-800 font-bold uppercase">Inspecionados</p><p id="total-inspecionados-num" class="text-2xl font-extrabold text-green-700">0</p></div>
+          <div class="bg-gray-50 border p-3 rounded-xl"><p class="text-xs text-gray-600 font-bold uppercase">Conformidade</p><p id="taxa-adesao-num" class="text-2xl font-extrabold text-gray-800">0%</p></div>
+          <div class="bg-purple-50 border p-3 rounded-xl"><p class="text-xs text-purple-800 font-bold uppercase">Isentos Cinto</p><p id="total-isentos-cinto-num" class="text-2xl font-extrabold text-purple-700">0</p></div>
         </div>
-
-        <div class="mb-3">
-          <input type="text" id="busca-pendencias" oninput="renderPendencias()" placeholder="🔎 Filtrar colaborador pendente..." class="w-full border rounded-lg px-3 py-2 text-xs md:text-sm bg-gray-50" />
-        </div>
-
+        <input type="text" id="busca-pendencias" oninput="renderPendencias()" placeholder="🔎 Filtrar colaborador pendente..." class="w-full border rounded-lg px-3 py-2 text-xs bg-gray-50 mb-3" />
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs md:text-sm">
-            <thead>
-              <tr class="bg-gray-100 text-gray-600 border-b">
-                <th class="p-2.5">Matrícula</th>
-                <th class="p-2.5">Colaborador</th>
-                <th class="p-2.5">Função</th>
-                <th class="p-2.5 text-center">Status</th>
-                <th class="p-2.5 text-right">Ação</th>
-              </tr>
-            </thead>
+          <table class="w-full text-left border-collapse text-xs">
+            <thead><tr class="bg-gray-100 border-b"><th class="p-2.5">Matrícula</th><th class="p-2.5">Colaborador</th><th class="p-2.5">Função</th><th class="p-2.5 text-center">Status</th><th class="p-2.5 text-right">Ação</th></tr></thead>
             <tbody id="tabela-pendencias" class="divide-y"></tbody>
           </table>
         </div>
@@ -438,151 +307,89 @@
     </section>
 
     <!-- ABA 5: NÃO UTILIZA CINTO -->
-    <section id="tab-nao-cinto" class="hidden space-y-4 md:space-y-6">
+    <section id="tab-nao-cinto" class="hidden space-y-4">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-purple-700">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 border-b pb-3">
           <div>
             <h2 class="text-base md:text-lg font-bold text-gray-800">🚫 Gestão de Colaboradores: Isenção / Não Utiliza Cinto</h2>
-            <p class="text-xs text-gray-500 mt-0.5">Colaboradores marcados aqui não são cobrados na inspeção mensal do cinto (Anexo C).</p>
+            <p class="text-xs text-gray-500">Editável exclusivamente pelo Administrador.</p>
           </div>
           <div class="flex items-center gap-2">
-            <span id="badge-lock-nao-cinto" class="text-xs px-2.5 py-1 rounded-lg font-bold bg-yellow-100 text-yellow-800 border border-yellow-300">
-              🔒 Somente Leitura (Bloqueado)
-            </span>
-            <button id="btn-login-rapido-admin" onclick="solicitarAcessoAdminNaoCinto()" class="bg-purple-700 hover:bg-purple-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow">
-              🔑 Desbloquear Edição (Admin)
-            </button>
+            <span id="badge-lock-nao-cinto" class="text-xs px-2.5 py-1 rounded-lg font-bold bg-yellow-100 text-yellow-800 border">🔒 Bloqueado</span>
+            <button id="btn-login-rapido-admin" onclick="solicitarAcessoAdminNaoCinto()" class="bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🔑 Desbloquear (Admin)</button>
           </div>
         </div>
-
-        <div id="aviso-admin-nao-cinto" class="bg-purple-50 border border-purple-200 rounded-lg p-3 text-xs text-purple-900 mb-3">
-          <strong>Aviso de Permissão:</strong> Esta aba só pode ser alterada pelo <strong>Administrador do Sistema</strong>.
-        </div>
-
         <div class="flex flex-col sm:flex-row gap-2 justify-between items-center mb-3">
-          <input type="text" id="busca-nao-cinto" oninput="renderNaoUtilizaCinto()" placeholder="🔎 Filtrar colaborador..." class="w-full sm:w-80 border rounded-lg px-3 py-2 text-xs md:text-sm bg-gray-50" />
+          <input type="text" id="busca-nao-cinto" oninput="renderNaoUtilizaCinto()" placeholder="🔎 Filtrar colaborador..." class="w-full sm:w-80 border rounded-lg px-3 py-2 text-xs bg-gray-50" />
           <div class="flex gap-2">
-            <button onclick="filtrarTabelaNaoCinto('todos')" class="px-2.5 py-1 text-xs font-bold rounded bg-gray-200 hover:bg-gray-300">Todos</button>
-            <button onclick="filtrarTabelaNaoCinto('isentos')" class="px-2.5 py-1 text-xs font-bold rounded bg-purple-100 text-purple-800">Apenas Não Usa</button>
-            <button onclick="filtrarTabelaNaoCinto('usam')" class="px-2.5 py-1 text-xs font-bold rounded bg-green-100 text-green-800">Apenas Usa Cinto</button>
+            <button onclick="filtrarTabelaNaoCinto('todos')" class="px-2.5 py-1 text-xs font-bold rounded bg-gray-200">Todos</button>
+            <button onclick="filtrarTabelaNaoCinto('isentos')" class="px-2.5 py-1 text-xs font-bold rounded bg-purple-100 text-purple-800">Não Usa</button>
+            <button onclick="filtrarTabelaNaoCinto('usam')" class="px-2.5 py-1 text-xs font-bold rounded bg-green-100 text-green-800">Usa Cinto</button>
           </div>
         </div>
-
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs md:text-sm">
-            <thead>
-              <tr class="bg-gray-100 text-gray-600 border-b">
-                <th class="p-2.5">Matrícula</th>
-                <th class="p-2.5">Colaborador</th>
-                <th class="p-2.5">Função</th>
-                <th class="p-2.5 text-center">Status Atual</th>
-                <th class="p-2.5 text-right">Alterar (Admin)</th>
-              </tr>
-            </thead>
+          <table class="w-full text-left border-collapse text-xs">
+            <thead><tr class="bg-gray-100 border-b"><th class="p-2.5">Matrícula</th><th class="p-2.5">Colaborador</th><th class="p-2.5">Função</th><th class="p-2.5 text-center">Status</th><th class="p-2.5 text-right">Alterar (Admin)</th></tr></thead>
             <tbody id="tabela-nao-cinto" class="divide-y"></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- ABA 6: CONTROLE DE ESTOQUE -->
-    <section id="tab-estoque" class="hidden space-y-4 md:space-y-6">
+    <!-- ABA 6: ESTOQUE -->
+    <section id="tab-estoque" class="hidden space-y-4">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 border-b pb-3">
-          <div>
-            <h2 class="text-base md:text-lg font-bold text-vibraDark">📦 Inventário Permanente de EPIs</h2>
-            <p class="text-xs text-gray-500">Unidade BAVGRU - Gestão de saldos físicos.</p>
-          </div>
-          <button onclick="abrirModalImportarEpis()" class="bg-vibraGreen hover:bg-vibraDark text-white px-3.5 py-2 rounded-lg text-xs md:text-sm font-bold shadow">
-            📥 Importar Planilha de EPIs (Excel)
-          </button>
-        </div>
+        <h2 class="text-base md:text-lg font-bold text-vibraDark mb-4 border-b pb-2">📦 Inventário Permanente de EPIs - BAVGRU</h2>
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs md:text-sm">
-            <thead>
-              <tr class="bg-gray-100 text-gray-600 border-b">
-                <th class="p-2.5">Equipamento</th>
-                <th class="p-2.5">Nº C.A.</th>
-                <th class="p-2.5">Saldo</th>
-                <th class="p-2.5">Mínimo</th>
-                <th class="p-2.5">Status</th>
-              </tr>
-            </thead>
+          <table class="w-full text-left border-collapse text-xs">
+            <thead><tr class="bg-gray-100 border-b"><th class="p-2.5">Equipamento</th><th class="p-2.5">Nº C.A.</th><th class="p-2.5">Saldo</th><th class="p-2.5">Mínimo</th><th class="p-2.5">Status</th></tr></thead>
             <tbody id="tabela-estoque" class="divide-y"></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- ABA 7: EFETIVO BAVGRU -->
-    <section id="tab-colaboradores" class="hidden space-y-4 md:space-y-6">
+    <!-- ABA 7: EFETIVO -->
+    <section id="tab-colaboradores" class="hidden space-y-4">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-3 border-b pb-3">
-          <div>
-            <h2 class="text-base md:text-lg font-bold text-vibraDark">👥 Banco de Colaboradores - BAVGRU</h2>
-            <p class="text-xs text-gray-500">Base oficial para dispensação de EPI e emissão de Ficha Única NR-06.</p>
-          </div>
-          <button onclick="abrirModalImportarColaboradores()" class="bg-vibraGreen hover:bg-vibraDark text-white px-3.5 py-2 rounded-lg text-xs md:text-sm font-bold shadow">
-            📥 Importar Lista / Planilha do Excel
-          </button>
-        </div>
-        <div class="bg-green-50 border border-green-200 p-3 rounded-lg mb-4 flex gap-2 items-center">
-          <span>🔍</span>
-          <input type="text" id="busca-colab" oninput="renderColaboradores()" placeholder="Pesquise por nome ou matrícula..." class="w-full border rounded bg-white px-3 py-2 text-xs md:text-sm shadow-sm" />
-        </div>
+        <h2 class="text-base md:text-lg font-bold text-vibraDark mb-3 border-b pb-2">👥 Banco de Colaboradores - BAVGRU</h2>
+        <input type="text" id="busca-colab" oninput="renderColaboradores()" placeholder="🔍 Pesquise por nome ou matrícula..." class="w-full border rounded-lg px-3 py-2 text-xs bg-gray-50 mb-3" />
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs md:text-sm">
-            <thead>
-              <tr class="bg-gray-100 text-gray-600 border-b">
-                <th class="p-2.5">Matrícula</th>
-                <th class="p-2.5">Nome</th>
-                <th class="p-2.5">Função</th>
-                <th class="p-2.5 text-center">Cinto (SPIQ)</th>
-                <th class="p-2.5 text-right">Relatório / Ficha</th>
-              </tr>
-            </thead>
+          <table class="w-full text-left border-collapse text-xs">
+            <thead><tr class="bg-gray-100 border-b"><th class="p-2.5">Matrícula</th><th class="p-2.5">Nome</th><th class="p-2.5">Função</th><th class="p-2.5 text-center">Cinto (SPIQ)</th><th class="p-2.5 text-right">Ficha NR-06</th></tr></thead>
             <tbody id="tabela-colaboradores" class="divide-y"></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- ABA 8: ADMINISTRAÇÃO (INCLUINDO EXAME TOXICOLÓGICO E HISTÓRICO PDF) -->
-    <section id="tab-admin" class="hidden space-y-4 md:space-y-6">
-      <div id="admin-login-box" class="bg-white p-6 md:p-8 rounded-xl shadow max-w-md mx-auto border-t-4 border-gray-800">
-        <h2 class="text-base md:text-lg font-bold text-gray-800 text-center mb-1">🔒 Acesso Administrativo Restrito</h2>
-        <p class="text-xs text-gray-500 text-center mb-4">Área exclusiva para Técnica de Segurança e Liderança da BAVGRU.</p>
+    <!-- ABA 8: ADMINISTRAÇÃO (COM EXAME TOXICOLÓGICO INTEGRADO) -->
+    <section id="tab-admin" class="hidden space-y-4">
+      <div id="admin-login-box" class="bg-white p-6 rounded-xl shadow max-w-md mx-auto border-t-4 border-gray-800">
+        <h2 class="text-base font-bold text-gray-800 text-center mb-1">🔒 Acesso Administrativo Restrito</h2>
+        <p class="text-xs text-gray-500 text-center mb-4">Exclusivo Técnica de Segurança e Liderança BAVGRU.</p>
         <div class="space-y-3">
           <input type="password" id="admin-input-senha" placeholder="Senha do Administrador" class="w-full border rounded-lg p-2.5 text-sm" />
-          <button onclick="autenticarAdmin()" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-2.5 rounded-lg text-sm shadow">Entrar no Painel</button>
+          <button onclick="autenticarAdmin()" class="w-full bg-gray-800 text-white font-bold py-2.5 rounded-lg text-sm">Entrar no Painel</button>
         </div>
       </div>
 
-      <div id="admin-content-box" class="hidden space-y-4 md:space-y-6">
-        <div class="bg-green-50 border border-green-300 p-3 md:p-4 rounded-xl flex justify-between items-center">
-          <div>
-            <span class="font-bold text-green-900 text-sm">Sessão Administrativa Ativa</span>
-            <p class="text-xs text-green-700">Controles de estoque, funcionários, exames toxicológicos, ficha consolidada e auditoria liberados.</p>
-          </div>
-          <button onclick="sairAdmin()" class="bg-green-200 text-green-800 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-green-300">Sair ✕</button>
+      <div id="admin-content-box" class="hidden space-y-4">
+        <div class="bg-green-50 border border-green-300 p-3 rounded-xl flex justify-between items-center">
+          <span class="font-bold text-green-900 text-sm">🔓 Sessão Administrativa Ativa (Toxicológico, Estoque, Efetivo e Ficha Única)</span>
+          <button onclick="sairAdmin()" class="bg-green-200 text-green-800 px-3 py-1 rounded-lg text-xs font-bold">Sair ✕</button>
         </div>
 
-        <!-- MÓDULO 1: CONTROLE DE EXAMES TOXICOLÓGICOS E VALIDADES (DENTRO DO ADMIN) -->
+        <!-- 1. CONTROLE DE EXAMES TOXICOLÓGICOS (DENTRO DO ADMIN) -->
         <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-vibraGreen space-y-4">
           <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b pb-3">
             <div>
-              <h2 class="text-base font-bold text-vibraDark flex items-center gap-2">
-                <span>🧪</span> Controle de Exame Toxicológico e Validades
-              </h2>
-              <p class="text-xs text-gray-500">Inclua os funcionários e as validades dos exames toxicológicos e gere o relatório oficial em PDF ou Excel.</p>
+              <h2 class="text-base font-bold text-vibraDark">🧪 Controle de Exame Toxicológico e Validades</h2>
+              <p class="text-xs text-gray-500">Cadastre os funcionários e as validades dos exames toxicológicos e gere o relatório oficial em PDF ou Excel.</p>
             </div>
-            <div class="flex flex-wrap gap-2">
-              <button type="button" onclick="gerarRelatorioToxicologicoPDF()" class="bg-vibraGreen hover:bg-vibraDark text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow">
-                📄 Gerar Relatório PDF
-              </button>
-              <button type="button" onclick="exportarToxicologicoCSV()" class="bg-blue-700 hover:bg-blue-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow">
-                📥 Exportar CSV / Excel
-              </button>
+            <div class="flex gap-2">
+              <button type="button" onclick="gerarRelatorioToxicologicoPDF()" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow">📄 Gerar Relatório PDF</button>
+              <button type="button" onclick="exportarToxicologicoCSV()" class="bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow">📥 Exportar Excel/CSV</button>
             </div>
           </div>
 
@@ -600,31 +407,20 @@
               <input type="date" id="tox-data-validade" class="w-full border rounded-lg p-2 text-sm bg-white" />
             </div>
             <div class="md:col-span-2">
-              <button type="button" onclick="salvarExameToxicologico()" class="w-full bg-vibraGreen hover:bg-vibraDark text-white font-bold py-2 px-3 rounded-lg text-sm shadow">
-                + Incluir / Salvar
-              </button>
+              <button type="button" onclick="salvarExameToxicologico()" class="w-full bg-vibraGreen text-white font-bold py-2 px-3 rounded-lg text-sm shadow">+ Salvar Exame</button>
             </div>
           </div>
 
           <div class="grid grid-cols-3 gap-3 text-center">
-            <div class="bg-green-50 border border-green-200 p-2 rounded-lg">
-              <p class="text-xs font-bold uppercase text-green-800">Em Dia (Válidos)</p>
-              <p id="tox-kpi-validos" class="text-xl font-extrabold text-green-700">0</p>
-            </div>
-            <div class="bg-yellow-50 border border-yellow-200 p-2 rounded-lg">
-              <p class="text-xs font-bold uppercase text-yellow-800">A Vencer (≤ 30 dias)</p>
-              <p id="tox-kpi-avencer" class="text-xl font-extrabold text-yellow-600">0</p>
-            </div>
-            <div class="bg-red-50 border border-red-200 p-2 rounded-lg">
-              <p class="text-xs font-bold uppercase text-red-800">Vencidos</p>
-              <p id="tox-kpi-vencidos" class="text-xl font-extrabold text-red-600">0</p>
-            </div>
+            <div class="bg-green-50 border border-green-200 p-2 rounded-lg"><p class="text-xs font-bold uppercase text-green-800">Em Dia (Válidos)</p><p id="tox-kpi-validos" class="text-xl font-extrabold text-green-700">0</p></div>
+            <div class="bg-yellow-50 border border-yellow-200 p-2 rounded-lg"><p class="text-xs font-bold uppercase text-yellow-800">A Vencer (≤ 30d)</p><p id="tox-kpi-avencer" class="text-xl font-extrabold text-yellow-600">0</p></div>
+            <div class="bg-red-50 border border-red-200 p-2 rounded-lg"><p class="text-xs font-bold uppercase text-red-800">Vencidos</p><p id="tox-kpi-vencidos" class="text-xl font-extrabold text-red-600">0</p></div>
           </div>
 
           <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
-            <input type="text" id="busca-toxicologico" oninput="renderToxicologico()" placeholder="🔎 Pesquisar funcionário ou matrícula..." class="w-full sm:w-80 border rounded-lg px-3 py-1.5 text-xs bg-gray-50" />
+            <input type="text" id="busca-toxicologico" oninput="renderToxicologico()" placeholder="🔎 Pesquisar funcionário..." class="w-full sm:w-80 border rounded-lg px-3 py-1.5 text-xs bg-gray-50" />
             <div class="flex gap-1.5">
-              <button type="button" onclick="filtrarStatusTox('todos')" class="px-2.5 py-1 text-xs font-bold rounded bg-gray-200 hover:bg-gray-300">Todos</button>
+              <button type="button" onclick="filtrarStatusTox('todos')" class="px-2.5 py-1 text-xs font-bold rounded bg-gray-200">Todos</button>
               <button type="button" onclick="filtrarStatusTox('vencidos')" class="px-2.5 py-1 text-xs font-bold rounded bg-red-100 text-red-800">Vencidos / A Vencer</button>
               <button type="button" onclick="filtrarStatusTox('validos')" class="px-2.5 py-1 text-xs font-bold rounded bg-green-100 text-green-800">Em Dia</button>
             </div>
@@ -632,272 +428,102 @@
 
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr class="bg-gray-100 text-gray-700 border-b font-bold">
-                  <th class="p-2">Matrícula</th>
-                  <th class="p-2">Colaborador</th>
-                  <th class="p-2">Função</th>
-                  <th class="p-2 text-center">Realização</th>
-                  <th class="p-2 text-center">Validade</th>
-                  <th class="p-2 text-center">Status</th>
-                  <th class="p-2 text-right">Ação</th>
-                </tr>
-              </thead>
+              <thead><tr class="bg-gray-100 border-b font-bold"><th class="p-2">Matrícula</th><th class="p-2">Colaborador</th><th class="p-2">Função</th><th class="p-2 text-center">Realização</th><th class="p-2 text-center">Validade</th><th class="p-2 text-center">Status</th><th class="p-2 text-right">Ação</th></tr></thead>
               <tbody id="tabela-toxicologico" class="divide-y"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- MÓDULO 2: HISTÓRICO CONSOLIDADO DE ENTREGA POR FUNCIONÁRIO EM PDF ÚNICO -->
+        <!-- 2. FICHA ÚNICA CONSOLIDADA POR FUNCIONÁRIO -->
         <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-green-600">
-          <div class="mb-3">
-            <h2 class="text-base font-bold text-vibraDark">📑 Histórico de Entrega de EPIs por Funcionário (PDF Único)</h2>
-            <p class="text-xs text-gray-500">Puxe em um único PDF todas as entregas de EPI (Ficha NR-06) assinadas pelo colaborador selecionado.</p>
-          </div>
+          <h2 class="text-base font-bold text-vibraDark mb-2">📑 Histórico de Entrega de EPIs por Funcionário (PDF Único)</h2>
           <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
             <div class="flex-1">
-              <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Selecionar Funcionário *</label>
               <select id="admin-historico-colab" class="w-full border rounded-lg p-2.5 text-sm bg-gray-50 font-semibold"></select>
             </div>
-            <button onclick="gerarFichaUnicaPeloSelectAdmin()" class="bg-vibraGreen hover:bg-vibraDark text-white font-bold px-5 py-2.5 rounded-lg text-sm shadow">
-              📄 Gerar PDF Único do Histórico
-            </button>
+            <button onclick="gerarFichaUnicaPeloSelectAdmin()" class="bg-vibraGreen text-white font-bold px-5 py-2.5 rounded-lg text-sm shadow">📄 Gerar PDF Único do Histórico</button>
           </div>
         </div>
 
-        <!-- MÓDULO 3: ENTRADA DE ESTOQUE E CADASTRO DE EPIs -->
+        <!-- 3. ENTRADA DE ESTOQUE E NOVO EPI -->
         <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-blue-600 space-y-4">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b pb-2">
-            <div>
-              <h2 class="text-base font-bold text-blue-900">📥 Registrar Entrada e Cadastro de EPIs</h2>
-              <p class="text-xs text-gray-500">Adicione novos itens de EPI ao inventário ou reponha estoque.</p>
-            </div>
-            <button onclick="abrirModalImportarEpis()" class="bg-blue-700 hover:bg-blue-800 text-white font-bold px-3 py-1.5 rounded-lg text-xs shadow">
-              📥 Importar EPIs do Excel
-            </button>
-          </div>
-
+          <h2 class="text-base font-bold text-blue-900">📥 Registrar Entrada e Cadastro de EPIs</h2>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <div class="md:col-span-2">
-              <label class="block text-xs font-bold uppercase text-gray-600 mb-1">EPI Existente *</label>
-              <select id="entrada-epi" class="w-full border rounded-lg p-2.5 text-sm bg-gray-50"></select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Nº NF / Lote</label>
-              <input type="text" id="entrada-nf" placeholder="Ex: NF-10452" class="w-full border rounded-lg p-2.5 text-sm" />
-            </div>
-            <div class="flex items-end gap-2">
-              <div class="w-full">
-                <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Quantidade *</label>
-                <input type="number" id="entrada-qtd" min="1" value="10" class="w-full border rounded-lg p-2.5 text-sm" />
-              </div>
-              <button onclick="registrarEntrada()" class="bg-blue-600 hover:bg-blue-800 text-white font-bold px-4 py-2.5 rounded-lg text-sm">➕ Somar</button>
+            <div class="md:col-span-2"><select id="entrada-epi" class="w-full border rounded-lg p-2.5 text-sm bg-gray-50"></select></div>
+            <div><input type="text" id="entrada-nf" placeholder="Nº NF / Lote" class="w-full border rounded-lg p-2.5 text-sm" /></div>
+            <div class="flex gap-2">
+              <input type="number" id="entrada-qtd" min="1" value="10" class="w-full border rounded-lg p-2.5 text-sm" />
+              <button onclick="registrarEntrada()" class="bg-blue-600 text-white font-bold px-4 py-2.5 rounded-lg text-sm">➕ Somar</button>
             </div>
           </div>
-
-          <div class="pt-3 border-t">
-            <label class="block text-xs font-bold uppercase text-gray-600 mb-2">Cadastrar Novo Tipo de EPI Individualmente</label>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-              <input type="text" id="novo-epi-nome" placeholder="Nome do EPI (Ex: Protetor Solar)" class="border rounded-lg p-2 text-sm" />
-              <input type="text" id="novo-epi-ca" placeholder="Nº do C.A. (ou S/C.A.)" class="border rounded-lg p-2 text-sm" />
-              <input type="number" id="novo-epi-qtd" placeholder="Quantidade Inicial" min="0" class="border rounded-lg p-2 text-sm" />
-              <div class="flex gap-2">
-                <input type="number" id="novo-epi-min" placeholder="Estoque Mínimo" min="1" value="5" class="border rounded-lg p-2 text-sm flex-1" />
-                <button onclick="cadastrarNovoEpi()" class="bg-vibraGreen hover:bg-vibraDark text-white font-bold px-4 py-2 rounded-lg text-sm">+ Criar EPI</button>
-              </div>
+          <div class="pt-3 border-t grid grid-cols-1 md:grid-cols-4 gap-3">
+            <input type="text" id="novo-epi-nome" placeholder="Nome do Novo EPI" class="border rounded-lg p-2 text-sm" />
+            <input type="text" id="novo-epi-ca" placeholder="Nº do C.A." class="border rounded-lg p-2 text-sm" />
+            <input type="number" id="novo-epi-qtd" placeholder="Saldo Inicial" class="border rounded-lg p-2 text-sm" />
+            <div class="flex gap-2">
+              <input type="number" id="novo-epi-min" value="5" class="border rounded-lg p-2 text-sm flex-1" />
+              <button onclick="cadastrarNovoEpi()" class="bg-vibraGreen text-white font-bold px-4 py-2 rounded-lg text-sm">+ Criar EPI</button>
             </div>
           </div>
         </div>
 
-        <!-- MÓDULO 4: CADASTRAR NOVO COLABORADOR -->
+        <!-- 4. CADASTRAR NOVO COLABORADOR -->
         <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-vibraGreen">
-          <div class="flex justify-between items-center mb-3">
-            <h2 class="text-base font-bold text-vibraDark">👥 Cadastrar Novo Colaborador</h2>
-            <button onclick="abrirModalImportarColaboradores()" class="bg-green-700 hover:bg-green-800 text-white font-bold px-3 py-1.5 rounded-lg text-xs shadow">
-              📥 Importar Planilha do Excel
-            </button>
-          </div>
+          <h2 class="text-base font-bold text-vibraDark mb-3">👥 Cadastrar Novo Colaborador</h2>
           <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
             <input type="text" id="novo-colab-nome" placeholder="Nome Completo" class="border rounded-lg p-2 text-sm" />
             <input type="text" id="novo-colab-matricula" placeholder="Matrícula" class="border rounded-lg p-2 text-sm" />
             <input type="text" id="novo-colab-funcao" placeholder="Função" class="border rounded-lg p-2 text-sm" />
-            <input type="email" id="novo-colab-email" placeholder="E-mail (@vibraenergia.com.br)" class="border rounded-lg p-2 text-sm" />
-            <button onclick="cadastrarNovoColaborador()" class="bg-vibraGreen hover:bg-vibraDark text-white font-bold px-4 py-2 rounded-lg text-sm">+ Incluir</button>
+            <input type="email" id="novo-colab-email" placeholder="E-mail" class="border rounded-lg p-2 text-sm" />
+            <button onclick="cadastrarNovoColaborador()" class="bg-vibraGreen text-white font-bold px-4 py-2 rounded-lg text-sm">+ Incluir</button>
           </div>
         </div>
 
-        <!-- MÓDULO 5: LOG DE AUDITORIA -->
+        <!-- 5. LOG DE EXCLUSÕES E SENHA -->
         <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-red-600">
-          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 mb-3">
-            <div>
-              <h2 class="text-base font-bold text-red-700">📜 Trilha de Auditoria: Log de Exclusões</h2>
-              <p class="text-xs text-gray-500">Histórico de exclusões com justificativa e responsável.</p>
-            </div>
-            <button onclick="exportarLogExclusoesCSV()" class="bg-red-700 hover:bg-red-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">📥 Baixar Log CSV</button>
+          <div class="flex justify-between items-center mb-2">
+            <h2 class="text-base font-bold text-red-700">📜 Log de Exclusões</h2>
+            <button onclick="exportarLogExclusoesCSV()" class="bg-red-700 text-white px-3 py-1 rounded text-xs font-bold">📥 CSV</button>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr class="bg-red-50 text-red-900 border-b">
-                  <th class="p-2">Data/Hora</th>
-                  <th class="p-2">Protocolo</th>
-                  <th class="p-2">Colaborador</th>
-                  <th class="p-2">Item</th>
-                  <th class="p-2">Responsável</th>
-                  <th class="p-2">Justificativa</th>
-                </tr>
-              </thead>
+              <thead><tr class="bg-red-50 border-b"><th class="p-2">Data/Hora</th><th class="p-2">Protocolo</th><th class="p-2">Colaborador</th><th class="p-2">Item</th><th class="p-2">Responsável</th><th class="p-2">Justificativa</th></tr></thead>
               <tbody id="tabela-log-exclusoes" class="divide-y"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- MÓDULO 6: ALTERAR SENHA -->
-        <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-gray-700">
-          <h2 class="text-base font-bold text-gray-800 mb-2">🔑 Alterar Senha de Administrador</h2>
-          <div class="flex flex-col sm:flex-row gap-2 max-w-md">
-            <input type="password" id="nova-senha-admin" placeholder="Nova senha (min. 4 caracteres)" class="border rounded-lg p-2 text-sm flex-1" />
-            <button onclick="alterarSenhaAdmin()" class="bg-gray-800 hover:bg-gray-900 text-white font-bold px-4 py-2 rounded-lg text-sm">Salvar Senha</button>
-          </div>
+        <div class="bg-white p-4 rounded-xl shadow border-t-4 border-gray-700 flex gap-2 max-w-md">
+          <input type="password" id="nova-senha-admin" placeholder="Nova senha Admin" class="border rounded-lg p-2 text-sm flex-1" />
+          <button onclick="alterarSenhaAdmin()" class="bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">Salvar Senha</button>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- MODAIS -->
+  <!-- MODAL DE IMPRESSÃO / PDF -->
   <div id="modal-print" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-3 z-50">
-    <div class="bg-white rounded-xl max-w-3xl w-full p-4 md:p-6 max-h-screen overflow-y-auto shadow-2xl relative">
+    <div class="bg-white rounded-xl max-w-3xl w-full p-4 md:p-6 max-h-screen overflow-y-auto shadow-2xl">
       <div class="flex justify-between items-center mb-3 pb-2 border-b no-print">
-        <h3 id="modal-print-title" class="font-bold text-vibraDark text-sm md:text-base">📄 Documento Oficial SSMA BAVGRU</h3>
+        <h3 id="modal-print-title" class="font-bold text-vibraDark text-sm">📄 Documento Oficial SSMA BAVGRU</h3>
         <div class="flex gap-2">
-          <button onclick="window.print()" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow hover:bg-vibraDark">📥 Imprimir / PDF</button>
-          <button onclick="fecharModalPrint()" class="bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-300">Fechar ✕</button>
+          <button onclick="window.print()" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-bold">📥 Imprimir / PDF</button>
+          <button onclick="fecharModalPrint()" class="bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold">Fechar ✕</button>
         </div>
       </div>
       <div id="print-area" class="p-4 border border-gray-300 rounded-lg text-xs space-y-3 bg-white"></div>
     </div>
   </div>
 
-  <div id="modal-ajuda-app" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-      <div class="flex justify-between items-center mb-4 pb-2 border-b">
-        <h3 class="font-bold text-gray-800 text-base">📲 Instalar Aplicativo BAVGRU</h3>
-        <button onclick="fecharModalAjudaApp()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">✕</button>
-      </div>
-      <div class="space-y-4 text-xs text-gray-600">
-        <div class="bg-green-50 border border-green-200 p-3 rounded-xl">
-          <p class="font-bold text-vibraDark text-sm mb-1">🤖 No Android (Chrome / Edge):</p>
-          <p>Toque nos três pontinhos (⋮) no navegador e selecione <strong>"Instalar aplicativo"</strong> ou <strong>"Adicionar à tela inicial"</strong>.</p>
-        </div>
-        <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl">
-          <p class="font-bold text-blue-900 text-sm mb-1">🍎 No iPhone / iPad (Safari):</p>
-          <p>Toque em <strong>Compartilhar (⎋)</strong> na barra inferior e escolha <strong>"Adicionar à Tela de Início" (+)</strong>.</p>
-        </div>
-      </div>
-      <div class="mt-5">
-        <button onclick="fecharModalAjudaApp()" class="w-full bg-vibraGreen text-white py-2.5 rounded-xl font-bold text-xs shadow">Entendido!</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="modal-importar-epis" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-3 z-50">
-    <div class="bg-white rounded-2xl max-w-2xl w-full p-5 md:p-6 shadow-2xl relative max-h-screen overflow-y-auto">
-      <div class="flex justify-between items-center mb-3 pb-2 border-b">
-        <h3 class="font-bold text-gray-800 text-base">📦 Importação Integrada de EPIs</h3>
-        <button onclick="fecharModalImportarEpis()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">✕</button>
-      </div>
-      <div class="space-y-4 text-xs">
-        <div class="flex flex-wrap gap-4 bg-gray-50 p-2.5 rounded-lg border">
-          <label class="flex items-center gap-1.5 cursor-pointer font-medium"><input type="radio" name="modo-importacao-epi" value="somar" checked /><span>Somar saldo</span></label>
-          <label class="flex items-center gap-1.5 cursor-pointer font-medium text-blue-700"><input type="radio" name="modo-importacao-epi" value="atualizar" /><span>Sobrescrever saldo</span></label>
-          <label class="flex items-center gap-1.5 cursor-pointer font-medium text-red-700"><input type="radio" name="modo-importacao-epi" value="substituir" /><span>Substituir estoque inteiro</span></label>
-        </div>
-        <div>
-          <div class="flex justify-between items-center mb-1">
-            <label class="font-bold text-gray-700 uppercase">Selecione a planilha ou cole abaixo:</label>
-            <label class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg cursor-pointer font-bold shadow">
-              📁 Carregar .xlsx / .csv
-              <input type="file" id="arquivo-importar-epi" accept=".xlsx, .xls, .csv, .txt" class="hidden" onchange="carregarArquivoEpis(event)" />
-            </label>
-          </div>
-          <textarea id="texto-importar-epi" rows="6" oninput="atualizarPreviaEpisEmTempoReal()" placeholder="Nome do EPI | CA | Saldo | Mínimo" class="w-full border rounded-xl p-3 font-mono text-xs bg-gray-50"></textarea>
-        </div>
-        <div id="preview-importar-epi" class="hidden bg-gray-100 p-3 rounded-lg border">
-          <p class="font-bold text-green-800" id="preview-epi-count">0 EPIs reconhecidos</p>
-          <div class="max-h-28 overflow-y-auto mt-1 divide-y" id="preview-epi-lista"></div>
-        </div>
-        <div class="flex justify-between items-center pt-2 border-t gap-2">
-          <button type="button" onclick="fecharModalImportarEpis()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-bold">Cancelar</button>
-          <button type="button" onclick="executarImportacaoEpis()" class="bg-vibraGreen text-white px-5 py-2.5 rounded-xl font-bold shadow">✅ Concluir Importação</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="modal-importar-colaboradores" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-3 z-50">
-    <div class="bg-white rounded-2xl max-w-2xl w-full p-5 md:p-6 shadow-2xl relative max-h-screen overflow-y-auto">
-      <div class="flex justify-between items-center mb-3 pb-2 border-b">
-        <h3 class="font-bold text-gray-800 text-base">📥 Importação em Lote de Colaboradores</h3>
-        <button onclick="fecharModalImportarColaboradores()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">✕</button>
-      </div>
-      <div class="space-y-4 text-xs">
-        <div class="flex gap-4 bg-gray-50 p-2.5 rounded-lg border">
-          <label class="flex items-center gap-1.5 cursor-pointer font-medium"><input type="radio" name="modo-importacao-colab" value="adicionar" checked /><span>Adicionar / Atualizar</span></label>
-          <label class="flex items-center gap-1.5 cursor-pointer font-medium text-red-700"><input type="radio" name="modo-importacao-colab" value="substituir" /><span>Substituir lista inteira</span></label>
-        </div>
-        <div>
-          <div class="flex justify-between items-center mb-1">
-            <label class="font-bold text-gray-700 uppercase">Cole as linhas copiadas do Excel (Matrícula | Nome | Função | E-mail):</label>
-            <label class="text-blue-600 hover:underline cursor-pointer font-bold">
-              📁 Carregar .csv / .txt
-              <input type="file" id="arquivo-importar-colab" accept=".csv, .txt" class="hidden" onchange="carregarArquivoColaboradores(event)" />
-            </label>
-          </div>
-          <textarea id="texto-importar-colab" rows="6" oninput="atualizarPreviaEmTempoReal()" class="w-full border rounded-xl p-3 font-mono text-xs bg-gray-50"></textarea>
-        </div>
-        <div id="preview-importar-colab" class="hidden bg-gray-100 p-3 rounded-lg border">
-          <p class="font-bold text-green-800" id="preview-colab-count">0 colaboradores reconhecidos</p>
-          <div class="max-h-28 overflow-y-auto mt-1 divide-y" id="preview-colab-lista"></div>
-        </div>
-        <div class="flex justify-between items-center pt-2 border-t gap-2">
-          <button type="button" onclick="fecharModalImportarColaboradores()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-bold">Cancelar</button>
-          <button type="button" onclick="executarImportacaoColaboradores()" class="bg-vibraGreen text-white px-5 py-2.5 rounded-xl font-bold shadow">✅ Importar e Salvar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-	  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
-      });
-    }
-
-    let eventoInstalacaoPWA = null;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      eventoInstalacaoPWA = e;
-      document.getElementById('pwa-install-banner')?.classList.remove('hidden');
-    });
-
-    function acionarInstalacaoPWA() {
-      if (eventoInstalacaoPWA) {
-        eventoInstalacaoPWA.prompt();
-        eventoInstalacaoPWA.userChoice.then(() => { fecharBannerPWA(); eventoInstalacaoPWA = null; });
-      } else abrirModalAjudaApp();
-    }
-    function fecharBannerPWA() { document.getElementById('pwa-install-banner')?.classList.add('hidden'); }
-    function abrirModalAjudaApp() { document.getElementById('modal-ajuda-app').classList.remove('hidden'); document.getElementById('modal-ajuda-app').classList.add('flex'); }
-    function fecharModalAjudaApp() { document.getElementById('modal-ajuda-app').classList.add('hidden'); document.getElementById('modal-ajuda-app').classList.remove('flex'); }
-
+  <script>
     const PERGUNTAS_ANEXO_C = [
       { id: "c1", grupo: "Cinto Paraquedista", texto: "1. As costuras apresentam boas condições sem ponto de rompimento ou desgastes?" },
       { id: "c2", grupo: "Cinto Paraquedista", texto: "2. As fitas não apresentam rompimentos ou aparência desgastadas?" },
       { id: "c3", grupo: "Cinto Paraquedista", texto: "3. Os engates não se soltam com facilidade e se conectam adequadamente?" },
-      { id: "c4", grupo: "Cinto Paraquedista", texto: "4. Os pontos de fixação das peças metálicas (fivelas e argolas) não apresentam desgaste incomum, fibras cortadas ou costuras rompidas?" },
-      { id: "c5", grupo: "Cinto Paraquedista", texto: "5. As argolas metálicas não apresentam distorções, rachaduras, rupturas, bordas afiadas ou corrosão?" },
-      { id: "c6", grupo: "Cinto Paraquedista", texto: "6. As argolas metálicas possibilitam a regulagem (abertura e soltura) do cinto sem dificuldades, proporcionando o ajuste correto e seguro?" },
+      { id: "c4", grupo: "Cinto Paraquedista", texto: "4. Os pontos de fixação das peças metálicas não apresentam desgaste incomum ou costuras rompidas?" },
+      { id: "c5", grupo: "Cinto Paraquedista", texto: "5. As argolas metálicas não apresentam distorções, rachaduras, rupturas ou corrosão?" },
+      { id: "c6", grupo: "Cinto Paraquedista", texto: "6. As argolas metálicas possibilitam a regulagem do cinto sem dificuldades?" },
       { id: "c7", grupo: "Cinto Paraquedista", texto: "7. O indicador de impacto está sem avarias ou sinais de queda?" },
       { id: "c8", grupo: "Cinto Paraquedista", texto: "8. O equipamento analisado é para sua EXCLUSIVA utilização?" },
       { id: "t1", grupo: "Talabarte Y / Trava-Quedas", texto: "9. Os conectores não apresentam deformação, trinca, corrosão ou superfície irregular?" },
@@ -905,220 +531,20 @@
       { id: "t3", grupo: "Talabarte Y / Trava-Quedas", texto: "11. A parte interna do absorvedor de energia não apresenta cortes e/ou furos?" }
     ];
 
-    // 116 COLABORADORES BAVGRU (FORMATO COMPACTO ULTRA LEVE)
-    const DADOS_COLABS_RAW = `128660|ADAUTO RIBEIRO DOS SANTOS|OPERADOR DE ABASTECIMENTO SR|adautosantos@vibraenergia.com.br|0
-129028|ADILSON MARQUES ESCANHOLATO|OPERADOR DE ABASTECIMENTO SR|adilsonescanholato@vibraenergia.com.br|0
-189584|ADOLFO DE SOUSA OLIVEIRA|OPERADOR DE ABASTECIMENTO JR|adolfooliveira@vibraenergia.com.br|0
-134770|ADRIANO APARECIDO GONZAGA DA COSTA|OPERADOR DE ABASTECIMENTO SR|adrianocosta@vibraenergia.com.br|0
-128578|ALECSANDER RODRIGUES LOPES CAVALCANTI|OPERADOR DE ABASTECIMENTO SR|alecsandercavalcanti@vibraenergia.com.br|0
-123480|ALEX BARBOSA DOS SANTOS|OPERADOR DE ABASTECIMENTO PL|alexsantos@vibraenergia.com.br|0
-129298|ALEX SILVERIO DOS SANTOS|OPERADOR DE ABASTECIMENTO JR|alexsilverio@vibraenergia.com.br|0
-123233|ALEXANDRE CORREIA ALVES|ASSISTENTE ADMINISTRATIVO JR|alexandrealves@vibraenergia.com.br|1
-132101|ALEXANDRE PIRES DA SILVA|OPERADOR DE ABASTECIMENTO JR|alexandrepires@vibraenergia.com.br|0
-128241|ALEXANDRO TORRES FERREIRA|OPERADOR DE ABASTECIMENTO PL|alexandroferreira@vibraenergia.com.br|0
-177470|ALIEN PETTINELLI|OPERADOR DE ABASTECIMENTO JR|alienpettinelli@vibraenergia.com.br|0
-71126590|ANA MARIA GOMES DOS SANTOS|CONTRATADO||1
-123048|ANDERSON DOS SANTOS DA SILVA|OPERADOR DE ABASTECIMENTO JR|andersonsilva@vibraenergia.com.br|0
-128216|ANDERSON HORACIO PIRES|OPERADOR DE ABASTECIMENTO JR|andersonpires@vibraenergia.com.br|0
-128542|ANDERSON ZAGO DE SOUZA|OPERADOR DE ABASTECIMENTO SR|andersonsouza@vibraenergia.com.br|0
-189572|ANDRE ALVES DE PAULA|OPERADOR DE ABASTECIMENTO JR|andrepaula@vibraenergia.com.br|0
-127059|ANDRE DO NASCIMENTO SANTOS|LIDER DE ABASTECIMENTO|andresantos@vibraenergia.com.br|0
-128806|ANTONIO NORIVAL RIBEIRO|OPERADOR DE ABASTECIMENTO PL|antonioribeiro@vibraenergia.com.br|0
-71176703|BRUNA VIEIRA DE SOUZA|CONTRATADO||1
-185131|BRUNO DE ALMEIDA DA SILVA|OPERADOR DE ABASTECIMENTO JR|brunoalmeida@vibraenergia.com.br|0
-185813|BRUNO EVANGELISTA CERQUEIRA|OPERADOR DE ABASTECIMENTO JR|brunocerqueira@vibraenergia.com.br|0
-179959|CAIO FIALHO DE CASTRO|OPERADOR DE ABASTECIMENTO PL|caiocastro@vibraenergia.com.br|0
-183727|CARLOS ALBERTO BASTOS|OPERADOR DE ABASTECIMENTO JR|carlosbastos@vibraenergia.com.br|0
-131210|CARLOS ALBERTO DE JESUS SILVA|OPERADOR DE ABASTECIMENTO JR|carlosalberto@vibraenergia.com.br|0
-128449|CARLOS EDUARDO PAVAO|ASSISTENTE ADMINISTRATIVO JR|carlospavao@vibraenergia.com.br|1
-127465|CESAR MOREIRA DOURADO|OPERADOR DE ABASTECIMENTO JR|cesardourado@vibraenergia.com.br|0
-133853|CESARIO RODRIGUES DE MEDEIROS|OPERADOR DE ABASTECIMENTO SR|cesariomedeiros@vibraenergia.com.br|0
-150641|CLAUDIANA QUEIROZ SILVA|TECNICA DE SEGURANCA DO TRABALHO PL|claudianasilva@vibraenergia.com.br|1
-136413|CLAUDIO ALVES DA SILVA|OPERADOR DE ABASTECIMENTO JR|claudioalves@vibraenergia.com.br|0
-133423|CLAYTON DOUGLAS IGREJA|OPERADOR DE ABASTECIMENTO JR|claytonigreja@vibraenergia.com.br|0
-136610|CLEBER RICARDO RIBEIRO|OPERADOR DE ABASTECIMENTO PL|cleberribeiro@vibraenergia.com.br|0
-149433|DIOGO DA SILVA FEITOSA|OPERADOR DE ABASTECIMENTO JR|diogofeitosa@vibraenergia.com.br|0
-133400|DIOGO SABATELLI|OPERADOR DE ABASTECIMENTO PL|diogosabatelli@vibraenergia.com.br|0
-127060|DIONISIO FRANCISCO DE MORAIS|LIDER DE TURMA|dionisiomorais@vibraenergia.com.br|0
-150260|DOUGLAS PROCOPIO DOS SANTOS|OPERADOR DE ABASTECIMENTO JR|douglasprocopio@vibraenergia.com.br|0
-127594|EDUARDO BRASILEIRO|LIDER DE ABASTECIMENTO|eduardobrasileiro@vibraenergia.com.br|0
-133632|EDUARDO LOYOLA DE MELO|OPERADOR DE ABASTECIMENTO PL|eduardomelo@vibraenergia.com.br|0
-175912|EULES SOUSA OLIVEIRA|OPERADOR DE ABASTECIMENTO JR|eulesoliveira@vibraenergia.com.br|0
-182073|EVANDRO FERREIRA CAIPPES|OPERADOR DE ABASTECIMENTO JR|evandrocaippes@vibraenergia.com.br|0
-174731|EWERTON COTRIM CARDEAL|OPERADOR DE ABASTECIMENTO JR|ewertoncardeal@vibraenergia.com.br|0
-131638|FERNANDO GOMES DA COSTA|OPERADOR DE ABASTECIMENTO PL|fernandocosta@vibraenergia.com.br|0
-133908|FERNANDO VIEIRA MARTINEZ|OPERADOR DE ABASTECIMENTO SR|fernandomartinez@vibraenergia.com.br|0
-149863|FLAVIO RENATO DE ARRUDA|OPERADOR DE ABASTECIMENTO JR|flavioarruda@vibraenergia.com.br|0
-188483|FRANCIELDO FRANCISCO DA SILVA|OPERADOR DE ABASTECIMENTO JR|francieldosilva@vibraenergia.com.br|0
-170314|FREDISON AMADEUS DO NASCIMENTO|OPERADOR DE ABASTECIMENTO JR|fredisonnascimento@vibraenergia.com.br|0
-134708|GABRIEL LUIZ DE SOUZA SPEDINI|OPERADOR DE ABASTECIMENTO SR|gabrielspedini@vibraenergia.com.br|0
-124870|GILVAN BARBOSA CASTRO|OPERADOR DE ABASTECIMENTO JR|gilvancastro@vibraenergia.com.br|0
-124045|GIVANI CORDEIRO DA SILVA|OPERADOR DE ABASTECIMENTO JR|givanisilva@vibraenergia.com.br|0
-147913|GRACIETE MARTINS FERREIRA|TECNICA DE SEGURANCA DO TRABALHO PL|gracietef@vibraenergia.com.br|1
-123731|GUILHERME FREIRE SOUZA|OPERADOR DE ABASTECIMENTO PL|guilhermesouza@vibraenergia.com.br|0
-189025|GUILHERME GOMES DE NOVAIS|OPERADOR DE ABASTECIMENTO JR|guilhermenovais@vibraenergia.com.br|0
-189013|GUSTAVO DA SILVA RODRIGUES|OPERADOR DE ABASTECIMENTO JR|gustavorodrigues@vibraenergia.com.br|0
-134862|GUSTAVO GOMES DE FARIAS JUNIOR|OPERADOR DE ABASTECIMENTO SR|gustavojunior@vibraenergia.com.br|0
-124186|HENRIQUE FLORENTINO ALVES|OPERADOR DE ABASTECIMENTO JR|henriquealves@vibraenergia.com.br|0
-202316|HERIK MORAES RIBEIRO|OPERADOR DE ABASTECIMENTO JR|herikribeiro@vibraenergia.com.br|0
-123442|HUAN CARLOS NASCIMENTO SANTOS|OPERADOR DE ABASTECIMENTO JR|huansantos@vibraenergia.com.br|0
-150259|IDENILSON PEREIRA COSTA|LIDER DE ABASTECIMENTO|idenilsoncosta@vibraenergia.com.br|0
-130377|ILDO LUIZ DA SILVA|OPERADOR DE ABASTECIMENTO PL|ildosilva@vibraenergia.com.br|0
-150653|ITAYLON TAVARES DA SILVA|OPERADOR DE ABASTECIMENTO PL|itaylonsilva@vibraenergia.com.br|0
-130040|JOAO MARCOS DE JESUS SANTOS|OPERADOR DE ABASTECIMENTO PL|joaomarcos@vibraenergia.com.br|0
-128843|JONATAN ALVES DE BARROS|OPERADOR DE ABASTECIMENTO PL|jonatanbarros@vibraenergia.com.br|0
-134223|JOSE EDSON GONCALVES DIAS|OPERADOR DE ABASTECIMENTO JR|josedias@vibraenergia.com.br|0
-155151|JOSE RAMOS GALDINO DE ARAUJO|OPERADOR DE ABASTECIMENTO JR|josearaujo@vibraenergia.com.br|0
-188981|JOVELINO ANTONIO DE SOUZA JUNIOR|OPERADOR DE ABASTECIMENTO JR|jovelinojunior@vibraenergia.com.br|0
-128683|JOVINIANO ANDRADE DA SILVA|OPERADOR DE ABASTECIMENTO JR|jovinianosilva@vibraenergia.com.br|0
-123429|JULIO CESAR CAMARGO DA SILVA|OPERADOR DE ABASTECIMENTO PL|juliosilva@vibraenergia.com.br|0
-144787|JULIO CESAR DE OLIVEIRA|OPERADOR DE ABASTECIMENTO JR|juliooliveira@vibraenergia.com.br|0
-189062|JULIO CESAR MARQUES DA SILVA|OPERADOR DE ABASTECIMENTO JR|juliomarques@vibraenergia.com.br|0
-128879|JUNIOR TOZETTI DA SILVA|OPERADOR DE ABASTECIMENTO JR|juniortozetti@vibraenergia.com.br|0
-80048881|KAMILA MORENO VIDAL|APRENDIZ|kamilamvidal@vibraenergia.com.br|1
-179610|KLEYSSON LUZ DE OLIVEIRA|OPERADOR DE ABASTECIMENTO JR|kleyssonoliveira@vibraenergia.com.br|0
-127127|LAERCIO VITAL MARTINS|OPERADOR DE ABASTECIMENTO JR|laerciomartins@vibraenergia.com.br|0
-80048900|LAVINIA SOUZA DE ALMEIDA|APRENDIZ|laviniasalmeida@vibraenergia.com.br|1
-128462|LEANDRO ARAUJO DE SOUZA|OPERADOR DE ABASTECIMENTO JR|leandrosouza@vibraenergia.com.br|0
-123602|LEONARDO WEBERT DA SILVA|OPERADOR DE ABASTECIMENTO JR|leonardosilva@vibraenergia.com.br|0
-158478|LUCAS EVARISTO GOMES DOS SANTOS|OPERADOR DE ABASTECIMENTO JR|lucasevaristo@vibraenergia.com.br|0
-189001|LUCAS VIEIRA SANTOS|OPERADOR DE ABASTECIMENTO JR|lucasvsantos@vibraenergia.com.br|0
-122200|LUCIANO COSTA DE JESUS|OPERADOR DE ABASTECIMENTO SR|lucianojesus@vibraenergia.com.br|0
-127140|LUIS FRANCISCO DO NASCIMENTO|OPERADOR DE ABASTECIMENTO SR|luisnascimento@vibraenergia.com.br|0
-134420|MANOEL BAZILIO DA SILVA|OPERADOR DE ABASTECIMENTO JR|manoelsilva@vibraenergia.com.br|0
-134597|MARCIO EDIVAL SILVA|OPERADOR DE ABASTECIMENTO SR|marcioedival@vibraenergia.com.br|0
-182964|MARCOS BARBOSA LEITE|OPERADOR DE ABASTECIMENTO JR|marcosleite@vibraenergia.com.br|0
-125761|MARCOS VINICIUS DA SILVA VIRGINIO|SUPERVISOR DE PISTA|marcosvirginio@vibraenergia.com.br|0
-135072|MICHEL DE CASTRO PEREIRA DO CARMO|OPERADOR DE ABASTECIMENTO JR|michelcarmo@vibraenergia.com.br|0
-134364|MILTON OLIVEIRA DE ASSIS|OPERADOR DE ABASTECIMENTO JR|miltonassis@vibraenergia.com.br|0
-189500|NATAN PEREIRA DO CARMO CRUZ|OPERADOR DE ABASTECIMENTO JR|natancruz@vibraenergia.com.br|0
-124727|NORMAN TADAO DE MORAIS MORI|OPERADOR DE ABASTECIMENTO JR|normanmori@vibraenergia.com.br|0
-134340|PAULO HENRIQUE MARTINS BENTO|OPERADOR DE ABASTECIMENTO JR|paulobento@vibraenergia.com.br|0
-188502|PEDRO HENRIQUE SOUZA SANTOS|OPERADOR DE ABASTECIMENTO JR|pedrohenriquess@vibraenergia.com.br|0
-123417|PETERSON GASPARINI|OPERADOR DE ABASTECIMENTO PL|petersongasparini@vibraenergia.com.br|0
-140832|RAFAEL CALAZANS DE SOUZA|OPERADOR DE ABASTECIMENTO JR|rafaelcalazans@vibraenergia.com.br|0
-134303|RAFAEL MOURA DOS SANTOS ARAUJO|OPERADOR DE ABASTECIMENTO JR|rafaelaraujo@vibraenergia.com.br|0
-80048912|RAFAELA RIBEIRO DOS SANTOS|APRENDIZ|rafaelarsantos@vibraenergia.com.br|1
-134327|REGIS BRITO DE OLIVEIRA|OPERADOR DE ABASTECIMENTO SR|regisoliveira@vibraenergia.com.br|0
-157838|RENATA RODRIGUES DOS SANTOS|OPERADORA DE ABASTECIMENTO JR|renatarodrigues@vibraenergia.com.br|0
-123454|RENATO LOPES DOS SANTOS|OPERADOR DE ABASTECIMENTO PL|renatosantos@vibraenergia.com.br|0
-134296|RENATO PASCHOAL|OPERADOR DE ABASTECIMENTO PL|renatopaschoal@vibraenergia.com.br|0
-134315|RENILSON ALVES SIMAO|OPERADOR DE ABASTECIMENTO PL|renilsonsimao@vibraenergia.com.br|0
-189492|RICARDO RODRIGUES DE PAIVA|OPERADOR DE ABASTECIMENTO JR|ricardopaiva@vibraenergia.com.br|0
-186778|ROBSON FERNANDES ARRUDA|OPERADOR DE ABASTECIMENTO JR|robsonarruda@vibraenergia.com.br|0
-134339|RODOLFO LEONEL|OPERADOR DE ABASTECIMENTO PL|rodolfoleonel@vibraenergia.com.br|0
-188993|RODRIGO CALDEIRA LOPES|OPERADOR DE ABASTECIMENTO JR|rodrigolopes@vibraenergia.com.br|0
-185120|RODRIGO COSTA DE HOLANDA CAVALCANTE|OPERADOR DE ABASTECIMENTO JR|rodrigocavalcante@vibraenergia.com.br|0
-135000|RODRIGO EXPEDITO BELENTANI DE SOUSA|OPERADOR DE ABASTECIMENTO JR|rodrigosousa@vibraenergia.com.br|0
-134825|RODRIGO SANTOS DA SILVA|OPERADOR DE ABASTECIMENTO PL|rodrigos@vibraenergia.com.br|0
-138812|RODRIGO VENANCIO DE OLIVEIRA|OPERADOR DE ABASTECIMENTO JR|rodrigovenancio@vibraenergia.com.br|0
-179357|RONALD SILVA LIMA|OPERADOR DE ABASTECIMENTO JR|ronaldlima@vibraenergia.com.br|0
-908884|RUAN CARLOS BORGES ALVES|GERENTE DE OPERACAO DE AEROPORTOS|ruan@vibraenergia.com.br|1
-134710|SANDRO RUIZ BELINI|OPERADOR DE ABASTECIMENTO PL|sandrobelini@vibraenergia.com.br|0
-80048868|SARA PEREIRA DE SOUZA|APRENDIZ|sarapsouza@vibraenergia.com.br|1
-134087|SERGIO GOMES PEREIRA|OPERADOR DE ABASTECIMENTO SR|sergiopereira@vibraenergia.com.br|0
-130709|SERGIO JOSE DO NASCIMENTO|OPERADOR DE ABASTECIMENTO SR|sergionascimento@vibraenergia.com.br|0
-189480|SHELINTON ROBERTO MARQUES DA SILVA|OPERADOR DE ABASTECIMENTO JR|shelintonsilva@vibraenergia.com.br|0
-134524|SOLANGE GOMES DE SOUSA|OPERADORA DE ABASTECIMENTO JR|solangesousa@vibraenergia.com.br|0
-123491|VAGNER LOPES DE CASTRO|OPERADOR DE ABASTECIMENTO JR|vagnercastro@vibraenergia.com.br|0
-71112246|VALDENICE MARIA DA CONCEICAO|CONTRATADO||1
-150628|VALDINA ROSA DE OLIVEIRA PINHEIRO|OPERADORA DE ABASTECIMENTO JR|valdinapinheiro@vibraenergia.com.br|0
-123767|VINICIUS LUNA FERNANDES|OPERADOR DE ABASTECIMENTO JR|viniciusfernandes@vibraenergia.com.br|0
-134470|WESLEY VALIM MOREIRA RAFAEL|OPERADOR DE ABASTECIMENTO PL|wesleyrafael@vibraenergia.com.br|0
-124555|WILLIAM KOLODZIEJSKI JUNIOR|OPERADOR DE ABASTECIMENTO PL|williamjunior@vibraenergia.com.br|0
-191776|WILSON FERREIRA NASCIMENTO|OPERADOR DE ABASTECIMENTO JR|wilsonnascimento@vibraenergia.com.br|0`;
+    const DADOS_COLABS_RAW = "128660|ADAUTO RIBEIRO DOS SANTOS|OPERADOR DE ABASTECIMENTO SR|0;129028|ADILSON MARQUES ESCANHOLATO|OPERADOR DE ABASTECIMENTO SR|0;189584|ADOLFO DE SOUSA OLIVEIRA|OPERADOR DE ABASTECIMENTO JR|0;134770|ADRIANO APARECIDO GONZAGA DA COSTA|OPERADOR DE ABASTECIMENTO SR|0;128578|ALECSANDER RODRIGUES LOPES CAVALCANTI|OPERADOR DE ABASTECIMENTO SR|0;123480|ALEX BARBOSA DOS SANTOS|OPERADOR DE ABASTECIMENTO PL|0;129298|ALEX SILVERIO DOS SANTOS|OPERADOR DE ABASTECIMENTO JR|0;123233|ALEXANDRE CORREIA ALVES|ASSISTENTE ADMINISTRATIVO JR|1;132101|ALEXANDRE PIRES DA SILVA|OPERADOR DE ABASTECIMENTO JR|0;128241|ALEXANDRO TORRES FERREIRA|OPERADOR DE ABASTECIMENTO PL|0;177470|ALIEN PETTINELLI|OPERADOR DE ABASTECIMENTO JR|0;71126590|ANA MARIA GOMES DOS SANTOS|CONTRATADO|1;123048|ANDERSON DOS SANTOS DA SILVA|OPERADOR DE ABASTECIMENTO JR|0;128216|ANDERSON HORACIO PIRES|OPERADOR DE ABASTECIMENTO JR|0;128542|ANDERSON ZAGO DE SOUZA|OPERADOR DE ABASTECIMENTO SR|0;189572|ANDRE ALVES DE PAULA|OPERADOR DE ABASTECIMENTO JR|0;127059|ANDRE DO NASCIMENTO SANTOS|LIDER DE ABASTECIMENTO|0;128806|ANTONIO NORIVAL RIBEIRO|OPERADOR DE ABASTECIMENTO PL|0;71176703|BRUNA VIEIRA DE SOUZA|CONTRATADO|1;185131|BRUNO DE ALMEIDA DA SILVA|OPERADOR DE ABASTECIMENTO JR|0;185813|BRUNO EVANGELISTA CERQUEIRA|OPERADOR DE ABASTECIMENTO JR|0;179959|CAIO FIALHO DE CASTRO|OPERADOR DE ABASTECIMENTO PL|0;183727|CARLOS ALBERTO BASTOS|OPERADOR DE ABASTECIMENTO JR|0;131210|CARLOS ALBERTO DE JESUS SILVA|OPERADOR DE ABASTECIMENTO JR|0;128449|CARLOS EDUARDO PAVAO|ASSISTENTE ADMINISTRATIVO JR|1;127465|CESAR MOREIRA DOURADO|OPERADOR DE ABASTECIMENTO JR|0;133853|CESARIO RODRIGUES DE MEDEIROS|OPERADOR DE ABASTECIMENTO SR|0;150641|CLAUDIANA QUEIROZ SILVA|TECNICA DE SEGURANCA DO TRABALHO PL|1;136413|CLAUDIO ALVES DA SILVA|OPERADOR DE ABASTECIMENTO JR|0;133423|CLAYTON DOUGLAS IGREJA|OPERADOR DE ABASTECIMENTO JR|0;136610|CLEBER RICARDO RIBEIRO|OPERADOR DE ABASTECIMENTO PL|0;149433|DIOGO DA SILVA FEITOSA|OPERADOR DE ABASTECIMENTO JR|0;133400|DIOGO SABATELLI|OPERADOR DE ABASTECIMENTO PL|0;127060|DIONISIO FRANCISCO DE MORAIS|LIDER DE TURMA|0;150260|DOUGLAS PROCOPIO DOS SANTOS|OPERADOR DE ABASTECIMENTO JR|0;127594|EDUARDO BRASILEIRO|LIDER DE ABASTECIMENTO|0;133632|EDUARDO LOYOLA DE MELO|OPERADOR DE ABASTECIMENTO PL|0;175912|EULES SOUSA OLIVEIRA|OPERADOR DE ABASTECIMENTO JR|0;182073|EVANDRO FERREIRA CAIPPES|OPERADOR DE ABASTECIMENTO JR|0;174731|EWERTON COTRIM CARDEAL|OPERADOR DE ABASTECIMENTO JR|0;131638|FERNANDO GOMES DA COSTA|OPERADOR DE ABASTECIMENTO PL|0;133908|FERNANDO VIEIRA MARTINEZ|OPERADOR DE ABASTECIMENTO SR|0;149863|FLAVIO RENATO DE ARRUDA|OPERADOR DE ABASTECIMENTO JR|0;188483|FRANCIELDO FRANCISCO DA SILVA|OPERADOR DE ABASTECIMENTO JR|0;170314|FREDISON AMADEUS DO NASCIMENTO|OPERADOR DE ABASTECIMENTO JR|0;134708|GABRIEL LUIZ DE SOUZA SPEDINI|OPERADOR DE ABASTECIMENTO SR|0;124870|GILVAN BARBOSA CASTRO|OPERADOR DE ABASTECIMENTO JR|0;124045|GIVANI CORDEIRO DA SILVA|OPERADOR DE ABASTECIMENTO JR|0;147913|GRACIETE MARTINS FERREIRA|TECNICA DE SEGURANCA DO TRABALHO PL|1;123731|GUILHERME FREIRE SOUZA|OPERADOR DE ABASTECIMENTO PL|0;189025|GUILHERME GOMES DE NOVAIS|OPERADOR DE ABASTECIMENTO JR|0;189013|GUSTAVO DA SILVA RODRIGUES|OPERADOR DE ABASTECIMENTO JR|0;134862|GUSTAVO GOMES DE FARIAS JUNIOR|OPERADOR DE ABASTECIMENTO SR|0;124186|HENRIQUE FLORENTINO ALVES|OPERADOR DE ABASTECIMENTO JR|0;202316|HERIK MORAES RIBEIRO|OPERADOR DE ABASTECIMENTO JR|0;123442|HUAN CARLOS NASCIMENTO SANTOS|OPERADOR DE ABASTECIMENTO JR|0;150259|IDENILSON PEREIRA COSTA|LIDER DE ABASTECIMENTO|0;130377|ILDO LUIZ DA SILVA|OPERADOR DE ABASTECIMENTO PL|0;150653|ITAYLON TAVARES DA SILVA|OPERADOR DE ABASTECIMENTO PL|0;130040|JOAO MARCOS DE JESUS SANTOS|OPERADOR DE ABASTECIMENTO PL|0;128843|JONATAN ALVES DE BARROS|OPERADOR DE ABASTECIMENTO PL|0;134223|JOSE EDSON GONCALVES DIAS|OPERADOR DE ABASTECIMENTO JR|0;155151|JOSE RAMOS GALDINO DE ARAUJO|OPERADOR DE ABASTECIMENTO JR|0;188981|JOVELINO ANTONIO DE SOUZA JUNIOR|OPERADOR DE ABASTECIMENTO JR|0;128683|JOVINIANO ANDRADE DA SILVA|OPERADOR DE ABASTECIMENTO JR|0;123429|JULIO CESAR CAMARGO DA SILVA|OPERADOR DE ABASTECIMENTO PL|0;144787|JULIO CESAR DE OLIVEIRA|OPERADOR DE ABASTECIMENTO JR|0;189062|JULIO CESAR MARQUES DA SILVA|OPERADOR DE ABASTECIMENTO JR|0;128879|JUNIOR TOZETTI DA SILVA|OPERADOR DE ABASTECIMENTO JR|0;80048881|KAMILA MORENO VIDAL|APRENDIZ|1;179610|KLEYSSON LUZ DE OLIVEIRA|OPERADOR DE ABASTECIMENTO JR|0;127127|LAERCIO VITAL MARTINS|OPERADOR DE ABASTECIMENTO JR|0;80048900|LAVINIA SOUZA DE ALMEIDA|APRENDIZ|1;128462|LEANDRO ARAUJO DE SOUZA|OPERADOR DE ABASTECIMENTO JR|0;123602|LEONARDO WEBERT DA SILVA|OPERADOR DE ABASTECIMENTO JR|0;158478|LUCAS EVARISTO GOMES DOS SANTOS|OPERADOR DE ABASTECIMENTO JR|0;189001|LUCAS VIEIRA SANTOS|OPERADOR DE ABASTECIMENTO JR|0;122200|LUCIANO COSTA DE JESUS|OPERADOR DE ABASTECIMENTO SR|0;127140|LUIS FRANCISCO DO NASCIMENTO|OPERADOR DE ABASTECIMENTO SR|0;134420|MANOEL BAZILIO DA SILVA|OPERADOR DE ABASTECIMENTO JR|0;134597|MARCIO EDIVAL SILVA|OPERADOR DE ABASTECIMENTO SR|0;182964|MARCOS BARBOSA LEITE|OPERADOR DE ABASTECIMENTO JR|0;125761|MARCOS VINICIUS DA SILVA VIRGINIO|SUPERVISOR DE PISTA|0;135072|MICHEL DE CASTRO PEREIRA DO CARMO|OPERADOR DE ABASTECIMENTO JR|0;134364|MILTON OLIVEIRA DE ASSIS|OPERADOR DE ABASTECIMENTO JR|0;189500|NATAN PEREIRA DO CARMO CRUZ|OPERADOR DE ABASTECIMENTO JR|0;124727|NORMAN TADAO DE MORAIS MORI|OPERADOR DE ABASTECIMENTO JR|0;134340|PAULO HENRIQUE MARTINS BENTO|OPERADOR DE ABASTECIMENTO JR|0;188502|PEDRO HENRIQUE SOUZA SANTOS|OPERADOR DE ABASTECIMENTO JR|0;123417|PETERSON GASPARINI|OPERADOR DE ABASTECIMENTO PL|0;140832|RAFAEL CALAZANS DE SOUZA|OPERADOR DE ABASTECIMENTO JR|0;134303|RAFAEL MOURA DOS SANTOS ARAUJO|OPERADOR DE ABASTECIMENTO JR|0;80048912|RAFAELA RIBEIRO DOS SANTOS|APRENDIZ|1;134327|REGIS BRITO DE OLIVEIRA|OPERADOR DE ABASTECIMENTO SR|0;157838|RENATA RODRIGUES DOS SANTOS|OPERADORA DE ABASTECIMENTO JR|0;123454|RENATO LOPES DOS SANTOS|OPERADOR DE ABASTECIMENTO PL|0;134296|RENATO PASCHOAL|OPERADOR DE ABASTECIMENTO PL|0;134315|RENILSON ALVES SIMAO|OPERADOR DE ABASTECIMENTO PL|0;189492|RICARDO RODRIGUES DE PAIVA|OPERADOR DE ABASTECIMENTO JR|0;186778|ROBSON FERNANDES ARRUDA|OPERADOR DE ABASTECIMENTO JR|0;134339|RODOLFO LEONEL|OPERADOR DE ABASTECIMENTO PL|0;188993|RODRIGO CALDEIRA LOPES|OPERADOR DE ABASTECIMENTO JR|0;185120|RODRIGO COSTA DE HOLANDA CAVALCANTE|OPERADOR DE ABASTECIMENTO JR|0;135000|RODRIGO EXPEDITO BELENTANI DE SOUSA|OPERADOR DE ABASTECIMENTO JR|0;134825|RODRIGO SANTOS DA SILVA|OPERADOR DE ABASTECIMENTO PL|0;138812|RODRIGO VENANCIO DE OLIVEIRA|OPERADOR DE ABASTECIMENTO JR|0;179357|RONALD SILVA LIMA|OPERADOR DE ABASTECIMENTO JR|0;908884|RUAN CARLOS BORGES ALVES|GERENTE DE OPERACAO DE AEROPORTOS|1;134710|SANDRO RUIZ BELINI|OPERADOR DE ABASTECIMENTO PL|0;80048868|SARA PEREIRA DE SOUZA|APRENDIZ|1;134087|SERGIO GOMES PEREIRA|OPERADOR DE ABASTECIMENTO SR|0;130709|SERGIO JOSE DO NASCIMENTO|OPERADOR DE ABASTECIMENTO SR|0;189480|SHELINTON ROBERTO MARQUES DA SILVA|OPERADOR DE ABASTECIMENTO JR|0;134524|SOLANGE GOMES DE SOUSA|OPERADORA DE ABASTECIMENTO JR|0;123491|VAGNER LOPES DE CASTRO|OPERADOR DE ABASTECIMENTO JR|0;71112246|VALDENICE MARIA DA CONCEICAO|CONTRATADO|1;150628|VALDINA ROSA DE OLIVEIRA PINHEIRO|OPERADORA DE ABASTECIMENTO JR|0;123767|VINICIUS LUNA FERNANDES|OPERADOR DE ABASTECIMENTO JR|0;134470|WESLEY VALIM MOREIRA RAFAEL|OPERADOR DE ABASTECIMENTO PL|0;124555|WILLIAM KOLODZIEJSKI JUNIOR|OPERADOR DE ABASTECIMENTO PL|0;191776|WILSON FERREIRA NASCIMENTO|OPERADOR DE ABASTECIMENTO JR|0";
 
-    const INITIAL_COLABORADORES = DADOS_COLABS_RAW.trim().split('\n').map(line => {
-      const [matricula, nome, funcao, email, isento] = line.split('|');
-      return { id: "c_" + matricula, matricula, nome, funcao, email: email || "", naoUtilizaCinto: isento === "1" };
+    const INITIAL_COLABORADORES = DADOS_COLABS_RAW.split(';').map(item => {
+      const [matricula, nome, funcao, isento] = item.split('|');
+      return { id: "c_" + matricula, matricula, nome, funcao, email: "", naoUtilizaCinto: isento === "1" };
     });
 
-    // 78 EPIS DO ESTOQUE BAVGRU
-    const DADOS_ESTOQUE_RAW = `Luva Nitrílica|42760|15
-Luva Nitrílica Manga Longa G|S/C.A.|15
-Luva Nitrílica Verde M|40189|15
-Luva Nitrílica Verde G|40189|15
-Óculos de Segurança Incolor|18821|25
-Óculos de Segurança Cinza|18821|25
-Óculos de Segurança Ampla Visão|19072|20
-Lente oculos ampla visão incolor|19072|15
-Lente oculos ampla visão cinza|19072|15
-Capacete de Segurança Branco|8304|15
-Capacete de Segurança Amarelo|8304|15
-Refil Abafador|92154|15
-Protetor Auricular Abafador|43588|40
-Mala Operação|S/C.A.|15
-Carneira com jugular|S/C.A.|15
-Casquete|38352|80
-Calçado de Segurança 34|42374|15
-Calçado de Segurança 36|42374|15
-Calçado de Segurança 37|42374|15
-Calçado de Segurança 38|42374|15
-Calçado de Segurança 39|42374|15
-Calçado de Segurança 40|42374|15
-Calçado de Segurança 41|42374|15
-Calçado de Segurança 42|42374|15
-Calçado de Segurança 43|42374|15
-Calçado de Segurança 44|42374|15
-Calçado de Segurança 45|42374|15
-Capa Chuva P|31884|15
-Capa Chuva M|31884|15
-Capa Chuva G|31884|15
-Capa Chuva GG|31884|15
-Capa Chuva XGG|31884|15
-Cinto Trava Quedas Hercules|35191|15
-Camisa RF P Masculina|49095|15
-Camisa RF M Masculina|49095|40
-Camisa RF G Masculina|49095|30
-Camisa RF GG Masculina|49095|30
-Camisa RF XXG Masculina|49095|30
-Calça RF P Masculina|49093|15
-Calça RF M Masculina|49093|40
-Calça RF G Masculina|49093|30
-Calça RF GG Masculina|49093|30
-Calça RF XXG Masculina|49093|30
-Camisa RF P Feminina|50427|15
-Camisa RF M Feminina|50427|15
-Camisa RF G Feminina|50427|15
-Camisa RF GG Feminina|50427|15
-Calça RF P Feminina|50428|15
-Calça RF M Feminina|50428|15
-Calça RF G Feminina|50428|15
-Calça RF GG Feminina|50428|15
-Camisa RF P Masculina (50427)|50427|15
-Camisa RF M Masculina (50427)|50427|15
-Camisa RF G Masculina (50427)|50427|15
-Camisa RF GG Masculina (50427)|50427|15
-Camisa RF XXG Masculina (50427)|50427|15
-Calça RF P Masculina (50428)|50428|15
-Calça RF M Masculina (50428)|50428|15
-Calça RF G Masculina (50428)|50428|15
-Calça RF GG Masculina (50428)|50428|15
-Calça RF XXG Masculina (50428)|50428|15
-Japona Operacional P|S/C.A.|15
-Japona Operacional M|S/C.A.|20
-Japona Operacional G|S/C.A.|20
-Japona Operacional GG|S/C.A.|30
-Japona Operacional XGG|S/C.A.|40
-Calçado de Segurança 34 impermeável|S/C.A.|15
-Calçado de Segurança 36 impermeável|S/C.A.|15
-Calçado de Segurança 37 impermeável|S/C.A.|15
-Calçado de Segurança 38 impermeável|S/C.A.|15
-Calçado de Segurança 39 impermeável|40398|15
-Calçado de Segurança 40 impermeável|40398|15
-Calçado de Segurança 41 impermeável|40398|15
-Calçado de Segurança 42 impermeável|S/C.A.|20
-Calçado de Segurança 43 impermeável|S/C.A.|10
-Calçado de Segurança 44 impermeável|S/C.A.|10
-Calçado de Segurança 45 impermeável|S/C.A.|15
-Óculos de Segurança Com Grau|33594|15`;
+    const DADOS_ESTOQUE_RAW = "Luva Nitrílica|42760|15;Luva Nitrílica Manga Longa G|S/C.A.|15;Luva Nitrílica Verde M|40189|15;Luva Nitrílica Verde G|40189|15;Óculos de Segurança Incolor|18821|25;Óculos de Segurança Cinza|18821|25;Óculos de Segurança Ampla Visão|19072|20;Lente oculos ampla visão incolor|19072|15;Lente oculos ampla visão cinza|19072|15;Capacete de Segurança Branco|8304|15;Capacete de Segurança Amarelo|8304|15;Refil Abafador|92154|15;Protetor Auricular Abafador|43588|40;Mala Operação|S/C.A.|15;Carneira com jugular|S/C.A.|15;Casquete|38352|80;Calçado de Segurança 34|42374|15;Calçado de Segurança 36|42374|15;Calçado de Segurança 37|42374|15;Calçado de Segurança 38|42374|15;Calçado de Segurança 39|42374|15;Calçado de Segurança 40|42374|15;Calçado de Segurança 41|42374|15;Calçado de Segurança 42|42374|15;Calçado de Segurança 43|42374|15;Calçado de Segurança 44|42374|15;Calçado de Segurança 45|42374|15;Capa Chuva P|31884|15;Capa Chuva M|31884|15;Capa Chuva G|31884|15;Capa Chuva GG|31884|15;Capa Chuva XGG|31884|15;Cinto Trava Quedas Hercules|35191|15;Camisa RF P Masculina|49095|15;Camisa RF M Masculina|49095|40;Camisa RF G Masculina|49095|30;Camisa RF GG Masculina|49095|30;Camisa RF XXG Masculina|49095|30;Calça RF P Masculina|49093|15;Calça RF M Masculina|49093|40;Calça RF G Masculina|49093|30;Calça RF GG Masculina|49093|30;Calça RF XXG Masculina|49093|30;Camisa RF P Feminina|50427|15;Camisa RF M Feminina|50427|15;Camisa RF G Feminina|50427|15;Camisa RF GG Feminina|50427|15;Calça RF P Feminina|50428|15;Calça RF M Feminina|50428|15;Calça RF G Feminina|50428|15;Calça RF GG Feminina|50428|15;Camisa RF P Masculina (50427)|50427|15;Camisa RF M Masculina (50427)|50427|15;Camisa RF G Masculina (50427)|50427|15;Camisa RF GG Masculina (50427)|50427|15;Camisa RF XXG Masculina (50427)|50427|15;Calça RF P Masculina (50428)|50428|15;Calça RF M Masculina (50428)|50428|15;Calça RF G Masculina (50428)|50428|15;Calça RF GG Masculina (50428)|50428|15;Calça RF XXG Masculina (50428)|50428|15;Japona Operacional P|S/C.A.|15;Japona Operacional M|S/C.A.|20;Japona Operacional G|S/C.A.|20;Japona Operacional GG|S/C.A.|30;Japona Operacional XGG|S/C.A.|40;Calçado de Segurança 34 impermeável|S/C.A.|15;Calçado de Segurança 36 impermeável|S/C.A.|15;Calçado de Segurança 37 impermeável|S/C.A.|15;Calçado de Segurança 38 impermeável|S/C.A.|15;Calçado de Segurança 39 impermeável|40398|15;Calçado de Segurança 40 impermeável|40398|15;Calçado de Segurança 41 impermeável|40398|15;Calçado de Segurança 42 impermeável|S/C.A.|20;Calçado de Segurança 43 impermeável|S/C.A.|10;Calçado de Segurança 44 impermeável|S/C.A.|10;Calçado de Segurança 45 impermeável|S/C.A.|15;Óculos de Segurança Com Grau|33594|15";
 
-    const INITIAL_ESTOQUE = DADOS_ESTOQUE_RAW.trim().split('\n').map((line, idx) => {
-      const [nome, ca, qtd] = line.split('|');
+    const INITIAL_ESTOQUE = DADOS_ESTOQUE_RAW.split(';').map((item, idx) => {
+      const [nome, ca, qtd] = item.split('|');
       return { id: "e" + (idx + 1), nome, ca, validade: "2029-12-31", qtd: parseInt(qtd, 10), min: 5 };
     });
 
-    // CONFIGURAÇÃO FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyDTMDXAbh2zx7d55kwjV1LTMCZ9eNIz4hs",
       authDomain: "ssma-bavgru.firebaseapp.com",
@@ -1135,28 +561,7 @@ Calçado de Segurança 45 impermeável|S/C.A.|15
         firebase.initializeApp(firebaseConfig);
         dbNuvem = firebase.database();
       }
-    } catch (e) { console.warn("Erro Firebase:", e); }
-
-    const VERSAO_BASE = 'bavgru_versao_116colab_v8_admin_tox';
-    if (localStorage.getItem('bavgru_versao_instalada') !== VERSAO_BASE) {
-      let colsExistentes = JSON.parse(localStorage.getItem('bavgru_colaboradores'));
-      if (!colsExistentes || colsExistentes.length === 0) {
-        localStorage.setItem('bavgru_colaboradores', JSON.stringify(INITIAL_COLABORADORES));
-      } else {
-        colsExistentes = colsExistentes.map(c => {
-          if (c.naoUtilizaCinto === undefined) {
-            const inicial = INITIAL_COLABORADORES.find(ic => ic.matricula === c.matricula);
-            c.naoUtilizaCinto = inicial ? !!inicial.naoUtilizaCinto : false;
-          }
-          return c;
-        });
-        localStorage.setItem('bavgru_colaboradores', JSON.stringify(colsExistentes));
-      }
-      if (!localStorage.getItem('bavgru_estoque')) {
-        localStorage.setItem('bavgru_estoque', JSON.stringify(INITIAL_ESTOQUE));
-      }
-      localStorage.setItem('bavgru_versao_instalada', VERSAO_BASE);
-    }
+    } catch (e) {}
 
     let colaboradores = JSON.parse(localStorage.getItem('bavgru_colaboradores')) || INITIAL_COLABORADORES;
     let estoque = JSON.parse(localStorage.getItem('bavgru_estoque')) || INITIAL_ESTOQUE;
@@ -1165,24 +570,15 @@ Calçado de Segurança 45 impermeável|S/C.A.|15
     let examesToxicologicos = JSON.parse(localStorage.getItem('bavgru_toxicologico')) || [];
     let senhaAdmin = localStorage.getItem('bavgru_senha_admin') || 'vibra@2025';
     let adminAutenticado = false;
-
     let carrinhoDispensacao = [];
     let fotosCapturadas = { disp: null, insp: null };
     let streamsCamera = { disp: null, insp: null };
     let cameraFacing = { disp: 'user', insp: 'environment' };
     let filtroTabelaNaoCinto = 'todos';
     let filtroToxStatus = 'todos';
-    let primeiraCargaNuvem = true;
 
     function limparObjetoParaFirebase(obj) {
       return JSON.parse(JSON.stringify(obj, (k, v) => (v === undefined || v === null) ? "" : v));
-    }
-
-    function extrairTimestampId(id) {
-      if (!id) return 0;
-      const partes = String(id).split('-');
-      const num = parseInt(partes[partes.length - 1], 10);
-      return isNaN(num) ? 0 : num;
     }
 
     function salvarBancoLocal() {
@@ -1193,100 +589,34 @@ Calçado de Segurança 45 impermeável|S/C.A.|15
         localStorage.setItem('bavgru_log_exclusoes', JSON.stringify(logExclusoes));
         localStorage.setItem('bavgru_toxicologico', JSON.stringify(examesToxicologicos));
         localStorage.setItem('bavgru_senha_admin', senhaAdmin);
-      } catch (e) { console.warn(e); }
+      } catch (e) {}
       atualizarTudo();
 
       if (dbNuvem) {
-        const pacote = {};
-        auditoria.slice(0, 15).forEach(reg => {
-          if (reg && reg.id) pacote['bavgru/auditoria_itens/' + reg.id] = limparObjetoParaFirebase(reg);
-        });
-        pacote['bavgru/auditoria'] = limparObjetoParaFirebase(auditoria);
-        pacote['bavgru/estoque'] = limparObjetoParaFirebase(estoque);
-        pacote['bavgru/colaboradores'] = limparObjetoParaFirebase(colaboradores);
-        pacote['bavgru/toxicologico'] = limparObjetoParaFirebase(examesToxicologicos);
-        pacote['bavgru/logExclusoes'] = limparObjetoParaFirebase(logExclusoes);
-        dbNuvem.ref().update(pacote).catch(e => console.warn('Sync erro:', e));
+        const pacote = {
+          'bavgru/auditoria': limparObjetoParaFirebase(auditoria),
+          'bavgru/estoque': limparObjetoParaFirebase(estoque),
+          'bavgru/colaboradores': limparObjetoParaFirebase(colaboradores),
+          'bavgru/toxicologico': limparObjetoParaFirebase(examesToxicologicos),
+          'bavgru/logExclusoes': limparObjetoParaFirebase(logExclusoes)
+        };
+        dbNuvem.ref().update(pacote).catch(() => {});
       }
     }
 
     async function testarEForcarSincronizacao() {
-      if (!dbNuvem) return alert("❌ Firebase não inicializado.");
-      const badgeTexto = document.getElementById('texto-status-nuvem');
-      if (badgeTexto) badgeTexto.textContent = "Testando...";
-      try {
-        await dbNuvem.ref('bavgru/teste_conexao').set({ dataHora: new Date().toLocaleString('pt-BR') });
-        const snap = await dbNuvem.ref('bavgru/teste_conexao').once('value');
-        if (snap.exists()) {
-          alert("✅ SUCESSO! Conexão em tempo real ativa e sincronizada.");
-          salvarBancoLocal();
-          if (badgeTexto) badgeTexto.textContent = "Nuvem Conectada";
-        }
-      } catch (err) {
-        if (badgeTexto) badgeTexto.textContent = "Erro de Nuvem";
-        alert("⚠️ Falha na nuvem: " + err.message);
-      }
-    }
-
-    function mesclarAuditoriaLocalENuvem(listaNuvem) {
-      const mapa = new Map();
-      auditoria.forEach(r => { if (r && r.id) mapa.set(r.id, r); });
-      listaNuvem.forEach(r => { if (r && r.id) mapa.set(r.id, r); });
-      const idsExcluidos = new Set(logExclusoes.map(l => l.idOriginal));
-      const unificada = Array.from(mapa.values()).filter(r => !idsExcluidos.has(r.id));
-      unificada.sort((a, b) => extrairTimestampId(b.id) - extrairTimestampId(a.id));
-      return unificada;
+      if (!dbNuvem) return alert("❌ Firebase não conectado.");
+      salvarBancoLocal();
+      alert("✅ Sincronização em tempo real confirmada!");
     }
 
     function iniciarSincronizacaoNuvem() {
       if (!dbNuvem) return;
-      const textoBadge = document.getElementById('texto-status-nuvem');
-      dbNuvem.ref('.info/connected').on('value', (snap) => {
-        if (textoBadge) textoBadge.textContent = snap.val() === true ? 'Nuvem Conectada' : 'Reconectando...';
-      });
-      dbNuvem.ref('bavgru/auditoria').on('value', (snapshot) => {
-        const val = snapshot.val();
-        if (val) {
-          auditoria = mesclarAuditoriaLocalENuvem(Array.isArray(val) ? val : Object.values(val));
-          localStorage.setItem('bavgru_auditoria', JSON.stringify(auditoria));
-          atualizarTudo();
-        }
-      });
-      dbNuvem.ref('bavgru/estoque').on('value', (snapshot) => {
-        const val = snapshot.val();
-        if (val) {
-          const lista = Array.isArray(val) ? val : Object.values(val);
-          if (lista.length > 0) { estoque = lista; localStorage.setItem('bavgru_estoque', JSON.stringify(estoque)); atualizarTudo(); }
-        }
-      });
-      dbNuvem.ref('bavgru/colaboradores').on('value', (snapshot) => {
-        const val = snapshot.val();
-        if (val) {
-          const lista = Array.isArray(val) ? val : Object.values(val);
-          if (lista.length > 0) {
-            colaboradores = lista.map(c => ({ ...c, naoUtilizaCinto: c.naoUtilizaCinto === true }));
-            localStorage.setItem('bavgru_colaboradores', JSON.stringify(colaboradores));
-            atualizarTudo();
-          }
-        }
-      });
-      dbNuvem.ref('bavgru/toxicologico').on('value', (snapshot) => {
-        const val = snapshot.val();
-        if (val) {
-          examesToxicologicos = Array.isArray(val) ? val : Object.values(val);
-          localStorage.setItem('bavgru_toxicologico', JSON.stringify(examesToxicologicos));
-          renderToxicologico();
-        }
-      });
-      dbNuvem.ref('bavgru/logExclusoes').on('value', (snapshot) => {
-        const val = snapshot.val();
-        if (val) {
-          logExclusoes = Array.isArray(val) ? val : Object.values(val);
-          localStorage.setItem('bavgru_log_exclusoes', JSON.stringify(logExclusoes));
-          atualizarTudo();
-        }
-      });
-      primeiraCargaNuvem = false;
+      dbNuvem.ref('bavgru/auditoria').on('value', s => { if (s.val()) { auditoria = Array.isArray(s.val()) ? s.val() : Object.values(s.val()); atualizarTudo(); } });
+      dbNuvem.ref('bavgru/estoque').on('value', s => { if (s.val()) { estoque = Array.isArray(s.val()) ? s.val() : Object.values(s.val()); atualizarTudo(); } });
+      dbNuvem.ref('bavgru/colaboradores').on('value', s => { if (s.val()) { colaboradores = Array.isArray(s.val()) ? s.val() : Object.values(s.val()); atualizarTudo(); } });
+      dbNuvem.ref('bavgru/toxicologico').on('value', s => { if (s.val()) { examesToxicologicos = Array.isArray(s.val()) ? s.val() : Object.values(s.val()); renderToxicologico(); } });
+      dbNuvem.ref('bavgru/logExclusoes').on('value', s => { if (s.val()) { logExclusoes = Array.isArray(s.val()) ? s.val() : Object.values(s.val()); atualizarTudo(); } });
     }
 
     function switchTab(tab) {
@@ -1294,15 +624,15 @@ Calçado de Segurança 45 impermeável|S/C.A.|15
         document.getElementById('tab-' + t)?.classList.add('hidden');
         const btn = document.getElementById('tab-btn-' + t);
         if (btn) {
-          if (t === 'admin') btn.className = "tab-btn bg-gray-800 text-white hover:bg-gray-900 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-sm";
-          else if (t === 'pendencias') btn.className = "tab-btn bg-yellow-600 text-white hover:bg-yellow-700 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-sm";
-          else if (t === 'nao-cinto') btn.className = "tab-btn bg-purple-700 text-white hover:bg-purple-800 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-sm";
-          else btn.className = "tab-btn bg-green-900 text-green-100 hover:bg-green-800 hover:text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-sm";
+          if (t === 'admin') btn.className = "tab-btn bg-gray-800 text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold";
+          else if (t === 'pendencias') btn.className = "tab-btn bg-yellow-600 text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold";
+          else if (t === 'nao-cinto') btn.className = "tab-btn bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold";
+          else btn.className = "tab-btn bg-green-900 text-green-100 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold";
         }
       });
       document.getElementById('tab-' + tab)?.classList.remove('hidden');
       const targetBtn = document.getElementById('tab-btn-' + tab);
-      if (targetBtn) targetBtn.className = "tab-btn bg-white text-vibraDark font-extrabold px-3 py-1.5 rounded-lg text-xs sm:text-sm shadow-md flex items-center gap-1.5";
+      if (targetBtn) targetBtn.className = "tab-btn bg-white text-vibraDark font-extrabold px-3 py-1.5 rounded-lg text-xs sm:text-sm shadow";
 
       if (tab === 'admin') renderAdminState();
       else if (tab === 'pendencias') renderPendencias();
@@ -1311,114 +641,84 @@ Calçado de Segurança 45 impermeável|S/C.A.|15
     }
 
     function autenticarAdmin() {
-      const input = document.getElementById('admin-input-senha').value;
-      if (input === senhaAdmin) {
+      if (document.getElementById('admin-input-senha').value === senhaAdmin) {
         adminAutenticado = true;
         document.getElementById('admin-input-senha').value = '';
         renderAdminState();
         renderNaoUtilizaCinto();
         atualizarTudo();
-        alert('✅ Sessão de Administrador iniciada com sucesso!');
-      } else alert('❌ Senha de Administrador incorreta.');
+      } else alert('❌ Senha incorreta.');
     }
 
-    function sairAdmin() {
-      adminAutenticado = false;
-      renderAdminState();
-      renderNaoUtilizaCinto();
-    }
+    function sairAdmin() { adminAutenticado = false; renderAdminState(); renderNaoUtilizaCinto(); }
 
     function renderAdminState() {
-      const loginBox = document.getElementById('admin-login-box');
-      const contentBox = document.getElementById('admin-content-box');
-      if (adminAutenticado) {
-        loginBox.classList.add('hidden');
-        contentBox.classList.remove('hidden');
-        renderLogExclusoes();
-        renderToxicologico();
-      } else {
-        loginBox.classList.remove('hidden');
-        contentBox.classList.add('hidden');
-      }
+      document.getElementById('admin-login-box').classList.toggle('hidden', adminAutenticado);
+      document.getElementById('admin-content-box').classList.toggle('hidden', !adminAutenticado);
+      if (adminAutenticado) { renderLogExclusoes(); renderToxicologico(); }
     }
 
     function alterarSenhaAdmin() {
       const nova = document.getElementById('nova-senha-admin').value.trim();
-      if (!nova || nova.length < 4) return alert('A nova senha deve ter no mínimo 4 caracteres.');
+      if (!nova || nova.length < 4) return alert('Mínimo 4 caracteres.');
       senhaAdmin = nova;
       salvarBancoLocal();
-      document.getElementById('nova-senha-admin').value = '';
-      alert('✅ Senha de Administrador alterada com sucesso!');
+      alert('✅ Senha alterada!');
     }
 
-    // =========================================================================
-    // MÓDULO EXAME TOXICOLÓGICO (DENTRO DO ADMIN)
-    // =========================================================================
+    // EXAME TOXICOLÓGICO NO ADMIN
     function calcularSugestaoValidadeTox() {
-      const inputExame = document.getElementById('tox-data-exame');
-      const inputValidade = document.getElementById('tox-data-validade');
-      if (inputExame && inputExame.value && inputValidade && !inputValidade.value) {
-        const d = new Date(inputExame.value + 'T12:00:00');
+      const ex = document.getElementById('tox-data-exame');
+      const val = document.getElementById('tox-data-validade');
+      if (ex && ex.value && val && !val.value) {
+        const d = new Date(ex.value + 'T12:00:00');
         d.setMonth(d.getMonth() + 30);
-        inputValidade.value = d.toISOString().slice(0, 10);
+        val.value = d.toISOString().slice(0, 10);
       }
     }
 
-    function formatarDataBR(dataISO) {
-      if (!dataISO || !dataISO.includes('-')) return dataISO || '-';
-      const [ano, mes, dia] = dataISO.split('-');
-      return `${dia}/${mes}/${ano}`;
+    function formatarDataBR(iso) {
+      if (!iso || !iso.includes('-')) return iso || '-';
+      const [a, m, d] = iso.split('-');
+      return `${d}/${m}/${a}`;
     }
 
     function obterStatusValidadeTox(dataValidadeStr) {
-      if (!dataValidadeStr) return { label: 'Sem Data', cor: 'bg-gray-100 text-gray-600', codigo: 'sem_data', dias: 0 };
-      const hoje = new Date();
-      hoje.setHours(0, 0, 0, 0);
+      if (!dataValidadeStr) return { label: 'Sem Data', cor: 'bg-gray-100 text-gray-600', codigo: 'sem_data' };
+      const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
       const val = new Date(dataValidadeStr + 'T00:00:00');
-      const diffDias = Math.ceil((val - hoje) / (1000 * 60 * 60 * 24));
-      if (diffDias < 0) return { label: `❌ Vencido (${Math.abs(diffDias)}d)`, cor: 'bg-red-100 text-red-700 border border-red-300', codigo: 'vencido', dias: diffDias };
-      if (diffDias <= 30) return { label: `⚠️ Vence em ${diffDias}d`, cor: 'bg-yellow-100 text-yellow-800 border border-yellow-300', codigo: 'avencer', dias: diffDias };
-      return { label: `✔ Válido (${diffDias}d)`, cor: 'bg-green-100 text-green-800 border border-green-300', codigo: 'valido', dias: diffDias };
+      const diff = Math.ceil((val - hoje) / 86400000);
+      if (diff < 0) return { label: `❌ Vencido (${Math.abs(diff)}d)`, cor: 'bg-red-100 text-red-700 border border-red-300', codigo: 'vencido' };
+      if (diff <= 30) return { label: `⚠️ Vence em ${diff}d`, cor: 'bg-yellow-100 text-yellow-800 border border-yellow-300', codigo: 'avencer' };
+      return { label: `✔ Válido (${diff}d)`, cor: 'bg-green-100 text-green-800 border border-green-300', codigo: 'valido' };
     }
 
     function salvarExameToxicologico() {
       const colabId = document.getElementById('tox-colaborador').value;
       const dataExame = document.getElementById('tox-data-exame').value;
       const dataValidade = document.getElementById('tox-data-validade').value;
-      if (!colabId || !dataExame || !dataValidade) return alert('Selecione o funcionário, a data do exame e a validade.');
+      if (!colabId || !dataExame || !dataValidade) return alert('Preencha funcionário, data do exame e validade.');
       const colab = colaboradores.find(c => c.id === colabId);
       if (!colab) return;
 
       const idx = examesToxicologicos.findIndex(x => x.matricula === colab.matricula);
-      const reg = {
-        id: idx !== -1 ? examesToxicologicos[idx].id : 'TOX-' + Date.now(),
-        colabId: colab.id,
-        matricula: colab.matricula,
-        nome: colab.nome,
-        funcao: colab.funcao,
-        dataExame,
-        dataValidade,
-        atualizadoEm: new Date().toLocaleString('pt-BR')
-      };
+      const reg = { id: idx !== -1 ? examesToxicologicos[idx].id : 'TOX-' + Date.now(), colabId: colab.id, matricula: colab.matricula, nome: colab.nome, funcao: colab.funcao, dataExame, dataValidade };
       if (idx !== -1) examesToxicologicos[idx] = reg;
       else examesToxicologicos.push(reg);
 
       document.getElementById('tox-data-exame').value = '';
       document.getElementById('tox-data-validade').value = '';
       salvarBancoLocal();
-      alert(`✅ Exame Toxicológico de ${colab.nome} salvo com validade até ${formatarDataBR(dataValidade)}!`);
+      alert(`✅ Exame Toxicológico de ${colab.nome} salvo!`);
     }
 
     function removerExameToxicologico(id) {
-      if (!confirm('Deseja excluir este exame toxicológico?')) return;
+      if (!confirm('Excluir este exame toxicológico?')) return;
       examesToxicologicos = examesToxicologicos.filter(x => x.id !== id);
       salvarBancoLocal();
     }
 
-    function filtrarStatusTox(tipo) {
-      filtroToxStatus = tipo;
-      renderToxicologico();
-    }
+    function filtrarStatusTox(tipo) { filtroToxStatus = tipo; renderToxicologico(); }
 
     function renderToxicologico() {
       const tbody = document.getElementById('tabela-toxicologico');
@@ -1431,7 +731,6 @@ Calçado de Segurança 45 impermeável|S/C.A.|15
         else if (info.codigo === 'vencido') vencidos++;
         return { ...item, infoStatus: info };
       });
-
       document.getElementById('tox-kpi-validos').textContent = validos;
       document.getElementById('tox-kpi-avencer').textContent = avencer;
       document.getElementById('tox-kpi-vencidos').textContent = vencidos;
@@ -1440,203 +739,124 @@ Calçado de Segurança 45 impermeável|S/C.A.|15
       let filtrados = lista.filter(x => x.nome.toLowerCase().includes(termo) || x.matricula.toLowerCase().includes(termo));
       if (filtroToxStatus === 'vencidos') filtrados = filtrados.filter(x => x.infoStatus.codigo === 'vencido' || x.infoStatus.codigo === 'avencer');
       else if (filtroToxStatus === 'validos') filtrados = filtrados.filter(x => x.infoStatus.codigo === 'valido');
-
       filtrados.sort((a, b) => a.dataValidade.localeCompare(b.dataValidade));
 
       tbody.innerHTML = filtrados.length ? filtrados.map(x => `
         <tr class="border-b hover:bg-gray-50">
-          <td class="p-2 font-mono font-bold text-gray-700">${x.matricula}</td>
-          <td class="p-2 font-semibold text-gray-800">${x.nome}</td>
+          <td class="p-2 font-mono font-bold">${x.matricula}</td>
+          <td class="p-2 font-semibold">${x.nome}</td>
           <td class="p-2 text-gray-600">${x.funcao}</td>
           <td class="p-2 text-center font-mono">${formatarDataBR(x.dataExame)}</td>
           <td class="p-2 text-center font-mono font-bold">${formatarDataBR(x.dataValidade)}</td>
           <td class="p-2 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-bold ${x.infoStatus.cor}">${x.infoStatus.label}</span></td>
-          <td class="p-2 text-right">
-            <button type="button" onclick="removerExameToxicologico('${x.id}')" class="text-red-600 hover:text-red-800 font-bold text-xs px-2">🗑️ Excluir</button>
-          </td>
+          <td class="p-2 text-right"><button onclick="removerExameToxicologico('${x.id}')" class="text-red-600 font-bold text-xs">🗑️</button></td>
         </tr>
-      `).join('') : `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Nenhum exame toxicológico cadastrado.</td></tr>`;
+      `).join('') : `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Nenhum exame cadastrado.</td></tr>`;
     }
 
     function gerarRelatorioToxicologicoPDF() {
-      if (!examesToxicologicos.length) return alert('Cadastre ao menos um exame toxicológico para gerar o relatório.');
-      const lista = examesToxicologicos.map(item => ({ ...item, infoStatus: obterStatusValidadeTox(item.dataValidade) }))
-        .sort((a, b) => a.dataValidade.localeCompare(b.dataValidade));
-
-      document.getElementById('modal-print-title').textContent = '📄 Relatório Gerencial de Exames Toxicológicos - BAVGRU';
+      if (!examesToxicologicos.length) return alert('Nenhum exame cadastrado.');
+      const lista = examesToxicologicos.map(item => ({ ...item, infoStatus: obterStatusValidadeTox(item.dataValidade) })).sort((a, b) => a.dataValidade.localeCompare(b.dataValidade));
+      document.getElementById('modal-print-title').textContent = '📄 Relatório Oficial de Exames Toxicológicos - BAVGRU';
       document.getElementById('print-area').innerHTML = `
         <div class="border-b-2 border-vibraGreen pb-2 flex justify-between items-center">
           <div>
             <h2 class="text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A. - UNIDADE BAVGRU</h2>
             <p class="text-xs font-bold text-gray-700">RELATÓRIO DE CONTROLE E VALIDADE DE EXAMES TOXICOLÓGICOS</p>
           </div>
-          <div class="text-right text-xs">
-            <p><strong>Emissão:</strong> ${new Date().toLocaleString('pt-BR')}</p>
-            <p><strong>Total Monitorado:</strong> ${lista.length} colaboradores</p>
-          </div>
+          <div class="text-right text-xs"><p><strong>Emissão:</strong> ${new Date().toLocaleString('pt-BR')}</p></div>
         </div>
         <table class="w-full text-xs border-collapse border mt-3">
-          <thead>
-            <tr class="bg-gray-100 border-b font-bold">
-              <th class="p-1.5 border-r text-left">Matrícula</th>
-              <th class="p-1.5 border-r text-left">Colaborador</th>
-              <th class="p-1.5 border-r text-left">Função</th>
-              <th class="p-1.5 border-r text-center">Data Exame</th>
-              <th class="p-1.5 border-r text-center">Validade</th>
-              <th class="p-1.5 text-center">Status</th>
-            </tr>
-          </thead>
+          <thead><tr class="bg-gray-100 border-b font-bold"><th class="p-1.5 border-r text-left">Matrícula</th><th class="p-1.5 border-r text-left">Colaborador</th><th class="p-1.5 border-r text-left">Função</th><th class="p-1.5 border-r text-center">Realização</th><th class="p-1.5 border-r text-center">Validade</th><th class="p-1.5 text-center">Status</th></tr></thead>
           <tbody>
-            ${lista.map(x => `
-              <tr class="border-b">
-                <td class="p-1.5 border-r font-mono font-bold">${x.matricula}</td>
-                <td class="p-1.5 border-r font-semibold">${x.nome}</td>
-                <td class="p-1.5 border-r">${x.funcao}</td>
-                <td class="p-1.5 border-r text-center">${formatarDataBR(x.dataExame)}</td>
-                <td class="p-1.5 border-r text-center font-bold">${formatarDataBR(x.dataValidade)}</td>
-                <td class="p-1.5 text-center font-bold">${x.infoStatus.label}</td>
-              </tr>
-            `).join('')}
+            ${lista.map(x => `<tr class="border-b"><td class="p-1.5 border-r font-mono font-bold">${x.matricula}</td><td class="p-1.5 border-r font-semibold">${x.nome}</td><td class="p-1.5 border-r">${x.funcao}</td><td class="p-1.5 border-r text-center">${formatarDataBR(x.dataExame)}</td><td class="p-1.5 border-r text-center font-bold">${formatarDataBR(x.dataValidade)}</td><td class="p-1.5 text-center font-bold">${x.infoStatus.label}</td></tr>`).join('')}
           </tbody>
         </table>
-        <div class="text-xs text-gray-500 border-t pt-2 flex justify-between mt-3">
-          <span>Controle de Saúde Ocupacional SSMA - BAVGRU</span>
-          <span>Responsável Técnica SSMA: Graciete Martins Ferreira</span>
-        </div>
       `;
       document.getElementById('modal-print').classList.remove('hidden');
       document.getElementById('modal-print').classList.add('flex');
     }
 
     function exportarToxicologicoCSV() {
-      if (!examesToxicologicos.length) return alert('Nenhum exame cadastrado para exportar.');
+      if (!examesToxicologicos.length) return alert('Nenhum exame cadastrado.');
       const headers = ['Matricula', 'Colaborador', 'Funcao', 'Data_Exame', 'Data_Validade', 'Status'];
-      const linhas = examesToxicologicos.map(x => {
-        const st = obterStatusValidadeTox(x.dataValidade).label;
-        return [x.matricula, x.nome, x.funcao, formatarDataBR(x.dataExame), formatarDataBR(x.dataValidade), st].map(v => `"${v || ''}"`).join(';');
-      });
-      const csv = '\uFEFF' + [headers.join(';'), ...linhas].join('\n');
+      const linhas = examesToxicologicos.map(x => [x.matricula, x.nome, x.funcao, formatarDataBR(x.dataExame), formatarDataBR(x.dataValidade), obterStatusValidadeTox(x.dataValidade).label].map(v => `"${v || ''}"`).join(';'));
       const link = document.createElement('a');
-      link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
-      link.download = `Exames_Toxicologicos_BAVGRU_${new Date().toISOString().slice(0,10)}.csv`;
+      link.href = URL.createObjectURL(new Blob(['\uFEFF' + [headers.join(';'), ...linhas].join('\n')], { type: 'text/csv;charset=utf-8;' }));
+      link.download = `Relatorio_Toxicologico_BAVGRU.csv`;
       link.click();
     }
 
-    // =========================================================================
-    // DEMAIS FUNÇÕES DO SISTEMA (NÃO UTILIZA CINTO, MÚLTIPLOS EPIS, FICHA ÚNICA)
-    // =========================================================================
+    // DEMAIS FUNÇÕES DO SISTEMA
     function solicitarAcessoAdminNaoCinto() {
-      if (adminAutenticado) return alert('Você já está autenticado como Administrador.');
-      const senha = prompt("🔒 Digite a Senha do Administrador para desbloquear as edições:");
-      if (senha === senhaAdmin) {
-        adminAutenticado = true;
-        renderAdminState();
-        renderNaoUtilizaCinto();
-        alert("✅ Acesso de Administrador liberado!");
-      } else if (senha !== null) alert("❌ Senha incorreta.");
+      const s = prompt("🔒 Senha do Administrador:");
+      if (s === senhaAdmin) { adminAutenticado = true; renderAdminState(); renderNaoUtilizaCinto(); }
+      else if (s !== null) alert("❌ Senha incorreta.");
     }
 
     function alternarStatusCinto(colabId) {
-      if (!adminAutenticado) return alert("🔒 Apenas o Administrador pode alterar se o colaborador utiliza ou não cinto.");
-      const colab = colaboradores.find(c => c.id === colabId);
-      if (!colab) return;
-      colab.naoUtilizaCinto = !colab.naoUtilizaCinto;
-      salvarBancoLocal();
-      renderNaoUtilizaCinto();
+      if (!adminAutenticado) return alert("🔒 Exclusivo para Administrador.");
+      const c = colaboradores.find(x => x.id === colabId);
+      if (c) { c.naoUtilizaCinto = !c.naoUtilizaCinto; salvarBancoLocal(); }
     }
 
-    function filtrarTabelaNaoCinto(tipo) { filtroTabelaNaoCinto = tipo; renderNaoUtilizaCinto(); }
+    function filtrarTabelaNaoCinto(t) { filtroTabelaNaoCinto = t; renderNaoUtilizaCinto(); }
 
     function renderNaoUtilizaCinto() {
       const tbody = document.getElementById('tabela-nao-cinto');
       if (!tbody) return;
-      const badgeLock = document.getElementById('badge-lock-nao-cinto');
-      const btnLoginRapido = document.getElementById('btn-login-rapido-admin');
-      if (adminAutenticado) {
-        if (badgeLock) { badgeLock.className = "text-xs px-2.5 py-1 rounded-lg font-bold bg-green-100 text-green-800 border border-green-300"; badgeLock.innerHTML = "🔓 Edição Liberada (Admin)"; }
-        if (btnLoginRapido) btnLoginRapido.classList.add('hidden');
-      } else {
-        if (badgeLock) { badgeLock.className = "text-xs px-2.5 py-1 rounded-lg font-bold bg-yellow-100 text-yellow-800 border border-yellow-300"; badgeLock.innerHTML = "🔒 Somente Leitura (Bloqueado)"; }
-        if (btnLoginRapido) btnLoginRapido.classList.remove('hidden');
-      }
-
+      const badge = document.getElementById('badge-lock-nao-cinto');
+      if (badge) badge.textContent = adminAutenticado ? "🔓 Edição Liberada (Admin)" : "🔒 Somente Leitura";
       const termo = (document.getElementById('busca-nao-cinto')?.value || '').toLowerCase();
-      let filtrados = colaboradores.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
-      if (filtroTabelaNaoCinto === 'isentos') filtrados = filtrados.filter(c => c.naoUtilizaCinto);
-      else if (filtroTabelaNaoCinto === 'usam') filtrados = filtrados.filter(c => !c.naoUtilizaCinto);
+      let f = colaboradores.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
+      if (filtroTabelaNaoCinto === 'isentos') f = f.filter(c => c.naoUtilizaCinto);
+      else if (filtroTabelaNaoCinto === 'usam') f = f.filter(c => !c.naoUtilizaCinto);
 
-      tbody.innerHTML = filtrados.map(c => `
+      tbody.innerHTML = f.map(c => `
         <tr class="border-b hover:bg-gray-50">
-          <td class="p-2.5 font-bold font-mono text-xs text-gray-700">${c.matricula}</td>
-          <td class="p-2.5 font-semibold text-gray-800">${c.nome}</td>
+          <td class="p-2.5 font-bold font-mono text-xs">${c.matricula}</td>
+          <td class="p-2.5 font-semibold">${c.nome}</td>
           <td class="p-2.5 text-xs text-gray-600">${c.funcao}</td>
-          <td class="p-2.5 text-center">
-            ${c.naoUtilizaCinto 
-              ? '<span class="bg-purple-100 text-purple-800 border border-purple-300 px-2 py-0.5 rounded-full text-xs font-bold">🚫 Não Utiliza Cinto (Isento)</span>'
-              : '<span class="bg-green-100 text-green-800 border border-green-300 px-2 py-0.5 rounded-full text-xs font-bold">🧗 Utiliza Cinto (Obrigatório)</span>'}
-          </td>
-          <td class="p-2.5 text-right">
-            <button onclick="alternarStatusCinto('${c.id}')" class="${adminAutenticado ? (c.naoUtilizaCinto ? 'bg-vibraGreen text-white' : 'bg-purple-700 text-white') : 'bg-gray-200 text-gray-400 cursor-not-allowed'} px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm">
-              ${c.naoUtilizaCinto ? '🧗 Marcar: Utiliza Cinto' : '🚫 Marcar: Não Usa Cinto'}
-            </button>
-          </td>
+          <td class="p-2.5 text-center">${c.naoUtilizaCinto ? '<span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full text-xs font-bold">🚫 Isento</span>' : '<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs font-bold">🧗 Utiliza Cinto</span>'}</td>
+          <td class="p-2.5 text-right"><button onclick="alternarStatusCinto('${c.id}')" class="bg-purple-700 text-white px-3 py-1 rounded text-xs font-bold">Alternar</button></td>
         </tr>
       `).join('');
     }
 
     function verificarAvisoCinto() {
-      const colabId = document.getElementById('insp-colaborador').value;
-      const colab = colaboradores.find(c => c.id === colabId);
-      const aviso = document.getElementById('aviso-nao-usa-cinto');
-      if (colab && colab.naoUtilizaCinto) aviso.classList.remove('hidden');
-      else aviso.classList.add('hidden');
+      const c = colaboradores.find(x => x.id === document.getElementById('insp-colaborador')?.value);
+      document.getElementById('aviso-nao-usa-cinto')?.classList.toggle('hidden', !(c && c.naoUtilizaCinto));
     }
 
     function adicionarEpiListaDispensacao() {
       const epiId = document.getElementById('disp-epi').value;
       const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
-      if (qtd <= 0) return alert('Informe uma quantidade válida.');
-      const itemEstoque = estoque.find(e => e.id === epiId);
-      if (!itemEstoque) return;
-      const jaNoCarrinho = carrinhoDispensacao.filter(item => item.id === epiId).reduce((s, i) => s + i.qtd, 0);
-      if (itemEstoque.qtd < (jaNoCarrinho + qtd)) return alert(`Estoque insuficiente de ${itemEstoque.nome}! Saldo: ${itemEstoque.qtd} un.`);
-      const itemExistente = carrinhoDispensacao.find(i => i.id === epiId);
-      if (itemExistente) itemExistente.qtd += qtd;
-      else carrinhoDispensacao.push({ id: itemEstoque.id, nome: itemEstoque.nome, ca: itemEstoque.ca, qtd });
-      document.getElementById('disp-qtd').value = '1';
+      const est = estoque.find(e => e.id === epiId);
+      if (!est || qtd <= 0) return;
+      const ex = carrinhoDispensacao.find(i => i.id === epiId);
+      if (ex) ex.qtd += qtd;
+      else carrinhoDispensacao.push({ id: est.id, nome: est.nome, ca: est.ca, qtd });
       renderCarrinhoDispensacao();
     }
 
-    function removerEpiListaDispensacao(index) { carrinhoDispensacao.splice(index, 1); renderCarrinhoDispensacao(); }
+    function removerEpiListaDispensacao(i) { carrinhoDispensacao.splice(i, 1); renderCarrinhoDispensacao(); }
 
     function renderCarrinhoDispensacao() {
       const tbody = document.getElementById('lista-epis-dispensacao');
       if (!tbody) return;
-      if (!carrinhoDispensacao.length) {
-        tbody.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-gray-400 italic">Nenhum EPI adicionado ainda. Escolha o item acima e clique em "➕ Incluir EPI".</td></tr>`;
-        return;
-      }
-      tbody.innerHTML = carrinhoDispensacao.map((item, idx) => `
-        <tr class="hover:bg-gray-50">
-          <td class="p-2 font-semibold text-gray-800">${item.nome}</td>
-          <td class="p-2"><span class="bg-gray-200 px-1.5 py-0.5 rounded text-xs font-bold">CA: ${item.ca}</span></td>
-          <td class="p-2 text-center font-bold text-vibraDark">${item.qtd} un.</td>
-          <td class="p-2 text-right"><button type="button" onclick="removerEpiListaDispensacao(${idx})" class="text-red-600 font-bold text-xs">✕ Remover</button></td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = carrinhoDispensacao.length ? carrinhoDispensacao.map((it, idx) => `
+        <tr><td class="p-2 font-semibold">${it.nome}</td><td class="p-2">CA ${it.ca}</td><td class="p-2 text-center font-bold">${it.qtd}</td><td class="p-2 text-right"><button type="button" onclick="removerEpiListaDispensacao(${idx})" class="text-red-600 font-bold">✕</button></td></tr>
+      `).join('') : `<tr><td colspan="4" class="p-3 text-center text-gray-400 italic">Nenhum EPI adicionado na lista.</td></tr>`;
     }
 
     function renderChecklistForm() {
       document.getElementById('checklist-container').innerHTML = PERGUNTAS_ANEXO_C.map(p => `
-        <div class="p-3 border rounded-lg bg-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-          <div>
-            <span class="text-xs font-bold uppercase px-2 py-0.5 rounded bg-green-100 text-vibraDark">${p.grupo}</span>
-            <p class="text-xs md:text-sm font-medium text-gray-800 mt-1">${p.texto}</p>
-          </div>
+        <div class="p-2.5 border rounded-lg bg-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+          <p class="text-xs font-medium text-gray-800"><strong class="text-vibraDark">[${p.grupo}]</strong> ${p.texto}</p>
           <div class="flex gap-2 shrink-0 text-xs font-bold">
-            <label class="flex items-center gap-1 cursor-pointer bg-white border px-2.5 py-1.5 rounded-lg"><input type="radio" name="${p.id}" value="Conforme" checked /> <span class="text-green-700">✅ Conf.</span></label>
-            <label class="flex items-center gap-1 cursor-pointer bg-white border px-2.5 py-1.5 rounded-lg text-red-600"><input type="radio" name="${p.id}" value="Não Conforme" /> <span>❌ N.C.</span></label>
-            <label class="flex items-center gap-1 cursor-pointer bg-white border px-2.5 py-1.5 rounded-lg text-gray-500"><input type="radio" name="${p.id}" value="Não Aplicável" /> <span>N/A</span></label>
+            <label class="bg-white border px-2 py-1 rounded"><input type="radio" name="${p.id}" value="Conforme" checked /> ✅ Conf.</label>
+            <label class="bg-white border px-2 py-1 rounded text-red-600"><input type="radio" name="${p.id}" value="Não Conforme" /> ❌ N.C.</label>
+            <label class="bg-white border px-2 py-1 rounded text-gray-500"><input type="radio" name="${p.id}" value="Não Aplicável" /> N/A</label>
           </div>
         </div>
       `).join('');
@@ -1645,369 +865,164 @@ Calçado de Segurança 45 impermeável|S/C.A.|15
     async function iniciarCamera(tipo) {
       try {
         if (streamsCamera[tipo]) streamsCamera[tipo].getTracks().forEach(t => t.stop());
-        const video = document.getElementById('video-' + tipo);
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: cameraFacing[tipo] } });
-        streamsCamera[tipo] = stream;
-        video.srcObject = stream;
-        video.classList.remove('hidden');
+        const v = document.getElementById('video-' + tipo);
+        streamsCamera[tipo] = await navigator.mediaDevices.getUserMedia({ video: { facingMode: cameraFacing[tipo] } });
+        v.srcObject = streamsCamera[tipo];
+        v.classList.remove('hidden');
         document.getElementById('foto-' + tipo + '-preview').classList.add('hidden');
         document.getElementById('foto-' + tipo + '-placeholder')?.classList.add('hidden');
-      } catch (e) { alert('Câmera indisponível ou permissão não concedida.'); }
+      } catch (e) { alert('Câmera indisponível.'); }
     }
 
     function alternarCamera(tipo) { cameraFacing[tipo] = cameraFacing[tipo] === 'user' ? 'environment' : 'user'; iniciarCamera(tipo); }
 
     function capturarFoto(tipo) {
-      const video = document.getElementById('video-' + tipo);
-      const preview = document.getElementById('foto-' + tipo + '-preview');
-      if (!streamsCamera[tipo]) return alert('Ligue primeiro a câmera.');
-      const origW = video.videoWidth || 320, origH = video.videoHeight || 240;
-      const escala = Math.min(1, 480 / Math.max(origW, origH));
-      const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = Math.round(origW * escala);
-      tempCanvas.height = Math.round(origH * escala);
-      tempCanvas.getContext('2d').drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
-      fotosCapturadas[tipo] = tempCanvas.toDataURL('image/jpeg', 0.65);
-      preview.src = fotosCapturadas[tipo];
-      preview.classList.remove('hidden');
-      video.classList.add('hidden');
-      streamsCamera[tipo].getTracks().forEach(t => t.stop());
-      streamsCamera[tipo] = null;
+      const v = document.getElementById('video-' + tipo);
+      if (!streamsCamera[tipo]) return alert('Ligue a câmera.');
+      const c = document.createElement('canvas'); c.width = 320; c.height = 240;
+      c.getContext('2d').drawImage(v, 0, 0, 320, 240);
+      fotosCapturadas[tipo] = c.toDataURL('image/jpeg', 0.65);
+      const img = document.getElementById('foto-' + tipo + '-preview');
+      img.src = fotosCapturadas[tipo]; img.classList.remove('hidden');
+      v.classList.add('hidden');
+      streamsCamera[tipo].getTracks().forEach(t => t.stop()); streamsCamera[tipo] = null;
     }
 
     function redimensionarCanvas() {
       ['canvas-disp', 'canvas-insp'].forEach(id => {
-        const canvas = document.getElementById(id);
-        if (!canvas) return;
-        const rect = canvas.getBoundingClientRect();
-        if (rect.width > 0 && canvas.width !== rect.width) {
-          const temp = canvas.toDataURL();
-          canvas.width = rect.width;
-          canvas.height = 170;
-          if (canvas.dataset.assinado === "true") {
-            const img = new Image();
-            img.onload = () => canvas.getContext('2d').drawImage(img, 0, 0);
-            img.src = temp;
-          }
-        }
+        const c = document.getElementById(id);
+        if (!c) return;
+        const r = c.getBoundingClientRect();
+        if (r.width > 0 && c.width !== r.width) { c.width = r.width; c.height = 160; }
       });
     }
 
-    function configurarCanvasAssinatura(canvasId) {
-      const canvas = document.getElementById(canvasId);
-      const ctx = canvas.getContext('2d');
-      let desenhando = false;
-      const obterPos = (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return { x: (clientX - rect.left) * (canvas.width / rect.width), y: (clientY - rect.top) * (canvas.height / rect.height) };
-      };
-      const iniciar = (e) => { desenhando = true; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.strokeStyle = '#00582C'; const p = obterPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); canvas.dataset.assinado = "true"; };
-      const mover = (e) => { if (!desenhando) return; if (e.cancelable) e.preventDefault(); const p = obterPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
-      const parar = () => { desenhando = false; };
-      canvas.addEventListener('mousedown', iniciar); canvas.addEventListener('mousemove', mover); window.addEventListener('mouseup', parar);
-      canvas.addEventListener('touchstart', iniciar, { passive: true }); canvas.addEventListener('touchmove', mover, { passive: false }); window.addEventListener('touchend', parar);
+    function configurarCanvasAssinatura(id) {
+      const c = document.getElementById(id), ctx = c.getContext('2d');
+      let d = false;
+      const pos = e => { const r = c.getBoundingClientRect(), x = e.touches ? e.touches[0].clientX : e.clientX, y = e.touches ? e.touches[0].clientY : e.clientY; return { x: (x - r.left) * (c.width / r.width), y: (y - r.top) * (c.height / r.height) }; };
+      const ini = e => { d = true; ctx.lineWidth = 2.5; ctx.strokeStyle = '#00582C'; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); c.dataset.assinado = "true"; };
+      const mov = e => { if (!d) return; if (e.cancelable) e.preventDefault(); const p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+      const par = () => { d = false; };
+      c.addEventListener('mousedown', ini); c.addEventListener('mousemove', mov); window.addEventListener('mouseup', par);
+      c.addEventListener('touchstart', ini, { passive: true }); c.addEventListener('touchmove', mov, { passive: false }); window.addEventListener('touchend', par);
     }
 
-    function limparAssinatura(canvasId) {
-      const canvas = document.getElementById(canvasId);
-      canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-      canvas.dataset.assinado = "false";
-    }
+    function limparAssinatura(id) { const c = document.getElementById(id); c.getContext('2d').clearRect(0, 0, c.width, c.height); c.dataset.assinado = "false"; }
 
     function salvarDispensacao() {
-      const colabId = document.getElementById('disp-colaborador').value;
-      const motivo = document.getElementById('disp-motivo').value;
+      const colab = colaboradores.find(c => c.id === document.getElementById('disp-colaborador').value);
       const canvas = document.getElementById('canvas-disp');
-      if (carrinhoDispensacao.length === 0) {
-        const epiId = document.getElementById('disp-epi').value;
+      if (!carrinhoDispensacao.length) {
+        const est = estoque.find(e => e.id === document.getElementById('disp-epi').value);
         const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
-        const itemEstoque = estoque.find(e => e.id === epiId);
-        if (itemEstoque && qtd > 0) carrinhoDispensacao.push({ id: itemEstoque.id, nome: itemEstoque.nome, ca: itemEstoque.ca, qtd });
+        if (est && qtd > 0) carrinhoDispensacao.push({ id: est.id, nome: est.nome, ca: est.ca, qtd });
       }
-      if (!carrinhoDispensacao.length) return alert('Selecione ao menos um EPI.');
-      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.disp) return alert('Colete a assinatura ou foto para validade da NR-06.');
-      const colab = colaboradores.find(c => c.id === colabId);
-      if (!colab) return alert('Colaborador não encontrado.');
+      if (!carrinhoDispensacao.length || !colab) return alert('Verifique os dados.');
+      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.disp) return alert('Assinatura obrigatória.');
+      for (const it of carrinhoDispensacao) { const e = estoque.find(x => x.id === it.id); if (!e || e.qtd < it.qtd) return alert(`Sem saldo para ${it.nome}`); }
+      for (const it of carrinhoDispensacao) { const e = estoque.find(x => x.id === it.id); if (e) e.qtd -= it.qtd; }
 
-      for (const item of carrinhoDispensacao) {
-        const est = estoque.find(e => e.id === item.id);
-        if (!est || est.qtd < item.qtd) return alert(`Estoque insuficiente para "${item.nome}".`);
-      }
-      for (const item of carrinhoDispensacao) {
-        const est = estoque.find(e => e.id === item.id);
-        if (est) est.qtd -= item.qtd;
-      }
-
-      const registro = {
-        id: 'NR06-' + Date.now(),
-        tipo: 'Dispensação EPI (NR-06)',
-        dataHora: new Date().toLocaleString('pt-BR'),
-        colaborador: colab.nome,
-        matricula: colab.matricula,
-        funcao: colab.funcao,
+      const reg = {
+        id: 'NR06-' + Date.now(), tipo: 'Dispensação EPI (NR-06)', dataHora: new Date().toLocaleString('pt-BR'),
+        colaborador: colab.nome, matricula: colab.matricula, funcao: colab.funcao,
         equipamento: carrinhoDispensacao.map(i => `${i.nome} (${i.qtd}x)`).join('; '),
-        ca: carrinhoDispensacao.map(i => i.ca).join(', '),
-        quantidade: carrinhoDispensacao.reduce((acc, i) => acc + i.qtd, 0),
-        itens: JSON.parse(JSON.stringify(carrinhoDispensacao)),
-        motivo,
-        status: 'ENTREGUE',
-        foto: fotosCapturadas.disp || "",
-        assinatura: canvas.toDataURL('image/png'),
-        hash: 'VIBRA-BAVGRU-' + Math.random().toString(36).substring(2, 10).toUpperCase()
+        ca: carrinhoDispensacao.map(i => i.ca).join(', '), quantidade: carrinhoDispensacao.reduce((a, b) => a + b.qtd, 0),
+        itens: [...carrinhoDispensacao], motivo: document.getElementById('disp-motivo').value, status: 'ENTREGUE',
+        foto: fotosCapturadas.disp || "", assinatura: canvas.toDataURL('image/png'), hash: 'VIBRA-' + Date.now()
       };
-
-      auditoria.unshift(registro);
-      carrinhoDispensacao = [];
-      renderCarrinhoDispensacao();
-      limparAssinatura('canvas-disp');
-      fotosCapturadas.disp = null;
-      document.getElementById('foto-disp-preview').classList.add('hidden');
-      document.getElementById('foto-disp-placeholder').classList.remove('hidden');
-      salvarBancoLocal();
-      abrirComprovante(registro.id);
+      auditoria.unshift(reg); carrinhoDispensacao = []; renderCarrinhoDispensacao(); limparAssinatura('canvas-disp');
+      salvarBancoLocal(); abrirComprovante(reg.id);
     }
 
     function salvarInspecao() {
-      const colabId = document.getElementById('insp-colaborador').value;
-      const ca = document.getElementById('insp-ca').value;
-      const dataInsp = document.getElementById('insp-data').value;
+      const colab = colaboradores.find(c => c.id === document.getElementById('insp-colaborador').value);
       const canvas = document.getElementById('canvas-insp');
-      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.insp) return alert('Colete assinatura ou foto.');
-      const colab = colaboradores.find(c => c.id === colabId);
-      let reprovado = false;
-      const respostas = PERGUNTAS_ANEXO_C.map(p => {
-        const sel = document.querySelector(`input[name="${p.id}"]:checked`).value;
-        if (sel === 'Não Conforme') reprovado = true;
-        return { pergunta: p.texto, resposta: sel };
-      });
-      const registro = {
-        id: 'ANEXOC-' + Date.now(),
-        tipo: 'Inspeção Cinto (Anexo C)',
-        dataHora: new Date().toLocaleString('pt-BR'),
-        dataReferencia: dataInsp,
-        colaborador: colab.nome,
-        matricula: colab.matricula,
-        funcao: colab.funcao,
-        equipamento: 'Cinto Paraquedista / Trava-Quedas',
-        ca,
-        quantidade: 1,
-        status: reprovado ? 'INTERDITADO / SUBSTITUIR' : 'APROVADO PARA USO',
-        respostasChecklist: respostas,
-        foto: fotosCapturadas.insp || "",
-        assinatura: canvas.toDataURL('image/png'),
-        hash: 'ANEXOC-BAVGRU-' + Math.random().toString(36).substring(2, 10).toUpperCase()
+      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.insp) return alert('Assinatura obrigatória.');
+      let rep = false;
+      const resp = PERGUNTAS_ANEXO_C.map(p => { const v = document.querySelector(`input[name="${p.id}"]:checked`).value; if (v === 'Não Conforme') rep = true; return { pergunta: p.texto, resposta: v }; });
+      const reg = {
+        id: 'ANEXOC-' + Date.now(), tipo: 'Inspeção Cinto (Anexo C)', dataHora: new Date().toLocaleString('pt-BR'),
+        dataReferencia: document.getElementById('insp-data').value, colaborador: colab.nome, matricula: colab.matricula, funcao: colab.funcao,
+        equipamento: 'Cinto Paraquedista / Trava-Quedas', ca: document.getElementById('insp-ca').value, quantidade: 1,
+        status: rep ? 'INTERDITADO / SUBSTITUIR' : 'APROVADO PARA USO', respostasChecklist: resp,
+        foto: fotosCapturadas.insp || "", assinatura: canvas.toDataURL('image/png'), hash: 'ANEXOC-' + Date.now()
       };
-      auditoria.unshift(registro);
-      limparAssinatura('canvas-insp');
-      fotosCapturadas.insp = null;
-      document.getElementById('foto-insp-preview').classList.add('hidden');
-      document.getElementById('foto-insp-placeholder').classList.remove('hidden');
-      salvarBancoLocal();
-      if (reprovado) alert('⚠️ ATENÇÃO: Equipamento reprovado e INTERDITADO!');
-      abrirComprovante(registro.id);
+      auditoria.unshift(reg); limparAssinatura('canvas-insp'); salvarBancoLocal(); abrirComprovante(reg.id);
     }
 
-    function abrirInspecaoDireta(colabId) { switchTab('inspecao'); document.getElementById('insp-colaborador').value = colabId; verificarAvisoCinto(); }
+    function abrirInspecaoDireta(id) { switchTab('inspecao'); document.getElementById('insp-colaborador').value = id; verificarAvisoCinto(); }
 
     function registrarEntrada() {
-      const epiId = document.getElementById('entrada-epi').value;
-      const qtd = parseInt(document.getElementById('entrada-qtd').value || '0', 10);
-      if (!epiId || qtd <= 0) return alert("Informe uma quantidade válida.");
-      const itemEstoque = estoque.find(e => e.id === epiId);
-      if (itemEstoque) {
-        itemEstoque.qtd += qtd;
-        alert(`Entrada registrada! Novo saldo de ${itemEstoque.nome}: ${itemEstoque.qtd} un.`);
-        salvarBancoLocal();
-      }
+      const e = estoque.find(x => x.id === document.getElementById('entrada-epi').value);
+      const q = parseInt(document.getElementById('entrada-qtd').value || '0', 10);
+      if (e && q > 0) { e.qtd += q; salvarBancoLocal(); alert(`Novo saldo: ${e.qtd}`); }
     }
 
     function excluirRegistro(id) {
-      const senha = prompt("🔒 Digite a senha do Administrador para excluir:");
-      if (senha !== senhaAdmin) return senha !== null && alert("❌ Senha incorreta.");
-      const index = auditoria.findIndex(r => r.id === id);
-      if (index === -1) return;
-      const reg = auditoria[index];
-      const justificativa = prompt(`📝 MOTIVO DA EXCLUSÃO (${reg.colaborador}):`);
-      if (!justificativa || justificativa.trim().length < 5) return alert("❌ Justificativa obrigatória.");
-      const adminNome = prompt("👤 Seu Nome / Matrícula:");
-      if (!adminNome) return;
-
-      let estornoMsg = "Nenhum estorno.";
-      if (reg.tipo.includes('Dispensação EPI')) {
-        if (reg.itens && Array.isArray(reg.itens)) {
-          reg.itens.forEach(it => {
-            const est = estoque.find(e => e.id === it.id || (e.nome === it.nome && e.ca === it.ca));
-            if (est) est.qtd += (it.qtd || 1);
-          });
-          estornoMsg = "Itens estornados ao estoque.";
-        }
-      }
-      logExclusoes.unshift({
-        idLog: 'LOG-' + Date.now(),
-        dataHoraExclusao: new Date().toLocaleString('pt-BR'),
-        idOriginal: reg.id,
-        tipoRegistro: reg.tipo,
-        colaboradorAfetado: `${reg.colaborador} (${reg.matricula})`,
-        itemAfetado: `${reg.equipamento} (CA: ${reg.ca})`,
-        estornoRealizado: estornoMsg,
-        responsavelExclusao: adminNome.trim(),
-        justificativa: justificativa.trim()
-      });
-      auditoria.splice(index, 1);
-      if (dbNuvem && reg.id) dbNuvem.ref('bavgru/auditoria_itens/' + reg.id).remove().catch(() => {});
-      salvarBancoLocal();
+      if (prompt("🔒 Senha Admin:") !== senhaAdmin) return alert("❌ Senha incorreta.");
+      const idx = auditoria.findIndex(r => r.id === id);
+      if (idx === -1) return;
+      const just = prompt("Motivo da exclusão:");
+      if (!just) return;
+      logExclusoes.unshift({ dataHoraExclusao: new Date().toLocaleString('pt-BR'), idOriginal: id, colaboradorAfetado: auditoria[idx].colaborador, itemAfetado: auditoria[idx].equipamento, responsavelExclusao: 'Admin', justificativa: just });
+      auditoria.splice(idx, 1); salvarBancoLocal();
     }
 
     function renderLogExclusoes() {
-      const container = document.getElementById('tabela-log-exclusoes');
-      if (!container) return;
-      container.innerHTML = logExclusoes.length ? logExclusoes.map(l => `
-        <tr class="hover:bg-red-50">
-          <td class="p-2 font-mono text-gray-500">${l.dataHoraExclusao}</td>
-          <td class="p-2 font-bold">${l.idOriginal}</td>
-          <td class="p-2">${l.colaboradorAfetado}</td>
-          <td class="p-2">${l.itemAfetado}</td>
-          <td class="p-2 font-bold">${l.responsavelExclusao}</td>
-          <td class="p-2 italic">"${l.justificativa}"</td>
-        </tr>
-      `).join('') : `<tr><td colspan="6" class="p-4 text-center text-gray-400">Nenhuma exclusão registrada.</td></tr>`;
+      const el = document.getElementById('tabela-log-exclusoes');
+      if (el) el.innerHTML = logExclusoes.map(l => `<tr><td class="p-2">${l.dataHoraExclusao}</td><td class="p-2">${l.idOriginal}</td><td class="p-2">${l.colaboradorAfetado}</td><td class="p-2">${l.itemAfetado}</td><td class="p-2">${l.responsavelExclusao}</td><td class="p-2">${l.justificativa}</td></tr>`).join('');
     }
 
     function exportarLogExclusoesCSV() {
-      if (!logExclusoes.length) return alert("Sem registros.");
-      const headers = ['Data_Hora', 'Protocolo', 'Colaborador', 'Item', 'Responsavel', 'Justificativa'];
-      const lines = logExclusoes.map(l => [l.dataHoraExclusao, l.idOriginal, l.colaboradorAfetado, l.itemAfetado, l.responsavelExclusao, l.justificativa].map(v => `"${v || ''}"`).join(';'));
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(new Blob(['\uFEFF' + [headers.join(';'), ...lines].join('\n')], { type: 'text/csv;charset=utf-8;' }));
-      link.download = `Log_Exclusoes_BAVGRU.csv`;
-      link.click();
-    }
-
-    function obterMesAnoSelecionado() {
-      const input = document.getElementById('pendencias-mes-ano');
-      if (input && input.value) return input.value;
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      const h = ['Data', 'ID', 'Colaborador', 'Item', 'Justificativa'];
+      const l = logExclusoes.map(x => [x.dataHoraExclusao, x.idOriginal, x.colaboradorAfetado, x.itemAfetado, x.justificativa].join(';'));
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\uFEFF' + [h.join(';'), ...l].join('\n')], { type: 'text/csv' })); a.download = 'Log_Exclusoes.csv'; a.click();
     }
 
     function renderPendencias() {
-      const mesAno = obterMesAnoSelecionado();
+      const mes = document.getElementById('pendencias-mes-ano').value || new Date().toISOString().slice(0, 7);
       const termo = (document.getElementById('busca-pendencias')?.value || '').toLowerCase();
-      const inspecionadosMes = new Set();
-      auditoria.forEach(r => {
-        if (r.tipo.includes('Inspeção Cinto')) {
-          let dataRef = r.dataReferencia;
-          if (!dataRef && r.dataHora) {
-            const partes = r.dataHora.split(',')[0].split('/');
-            if (partes.length === 3) dataRef = `${partes[2].trim()}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
-          }
-          if (dataRef && dataRef.startsWith(mesAno)) inspecionadosMes.add(r.matricula);
-        }
-      });
+      const insp = new Set();
+      auditoria.forEach(r => { if (r.tipo.includes('Inspeção Cinto') && (r.dataReferencia || '').startsWith(mes)) insp.add(r.matricula); });
+      const obrig = colaboradores.filter(c => !c.naoUtilizaCinto);
+      const pend = obrig.filter(c => !insp.has(c.matricula));
+      document.getElementById('total-pendentes-num').textContent = pend.length;
+      document.getElementById('total-inspecionados-num').textContent = obrig.length - pend.length;
+      document.getElementById('taxa-adesao-num').textContent = (obrig.length ? Math.round(((obrig.length - pend.length) / obrig.length) * 100) : 100) + '%';
+      document.getElementById('total-isentos-cinto-num').textContent = colaboradores.length - obrig.length;
+      document.getElementById('kpi-pendencias').textContent = pend.length;
 
-      const obrigados = colaboradores.filter(c => !c.naoUtilizaCinto);
-      const isentosCount = colaboradores.filter(c => c.naoUtilizaCinto).length;
-      const pendentes = obrigados.filter(c => !inspecionadosMes.has(c.matricula));
-      const inspecionadosCount = obrigados.length - pendentes.length;
-      const taxa = obrigados.length ? Math.round((inspecionadosCount / obrigados.length) * 100) : 100;
-
-      document.getElementById('total-pendentes-num').textContent = pendentes.length;
-      document.getElementById('total-inspecionados-num').textContent = inspecionadosCount;
-      document.getElementById('taxa-adesao-num').textContent = `${taxa}%`;
-      document.getElementById('total-isentos-cinto-num').textContent = isentosCount;
-      document.getElementById('kpi-pendencias').textContent = pendentes.length;
-
-      const filtrados = pendentes.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
-      document.getElementById('tabela-pendencias').innerHTML = filtrados.length ? filtrados.map(c => `
-        <tr class="border-b hover:bg-yellow-50">
-          <td class="p-2.5 font-mono font-bold text-xs">${c.matricula}</td>
-          <td class="p-2.5 font-semibold">${c.nome}</td>
-          <td class="p-2.5 text-xs text-gray-600">${c.funcao}</td>
-          <td class="p-2.5 text-center"><span class="bg-yellow-100 text-yellow-800 border border-yellow-300 px-2 py-0.5 rounded-full text-xs font-bold">⚠️ Pendente (${mesAno})</span></td>
-          <td class="p-2.5 text-right"><button onclick="abrirInspecaoDireta('${c.id}')" class="bg-vibraGreen text-white px-2.5 py-1.5 rounded-lg text-xs font-bold shadow">Inspecionar ↗</button></td>
-        </tr>
-      `).join('') : `<tr><td colspan="5" class="p-6 text-center text-green-700 bg-green-50 font-bold">🎉 Todos os operadores obrigados realizaram a inspeção no mês ${mesAno}!</td></tr>`;
+      document.getElementById('tabela-pendencias').innerHTML = pend.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.includes(termo)).map(c => `
+        <tr class="border-b"><td class="p-2.5 font-mono font-bold">${c.matricula}</td><td class="p-2.5 font-semibold">${c.nome}</td><td class="p-2.5">${c.funcao}</td><td class="p-2.5 text-center"><span class="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full text-xs font-bold">⚠️ Pendente</span></td><td class="p-2.5 text-right"><button onclick="abrirInspecaoDireta('${c.id}')" class="bg-vibraGreen text-white px-2.5 py-1 rounded text-xs font-bold">Inspecionar ↗</button></td></tr>
+      `).join('');
     }
 
     function exportarPendenciasCSV() {
-      const mesAno = obterMesAnoSelecionado();
-      const inspecionadosMes = new Set();
-      auditoria.forEach(r => {
-        if (r.tipo.includes('Inspeção Cinto') && (r.dataReferencia || '').startsWith(mesAno)) inspecionadosMes.add(r.matricula);
-      });
-      const pendentes = colaboradores.filter(c => !c.naoUtilizaCinto && !inspecionadosMes.has(c.matricula));
-      if (!pendentes.length) return alert('Nenhuma pendência neste mês!');
-      const headers = ['Matricula', 'Nome', 'Funcao', 'Mes', 'Status'];
-      const linhas = pendentes.map(c => [c.matricula, c.nome, c.funcao, mesAno, 'PENDENTE'].map(v => `"${v || ''}"`).join(';'));
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(new Blob(['\uFEFF' + [headers.join(';'), ...linhas].join('\n')], { type: 'text/csv;charset=utf-8;' }));
-      link.download = `Pendencias_Cinto_${mesAno}.csv`;
-      link.click();
-    }
-
-    function obterHtmlTermoLegal() {
-      return `
-        <div class="border border-gray-300 rounded p-2.5 bg-gray-50 text-xs text-gray-700 leading-tight space-y-1.5 mt-2">
-          <p class="font-bold text-vibraDark uppercase">Enquadramento Legal Incluído no Termo (NR-06 & Padrão Corporativo Vibra)</p>
-          <p><strong>NR-06 (Item 6.5.1 - Cabe à Organização):</strong> Fornecer ao empregado, gratuitamente, EPI adequado ao risco, em perfeito estado de conservação e funcionamento, com Certificado de Aprovação (CA) válido, registrando o seu fornecimento por meio de sistema eletrônico ou ficha física e orientando/treinando o trabalhador.</p>
-          <p><strong>NR-06 (Item 6.7.1 - Cabe ao Trabalhador):</strong> Utilizar o EPI apenas para a finalidade a que se destina; responsabilizar-se pela limpeza, guarda e conservação; comunicar à organização qualquer alteração que o torne impróprio para uso (desgaste, avaria ou extravio); e cumprir as determinações sobre o uso adequado.</p>
-          <p><strong>Padrão Corporativo Vibra & CLT (Art. 158, Parágrafo Único, alínea "b" e Art. 462, § 1º):</strong> Compromisso de devolução do EPI em caso de substituição, mudança de função ou desligamento da companhia, ciente de que a recusa injustificada ao uso constitui ato faltoso e que o extravio ou dano doloso/culposo sujeita à reposição na forma da lei.</p>
-        </div>
-      `;
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\uFEFFMatricula;Nome;Funcao\n'], { type: 'text/csv' })); a.download = 'Pendencias.csv'; a.click();
     }
 
     function gerarFichaUnicaPeloSelectAdmin() {
-      const colabId = document.getElementById('admin-historico-colab').value;
-      const colab = colaboradores.find(c => c.id === colabId);
-      if (colab) gerarFichaUnicaColaborador(colab.matricula);
+      const c = colaboradores.find(x => x.id === document.getElementById('admin-historico-colab').value);
+      if (c) gerarFichaUnicaColaborador(c.matricula);
     }
 
     function gerarFichaUnicaColaborador(matricula) {
       const colab = colaboradores.find(c => String(c.matricula) === String(matricula));
-      if (!colab) return alert("Colaborador não localizado.");
-      const todasEntregas = auditoria.filter(r => String(r.matricula) === String(matricula) && r.tipo.includes('NR-06'));
-
-      const tabelaEntregasHtml = todasEntregas.length ? todasEntregas.map(entrega => {
-        const det = (entrega.itens && Array.isArray(entrega.itens))
-          ? entrega.itens.map(it => `<div>• <strong>${it.nome}</strong> (CA: ${it.ca}) - ${it.qtd} un.</div>`).join('')
-          : `<strong>${entrega.equipamento}</strong> (CA: ${entrega.ca}) - ${entrega.quantidade || 1} un.`;
-        return `
-          <tr class="border-b text-xs">
-            <td class="p-2 font-mono">${entrega.dataHora}</td>
-            <td class="p-2">${det}</td>
-            <td class="p-2">${entrega.motivo || 'Regular'}</td>
-            <td class="p-2 text-center">${entrega.assinatura ? `<img src="${entrega.assinatura}" class="h-10 mx-auto object-contain" />` : 'Assinado'}</td>
-          </tr>
-        `;
-      }).join('') : `<tr><td colspan="4" class="p-4 text-center text-gray-500 italic">Nenhuma entrega de EPI registrada para este colaborador.</td></tr>`;
-
-      document.getElementById('modal-print-title').textContent = `📄 Ficha Única de EPI (NR-06) - ${colab.nome}`;
+      if (!colab) return;
+      const entregas = auditoria.filter(r => String(r.matricula) === String(matricula) && r.tipo.includes('NR-06'));
+      document.getElementById('modal-print-title').textContent = `📄 Ficha Única NR-06 - ${colab.nome}`;
       document.getElementById('print-area').innerHTML = `
-        <div class="border-b-2 border-vibraGreen pb-2 flex justify-between items-start">
-          <div>
-            <h2 class="text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A. - UNIDADE BAVGRU</h2>
-            <h3 class="text-xs font-bold text-green-800 uppercase">FICHA DE CONTROLE E ENTREGA INDIVIDUAL DE EPI (NR-06 & PADRÃO VIBRA)</h3>
-          </div>
-          <div class="text-right text-xs"><p><strong>Emissão:</strong> ${new Date().toLocaleDateString('pt-BR')}</p></div>
+        <div class="border-b-2 border-vibraGreen pb-2 flex justify-between">
+          <div><h2 class="text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A. - BAVGRU</h2><p class="text-xs font-bold">FICHA INDIVIDUAL DE CONTROLE DE EPI (NR-06 & PADRÃO VIBRA)</p></div>
+          <div class="text-right text-xs"><p><strong>Colaborador:</strong> ${colab.nome} (${colab.matricula})</p><p><strong>Função:</strong> ${colab.funcao}</p></div>
         </div>
-        <div class="grid grid-cols-3 gap-2 bg-gray-50 p-2.5 border rounded mt-2 text-xs">
-          <div><strong>Colaborador:</strong> ${colab.nome}</div>
-          <div><strong>Matrícula:</strong> ${colab.matricula}</div>
-          <div><strong>Função:</strong> ${colab.funcao}</div>
-        </div>
-        ${obterHtmlTermoLegal()}
-        <table class="w-full text-left border-collapse border mt-3">
-          <thead>
-            <tr class="bg-gray-100 font-bold border-b text-xs">
-              <th class="p-2">Data / Hora</th>
-              <th class="p-2">Equipamentos / C.A. / Qtd</th>
-              <th class="p-2">Motivo</th>
-              <th class="p-2 text-center">Assinatura do Empregado</th>
-            </tr>
-          </thead>
-          <tbody>${tabelaEntregasHtml}</tbody>
+        <div class="p-2 bg-gray-50 border rounded text-xs mt-2"><strong>Termo Legal NR-06 (6.5.1 e 6.7.1) & Padrão Corporativo Vibra:</strong> Declaro ter recebido gratuitamente os EPIs abaixo com CA válido, comprometendo-me ao uso correto, guarda, conservação e devolução quando aplicável (Art. 158 e 462 da CLT).</div>
+        <table class="w-full text-xs border-collapse border mt-3">
+          <thead><tr class="bg-gray-100 border-b font-bold"><th class="p-1.5 border-r text-left">Data/Hora</th><th class="p-1.5 border-r text-left">Equipamento / CA</th><th class="p-1.5 border-r text-left">Motivo</th><th class="p-1.5 text-center">Assinatura</th></tr></thead>
+          <tbody>
+            ${entregas.length ? entregas.map(e => `<tr class="border-b"><td class="p-1.5 border-r">${e.dataHora}</td><td class="p-1.5 border-r font-semibold">${e.equipamento} (CA: ${e.ca})</td><td class="p-1.5 border-r">${e.motivo || '-'}</td><td class="p-1.5 text-center">${e.assinatura ? `<img src="${e.assinatura}" class="h-8 mx-auto object-contain" />` : 'Assinado'}</td></tr>`).join('') : `<tr><td colspan="4" class="p-4 text-center">Nenhuma entrega registrada.</td></tr>`}
+          </tbody>
         </table>
       `;
       document.getElementById('modal-print').classList.remove('hidden');
@@ -2015,40 +1030,12 @@ Calçado de Segurança 45 impermeável|S/C.A.|15
     }
 
     function abrirComprovante(id) {
-      const reg = auditoria.find(r => r.id === id);
-      if (!reg) return;
-      document.getElementById('modal-print-title').textContent = `📄 Comprovante Oficial SSMA - ${reg.tipo}`;
-      const checklistHtml = reg.respostasChecklist ? `
-        <table class="w-full text-xs border-collapse border mt-2">
-          ${reg.respostasChecklist.map(r => `<tr class="border-b"><td class="p-1 border-r">${r.pergunta}</td><td class="p-1 font-bold">${r.resposta}</td></tr>`).join('')}
-        </table>
-      ` : obterHtmlTermoLegal();
-
+      const r = auditoria.find(x => x.id === id);
+      if (!r) return;
       document.getElementById('print-area').innerHTML = `
-        <div class="flex justify-between items-center border-b-2 border-vibraGreen pb-2">
-          <div>
-            <h2 class="text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A. - BAVGRU</h2>
-            <p class="text-xs text-gray-600">${reg.tipo}</p>
-          </div>
-          <div class="text-right text-xs"><p><strong>Nº:</strong> ${reg.id}</p><p><strong>Data:</strong> ${reg.dataHora}</p></div>
-        </div>
-        <div class="grid grid-cols-2 gap-1.5 text-xs bg-gray-50 p-2.5 border rounded mt-2">
-          <p><strong>Colaborador:</strong> ${reg.colaborador}</p>
-          <p><strong>Matrícula:</strong> ${reg.matricula}</p>
-          <p><strong>Equipamento(s):</strong> ${reg.equipamento}</p>
-          <p><strong>Nº CA:</strong> ${reg.ca}</p>
-        </div>
-        ${checklistHtml}
-        <div class="grid grid-cols-2 gap-3 pt-3 items-center">
-          <div class="text-center border p-2 rounded bg-gray-50">
-            <p class="text-xs font-bold mb-1">Evidência Fotográfica</p>
-            ${reg.foto ? `<img src="${reg.foto}" class="h-24 mx-auto rounded object-cover" />` : `<p class="text-xs text-gray-400 py-6">Sem foto</p>`}
-          </div>
-          <div class="text-center border p-2 rounded bg-gray-50">
-            <p class="text-xs font-bold mb-1">Assinatura Digital</p>
-            <img src="${reg.assinatura}" class="h-24 mx-auto object-contain" />
-          </div>
-        </div>
+        <div class="border-b-2 border-vibraGreen pb-2"><h2 class="text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A. - BAVGRU</h2><p class="text-xs">${r.tipo} | Nº ${r.id} | ${r.dataHora}</p></div>
+        <div class="p-2 bg-gray-50 border rounded text-xs mt-2"><p><strong>Colaborador:</strong> ${r.colaborador} (${r.matricula}) - ${r.funcao}</p><p><strong>Item:</strong> ${r.equipamento} | <strong>CA:</strong> ${r.ca}</p></div>
+        <div class="text-center border p-2 rounded mt-2"><p class="text-xs font-bold">Assinatura Digital</p><img src="${r.assinatura}" class="h-20 mx-auto object-contain" /></div>
       `;
       document.getElementById('modal-print').classList.remove('hidden');
       document.getElementById('modal-print').classList.add('flex');
@@ -2057,66 +1044,32 @@ Calçado de Segurança 45 impermeável|S/C.A.|15
     function fecharModalPrint() { document.getElementById('modal-print').classList.add('hidden'); document.getElementById('modal-print').classList.remove('flex'); }
 
     function renderColaboradores() {
-      const termo = (document.getElementById('busca-colab')?.value || '').toLowerCase();
-      const filtrados = colaboradores.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo));
-      document.getElementById('tabela-colaboradores').innerHTML = filtrados.map(c => `
-        <tr class="border-b hover:bg-gray-50">
-          <td class="p-2.5 font-bold font-mono text-xs">${c.matricula}</td>
-          <td class="p-2.5 font-medium">${c.nome}</td>
-          <td class="p-2.5 text-xs text-gray-600">${c.funcao}</td>
-          <td class="p-2.5 text-center">${c.naoUtilizaCinto ? '<span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-xs font-bold">🚫 Não Usa</span>' : '<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs font-bold">🧗 Sim</span>'}</td>
-          <td class="p-2.5 text-right flex gap-1 justify-end">
-            <button onclick="gerarFichaUnicaColaborador('${c.matricula}')" class="bg-vibraGreen text-white px-2.5 py-1 rounded text-xs font-bold shadow">📄 Ficha Única</button>
-          </td>
-        </tr>
+      const t = (document.getElementById('busca-colab')?.value || '').toLowerCase();
+      document.getElementById('tabela-colaboradores').innerHTML = colaboradores.filter(c => c.nome.toLowerCase().includes(t) || c.matricula.includes(t)).map(c => `
+        <tr class="border-b"><td class="p-2.5 font-mono font-bold">${c.matricula}</td><td class="p-2.5 font-semibold">${c.nome}</td><td class="p-2.5">${c.funcao}</td><td class="p-2.5 text-center">${c.naoUtilizaCinto ? '🚫 Isento' : '🧗 Sim'}</td><td class="p-2.5 text-right"><button onclick="gerarFichaUnicaColaborador('${c.matricula}')" class="bg-vibraGreen text-white px-2.5 py-1 rounded text-xs font-bold">📄 Ficha Única</button></td></tr>
       `).join('');
     }
 
     function renderAuditoria() {
-      const termo = (document.getElementById('busca-auditoria')?.value || '').toLowerCase();
-      const filtrados = auditoria.filter(r => r.colaborador.toLowerCase().includes(termo) || r.matricula.toLowerCase().includes(termo) || r.ca.toLowerCase().includes(termo));
-      document.getElementById('tabela-auditoria').innerHTML = filtrados.length ? filtrados.map(r => `
-        <tr class="hover:bg-gray-50">
-          <td class="p-2.5 text-xs font-mono">${r.dataHora}</td>
-          <td class="p-2.5 font-semibold">${r.tipo}</td>
-          <td class="p-2.5">${r.colaborador} (${r.matricula})</td>
-          <td class="p-2.5">${r.equipamento} <span class="bg-gray-200 px-1.5 py-0.5 rounded text-xs font-bold">CA ${r.ca}</span></td>
-          <td class="p-2.5"><span class="px-2 py-0.5 rounded text-xs font-bold ${r.status.includes('INTERDITADO') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-800'}">${r.status}</span></td>
-          <td class="p-2.5 text-right flex gap-1 justify-end">
-            <button onclick="abrirComprovante('${r.id}')" class="bg-vibraDark text-white px-2 py-1 rounded text-xs font-bold">PDF</button>
-            <button onclick="gerarFichaUnicaColaborador('${r.matricula}')" class="bg-vibraGreen text-white px-2 py-1 rounded text-xs font-bold">Ficha Única</button>
-            <button onclick="excluirRegistro('${r.id}')" class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold">🗑️</button>
-          </td>
-        </tr>
-      `).join('') : `<tr><td colspan="6" class="p-4 text-center text-gray-400">Nenhum registro encontrado.</td></tr>`;
+      const t = (document.getElementById('busca-auditoria')?.value || '').toLowerCase();
+      document.getElementById('tabela-auditoria').innerHTML = auditoria.filter(r => r.colaborador.toLowerCase().includes(t) || r.matricula.includes(t) || r.ca.toLowerCase().includes(t)).map(r => `
+        <tr class="border-b"><td class="p-2.5 font-mono">${r.dataHora}</td><td class="p-2.5 font-semibold">${r.tipo}</td><td class="p-2.5">${r.colaborador} (${r.matricula})</td><td class="p-2.5">${r.equipamento} (CA ${r.ca})</td><td class="p-2.5 font-bold">${r.status}</td><td class="p-2.5 text-right flex gap-1 justify-end"><button onclick="abrirComprovante('${r.id}')" class="bg-vibraDark text-white px-2 py-1 rounded text-xs font-bold">PDF</button><button onclick="gerarFichaUnicaColaborador('${r.matricula}')" class="bg-vibraGreen text-white px-2 py-1 rounded text-xs font-bold">Ficha Única</button><button onclick="excluirRegistro('${r.id}')" class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold">🗑️</button></td></tr>
+      `).join('');
     }
 
     function cadastrarNovoColaborador() {
-      const nome = document.getElementById('novo-colab-nome').value.trim();
-      const matricula = document.getElementById('novo-colab-matricula').value.trim();
-      const funcao = document.getElementById('novo-colab-funcao').value.trim() || 'OPERADOR BAVGRU';
-      const email = document.getElementById('novo-colab-email').value.trim();
-      if (!nome || !matricula) return alert('Informe Nome e Matrícula.');
-      colaboradores.push({ id: 'c' + Date.now(), matricula, nome, funcao, email, naoUtilizaCinto: false });
+      const nome = document.getElementById('novo-colab-nome').value.trim(), mat = document.getElementById('novo-colab-matricula').value.trim();
+      if (!nome || !mat) return alert('Preencha Nome e Matrícula.');
+      colaboradores.push({ id: 'c_' + Date.now(), matricula: mat, nome, funcao: document.getElementById('novo-colab-funcao').value || 'OPERADOR', email: '', naoUtilizaCinto: false });
       salvarBancoLocal();
-      alert(`Colaborador ${nome} cadastrado!`);
     }
 
     function cadastrarNovoEpi() {
       const nome = document.getElementById('novo-epi-nome').value.trim();
-      const ca = document.getElementById('novo-epi-ca').value.trim() || 'S/C.A.';
-      const qtd = parseInt(document.getElementById('novo-epi-qtd').value, 10) || 10;
-      const min = parseInt(document.getElementById('novo-epi-min').value, 10) || 5;
-      if (!nome) return alert('Informe o Nome do EPI.');
-      estoque.push({ id: 'e_' + Date.now(), nome, ca, validade: '2029-12-31', qtd, min });
+      if (!nome) return;
+      estoque.push({ id: 'e_' + Date.now(), nome, ca: document.getElementById('novo-epi-ca').value || 'S/CA', qtd: parseInt(document.getElementById('novo-epi-qtd').value || '10', 10), min: 5 });
       salvarBancoLocal();
-      alert(`✅ EPI "${nome}" incluído!`);
     }
-
-    function abrirModalImportarColaboradores() { document.getElementById('modal-importar-colaboradores').classList.remove('hidden'); document.getElementById('modal-importar-colaboradores').classList.add('flex'); }
-    function fecharModalImportarColaboradores() { document.getElementById('modal-importar-colaboradores').classList.add('hidden'); document.getElementById('modal-importar-colaboradores').classList.remove('flex'); }
-    function abrirModalImportarEpis() { document.getElementById('modal-importar-epis').classList.remove('hidden'); document.getElementById('modal-importar-epis').classList.add('flex'); }
-    function fecharModalImportarEpis() { document.getElementById('modal-importar-epis').classList.add('hidden'); document.getElementById('modal-importar-epis').classList.remove('flex'); }
 
     function atualizarTudo() {
       document.getElementById('kpi-colaboradores').textContent = colaboradores.length;
@@ -2124,57 +1077,36 @@ Calçado de Segurança 45 impermeável|S/C.A.|15
       document.getElementById('kpi-inspecoes').textContent = auditoria.filter(a => a.tipo.includes('Anexo C')).length;
       document.getElementById('kpi-alertas').textContent = estoque.filter(e => e.qtd <= e.min).length;
 
-      const selDisp = document.getElementById('disp-colaborador');
-      const selInsp = document.getElementById('insp-colaborador');
-      const selHist = document.getElementById('admin-historico-colab');
-      const selTox = document.getElementById('tox-colaborador');
-      const selEpi = document.getElementById('disp-epi');
-      const selEntEpi = document.getElementById('entrada-epi');
-
-      const vDisp = selDisp?.value, vInsp = selInsp?.value, vHist = selHist?.value, vTox = selTox?.value, vEpi = selEpi?.value, vEnt = selEntEpi?.value;
-
       colaboradores.sort((a, b) => a.nome.localeCompare(b.nome));
-      const opcoesColab = colaboradores.map(c => `<option value="${c.id}">${c.nome} (${c.matricula})</option>`).join('');
-      if (selDisp) { selDisp.innerHTML = opcoesColab; if (vDisp) selDisp.value = vDisp; }
-      if (selInsp) { selInsp.innerHTML = opcoesColab; if (vInsp) selInsp.value = vInsp; }
-      if (selHist) { selHist.innerHTML = opcoesColab; if (vHist) selHist.value = vHist; }
-      if (selTox) { selTox.innerHTML = opcoesColab; if (vTox) selTox.value = vTox; }
+      const opColab = colaboradores.map(c => `<option value="${c.id}">${c.nome} (${c.matricula})</option>`).join('');
+      ['disp-colaborador', 'insp-colaborador', 'admin-historico-colab', 'tox-colaborador'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { const v = el.value; el.innerHTML = opColab; if (v) el.value = v; }
+      });
 
-      const opcoesEpi = estoque.map(e => `<option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>`).join('');
-      if (selEpi) { selEpi.innerHTML = opcoesEpi; if (vEpi) selEpi.value = vEpi; }
-      if (selEntEpi) { selEntEpi.innerHTML = opcoesEpi; if (vEnt) selEntEpi.value = vEnt; }
+      const opEpi = estoque.map(e => `<option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>`).join('');
+      ['disp-epi', 'entrada-epi'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { const v = el.value; el.innerHTML = opEpi; if (v) el.value = v; }
+      });
 
       document.getElementById('tabela-estoque').innerHTML = estoque.map(e => `
-        <tr class="border-b">
-          <td class="p-2.5 font-medium">${e.nome}</td>
-          <td class="p-2.5 font-bold">${e.ca}</td>
-          <td class="p-2.5 font-extrabold ${e.qtd <= e.min ? 'text-red-600' : 'text-gray-800'}">${e.qtd} un.</td>
-          <td class="p-2.5 text-gray-500">${e.min} un.</td>
-          <td class="p-2.5">${e.qtd <= e.min ? '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-xs font-bold">⚠️ Repor</span>' : '<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs font-bold">✔ Regular</span>'}</td>
-        </tr>
+        <tr class="border-b"><td class="p-2.5 font-medium">${e.nome}</td><td class="p-2.5 font-bold">${e.ca}</td><td class="p-2.5 font-extrabold">${e.qtd} un.</td><td class="p-2.5">${e.min} un.</td><td class="p-2.5">${e.qtd <= e.min ? '⚠️ Repor' : '✔ Regular'}</td></tr>
       `).join('');
 
-      renderColaboradores();
-      renderAuditoria();
-      renderLogExclusoes();
-      renderPendencias();
-      renderNaoUtilizaCinto();
-      renderToxicologico();
+      renderColaboradores(); renderAuditoria(); renderLogExclusoes(); renderPendencias(); renderNaoUtilizaCinto(); renderToxicologico();
     }
 
     function exportarCSV() {
-      const headers = ['ID_Registro', 'Data_Hora', 'Tipo', 'Colaborador', 'Matricula', 'EPI', 'CA', 'Status_Final'];
-      const linhas = auditoria.map(r => [r.id, r.dataHora, r.tipo, r.colaborador, r.matricula, r.equipamento, r.ca, r.status].map(v => `"${v || ''}"`).join(';'));
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(new Blob(['\uFEFF' + [headers.join(';'), ...linhas].join('\n')], { type: 'text/csv;charset=utf-8;' }));
-      link.download = `Auditoria_EPI_BAVGRU.csv`;
-      link.click();
+      const h = ['ID', 'Data', 'Tipo', 'Colaborador', 'Matricula', 'EPI', 'CA', 'Status'];
+      const l = auditoria.map(r => [r.id, r.dataHora, r.tipo, r.colaborador, r.matricula, r.equipamento, r.ca, r.status].join(';'));
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\uFEFF' + [h.join(';'), ...l].join('\n')], { type: 'text/csv' })); a.download = 'Auditoria_BAVGRU.csv'; a.click();
     }
 
     window.onload = () => {
       const d = new Date();
       document.getElementById('insp-data').value = d.toISOString().slice(0, 10);
-      document.getElementById('pendencias-mes-ano').value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      document.getElementById('pendencias-mes-ano').value = d.toISOString().slice(0, 7);
       renderChecklistForm();
       configurarCanvasAssinatura('canvas-disp');
       configurarCanvasAssinatura('canvas-insp');

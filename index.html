@@ -6,6 +6,14 @@
   <title>Portal SSMA BAVGRU - Gestão de EPIs, Inspeção SPIQ & Auditoria</title>
   <meta name="theme-color" content="#008542" />
   
+  <!-- Configurações PWA (Instalação como Aplicativo) -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="SSMA BAVGRU" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+
   <!-- Tailwind CSS & Bibliotecas Externas com Fallback Offline -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -87,6 +95,13 @@
           <p class="text-xs text-green-100 hidden sm:block">Gestão Integrada de EPIs (NR-06), Inspeção Trava-Quedas (Anexo C) & Auditoria</p>
         </div>
       </div>
+
+      <!-- BOTÃO DIRETO NO CABEÇALHO PARA BAIXAR/INSTALAR O APLICATIVO -->
+      <div class="flex items-center gap-2">
+        <button id="btn-header-install" onclick="executarInstalacaoApp()" class="bg-vibraYellow text-vibraDark hover:bg-yellow-400 font-extrabold px-3 py-1.5 rounded-lg text-xs shadow flex items-center gap-1.5 transition">
+          <span>📲</span> Baixar Aplicativo
+        </button>
+      </div>
     </div>
 
     <div class="bg-vibraDark px-3 py-2">
@@ -162,7 +177,6 @@
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
         <h2 class="text-base md:text-lg font-bold text-vibraDark border-b pb-2 mb-4">🦺 Nova Dispensação de EPI com Assinatura & Foto (NR-06)</h2>
         
-        <!-- SELEÇÃO E BUSCA DE COLABORADOR (COM DIGITAÇÃO PARA PESQUISAR) -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
           <div class="bg-gray-50 p-3 rounded-xl border border-gray-200">
             <div class="flex justify-between items-center mb-1">
@@ -204,7 +218,6 @@
           </div>
         </div>
 
-        <!-- MÚLTIPLOS EPIS NA MESMA ENTREGA -->
         <div class="border-2 border-green-200 bg-green-50 rounded-xl p-3 mb-4 space-y-3">
           <h3 class="text-xs md:text-sm font-bold text-vibraDark">🛒 Selecionar Equipamentos (Múltiplos EPIs na mesma entrega)</h3>
           <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-end">
@@ -232,7 +245,6 @@
           </div>
         </div>
 
-        <!-- TERMO LEGAL COMPLETO NR-06 E PADRÃO CORPORATIVO VIBRA -->
         <div class="bg-green-50 border-l-4 border-vibraGreen rounded-lg p-3 text-xs text-gray-700 space-y-2">
           <p class="font-bold text-vibraDark uppercase tracking-wide flex items-center gap-1.5">
             <span>⚖️</span> Termo de Responsabilidade e Entrega de EPI (NR-06 & Padrão Corporativo Vibra Energia S.A.)
@@ -240,22 +252,9 @@
           <p class="leading-relaxed">
             Declaro ter recebido gratuitamente da <strong>Vibra Energia S.A. - Base de Aviação de Guarulhos (BAVGRU)</strong> os Equipamentos de Proteção Individual (EPIs) discriminados nesta ficha, novos e em perfeito estado de conservação, com Certificado de Aprovação (CA) válido expedido pelo Ministério do Trabalho e Emprego, adequados aos riscos das minhas atividades funcionais.
           </p>
-          <p class="leading-relaxed">
-            Em conformidade com a <strong>Norma Regulamentadora NR-06 (itens 6.5.1, 6.5.2 e 6.7.1)</strong>, a <strong>Consolidação das Leis do Trabalho - CLT (Artigos 158 e 462, § 1º)</strong> e as Diretrizes Corporativas de SSMA da Vibra Energia, assumo formalmente os seguintes compromissos:
-          </p>
-          <ul class="list-disc pl-5 space-y-1 text-xs text-gray-600">
-            <li><strong>Finalidade e Obrigatoriedade:</strong> Usar os EPIs fornecidos exclusivamente para a finalidade a que se destinam, durante todo o tempo de execução de minhas atividades operacionais na unidade BAVGRU;</li>
-            <li><strong>Guarda e Conservação:</strong> Responsabilizar-me pela guarda, limpeza, higienização e conservação dos equipamentos que estão sob minha posse e custódia;</li>
-            <li><strong>Comunicação de Avarias:</strong> Comunicar imediatamente à liderança operacional ou à área de SSMA qualquer alteração, desgaste excessivo, avaria, defeito, perda ou extravio que torne o EPI impróprio para uso, solicitando sua imediata substituição;</li>
-            <li><strong>Cumprimento de Normas:</strong> Cumprir integralmente todas as orientações técnicas, treinamentos e determinações da Vibra Energia sobre a utilização adequada de cada item;</li>
-            <li><strong>Devolução Obrigatória:</strong> Devolver os EPIs substituídos no ato de recebimento dos novos, bem como restituir todos os equipamentos sob minha responsabilidade no término do contrato de trabalho, desligamento ou transferência da unidade;</li>
-            <li><strong>Responsabilidade e Sanções Legais:</strong> Declaro estar plenamente ciente de que a recusa injustificada ao uso dos EPIs fornecidos constitui ato faltoso sujeito às sanções disciplinares previstas em lei (CLT, Art. 158, parágrafo único), e que o dano doloso ou por mau uso comprovado autoriza o respectivo ressarcimento conforme previsto no Artigo 462, § 1º da CLT.</li>
-          </ul>
         </div>
 
-        <!-- FOTO E ASSINATURA -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <!-- 1. FOTO DO COLABORADOR / EPI -->
           <div class="border rounded-xl p-3 bg-gray-50 flex flex-col justify-between">
             <div>
               <div class="flex justify-between items-center mb-2">
@@ -284,7 +283,6 @@
             </div>
           </div>
 
-          <!-- 2. ASSINATURA DIGITAL -->
           <div class="border rounded-xl p-3 bg-gray-50 flex flex-col justify-between">
             <div>
               <div class="flex justify-between items-center mb-2">
@@ -333,7 +331,6 @@
         <div class="space-y-2" id="checklist-container"></div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <!-- FOTO INSPEÇÃO -->
           <div class="border rounded-xl p-3 bg-gray-50 flex flex-col justify-between">
             <div>
               <div class="flex justify-between items-center mb-2">
@@ -361,7 +358,6 @@
             </div>
           </div>
 
-          <!-- ASSINATURA INSPEÇÃO -->
           <div class="border rounded-xl p-3 bg-gray-50 flex flex-col justify-between">
             <div>
               <div class="flex justify-between items-center mb-2">
@@ -453,7 +449,7 @@
       </div>
     </section>
 
-    <!-- ABA 7: EFETIVO (COM STATUS ATIVO / INATIVO PARA DESLIGAMENTO) -->
+    <!-- ABA 7: EFETIVO -->
     <section id="tab-colaboradores" class="hidden space-y-4">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b pb-3 mb-3">
@@ -628,6 +624,33 @@
 
   </main>
 
+  <!-- BANNER FLUTUANTE DE INSTALAÇÃO DO APLICATIVO (COM OPÇÃO DE FECHAR) -->
+  <div id="pwa-install-banner" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md bg-white border-2 border-vibraGreen rounded-2xl shadow-2xl p-4 z-50 transition-all duration-300 no-print flex flex-col gap-3">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-vibraDark flex items-center justify-center text-white font-black text-xl shadow shrink-0">
+          V
+        </div>
+        <div>
+          <h4 class="font-extrabold text-sm text-gray-900 leading-tight">Instalar Aplicativo SSMA</h4>
+          <p class="text-xs text-gray-600 mt-0.5">Acesse direto da tela inicial, mais rápido e com suporte offline!</p>
+        </div>
+      </div>
+      <!-- Botão Fechar / Dispensar -->
+      <button onclick="fecharBannerInstalacao()" class="text-gray-400 hover:text-gray-700 font-bold p-1 text-base leading-none rounded-lg hover:bg-gray-100 transition" title="Fechar (Não quero baixar agora)">
+        ✕
+      </button>
+    </div>
+    <div class="flex gap-2 justify-end pt-1 border-t border-gray-100">
+      <button onclick="fecharBannerInstalacao()" class="px-3 py-1.5 text-xs font-bold text-gray-600 hover:text-gray-800 rounded-lg hover:bg-gray-100 transition">
+        Agora Não
+      </button>
+      <button onclick="executarInstalacaoApp()" class="bg-vibraGreen hover:bg-green-700 text-white font-extrabold px-4 py-1.5 rounded-lg text-xs shadow flex items-center gap-1.5 transition">
+        <span>📲</span> Baixar Aplicativo
+      </button>
+    </div>
+  </div>
+
   <!-- MODAL DE IMPRESSÃO / PDF -->
   <div id="modal-print" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-3 z-50">
     <div class="bg-white rounded-xl max-w-3xl w-full p-4 md:p-6 max-h-screen overflow-y-auto shadow-2xl">
@@ -659,6 +682,63 @@
   </div>
 
   <script>
+    // --- 0. GERENCIAMENTO DE INSTALAÇÃO DO APLICATIVO (PWA) ---
+    let deferredInstallPrompt = null;
+
+    // Registra o Service Worker (se existir sw.js no repositório)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+
+    // Captura o evento nativo de instalação do Chrome / Edge / Android
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      
+      const recusado = sessionStorage.getItem('pwa_banner_fechado');
+      if (!recusado) {
+        document.getElementById('pwa-install-banner')?.classList.remove('hidden');
+      }
+      document.getElementById('btn-header-install')?.classList.remove('hidden');
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      fecharBannerInstalacao();
+      document.getElementById('btn-header-install')?.classList.add('hidden');
+      alert('🎉 Aplicativo SSMA BAVGRU instalado com sucesso na sua tela inicial!');
+    });
+
+    function fecharBannerInstalacao() {
+      const b = document.getElementById('pwa-install-banner');
+      if (b) {
+        b.classList.add('hidden');
+      }
+      sessionStorage.setItem('pwa_banner_fechado', 'true');
+    }
+
+    async function executarInstalacaoApp() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        if (outcome === 'accepted') {
+          console.log('Instalação aceita pelo usuário');
+        }
+        deferredInstallPrompt = null;
+        fecharBannerInstalacao();
+      } else {
+        // Fallback para iOS (iPhone/iPad) ou quando já instalado
+        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) {
+          alert('📱 Para baixar no iPhone / iPad:\n\n1. Toque no botão de "Compartilhar" (ícone com quadrado e seta ⎋) na barra inferior do Safari.\n2. Role para baixo e selecione "Adicionar à Tela de Início" ➕.\n3. Toque em "Adicionar" no topo direito. Pronto!');
+        } else {
+          alert('ℹ️ Para baixar e instalar este aplicativo:\n\n1. Clique nos três pontinhos (⋮) do seu navegador.\n2. Escolha "Instalar aplicativo" ou "Adicionar à tela inicial".');
+        }
+      }
+    }
+
     // --- 1. DADOS DE CHECKLIST E EFETIVO PADRÃO BAVGRU ---
     const PERGUNTAS_ANEXO_C = [
       { id: "c1", grupo: "Cinto Paraquedista", texto: "1. As costuras apresentam boas condições sem ponto de rompimento ou desgastes?" },
@@ -1026,7 +1106,7 @@
       }
     }
 
-    // --- 8. DISPENSAÇÃO DE EPI COM BUSCA E SELEÇÃO INTELIGENTE ---
+    // --- 8. DISPENSAÇÃO DE EPI ---
     function filtrarColaboradoresDispensacao() {
       const busca = (document.getElementById('disp-busca-colaborador')?.value || '').toLowerCase().trim();
       const incluirInativos = document.getElementById('disp-incluir-inativos')?.checked;
@@ -1322,7 +1402,7 @@
       `).join('') : `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Nenhum colaborador encontrado.</td></tr>`;
     }
 
-    // --- 11. PENDÊNCIAS MENSAIS SPIQ (TRAVA-QUEDAS) ---
+    // --- 11. PENDÊNCIAS MENSAIS SPIQ ---
     function renderPendencias() {
       const mes = document.getElementById('pendencias-mes-ano').value || new Date().toISOString().slice(0, 7);
       const termo = (document.getElementById('busca-pendencias')?.value || '').toLowerCase();
@@ -1410,7 +1490,7 @@
       `).join('');
     }
 
-    // --- 13. AUDITORIA E COMPROVANTES (COM FOTO RENDERIZADA) ---
+    // --- 13. AUDITORIA E COMPROVANTES ---
     function renderAuditoria() {
       const t = (document.getElementById('busca-auditoria')?.value || '').toLowerCase().trim();
       const tbody = document.getElementById('tabela-auditoria');
@@ -1466,7 +1546,6 @@
           ${r.motivo ? `<div class="col-span-2"><strong>Motivo da Entrega:</strong> ${r.motivo}</div>` : ''}
         </div>
 
-        <!-- TERMO LEGAL OFICIAL NR-06 NO COMPROVANTE -->
         <div class="p-3 bg-green-50 border border-green-300 rounded text-xs space-y-1 mt-3">
           <p class="font-bold text-vibraDark uppercase">TERMO LEGAL NR-06 (6.5.1 / 6.7.1), CLT (ART. 158 / 462) & PADRÃO VIBRA ENERGIA:</p>
           <p class="text-gray-700 leading-normal">
@@ -1474,7 +1553,6 @@
           </p>
         </div>
 
-        <!-- FOTO SALVA E ASSINATURA -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
           <div class="border p-2 rounded text-center bg-gray-50 flex flex-col justify-between">
             <p class="text-xs font-bold text-gray-700 mb-1">📸 Registro Fotográfico do EPI / Entrega</p>
@@ -1838,14 +1916,12 @@
 
     // --- 15. ATUALIZAR TODOS OS DADOS DA INTERFACE ---
     function atualizarTudo() {
-      // 1. KPIs
       const ativos = colaboradores.filter(c => c.ativo !== false);
       document.getElementById('kpi-colaboradores').textContent = `${ativos.length} ativos`;
       document.getElementById('kpi-dispensacoes').textContent = auditoria.filter(a => (a.tipo || '').includes('NR-06')).length;
       document.getElementById('kpi-inspecoes').textContent = auditoria.filter(a => (a.tipo || '').includes('Anexo C')).length;
       document.getElementById('kpi-alertas').textContent = estoque.filter(e => e.qtd <= e.min).length;
 
-      // 2. Selects de Colaboradores
       ativos.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
       const opColabAtivos = ativos.map(c => `<option value="${c.id}">${c.nome} (${c.matricula})</option>`).join('');
 
@@ -1858,10 +1934,8 @@
         }
       });
 
-      // Atualiza o select de dispensação com busca
       filtrarColaboradoresDispensacao();
 
-      // 3. Selects de Estoque
       estoque.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
       const opEpi = estoque.map(e => `<option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>`).join('');
       ['disp-epi', 'entrada-epi'].forEach(id => {
@@ -1873,7 +1947,6 @@
         }
       });
 
-      // 4. Tabela de Estoque
       const tabEstoque = document.getElementById('tabela-estoque');
       if (tabEstoque) {
         tabEstoque.innerHTML = estoque.map(e => `
@@ -1887,7 +1960,6 @@
         `).join('');
       }
 
-      // 5. Renderização das seções
       renderColaboradores();
       renderAuditoria();
       renderLogExclusoes();
@@ -1896,7 +1968,7 @@
       renderToxicologico();
     }
 
-    // --- 16. INICIALIZAÇÃO SEGURA (COMPATIBILIDADE GOOGLE CHROME) ---
+    // --- 16. INICIALIZAÇÃO SEGURA ---
     function initApp() {
       try {
         const hoje = new Date();

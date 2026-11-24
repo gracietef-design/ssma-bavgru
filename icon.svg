@@ -1,21 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
-  <!-- Fundo Verde Oficial Vibra -->
-  <rect width="512" height="512" rx="90" fill="#004822"/>
-
-  <!-- Símbolo da Vibra (Na mesma proporção e altura exata do texto) -->
-  <path d="M 46,296 L 72,220 L 96,296 L 120,220 L 144,296" 
-        fill="none" 
-        stroke="#FFFFFF" 
-        stroke-width="14" 
-        stroke-linecap="butt" 
-        stroke-linejoin="miter" 
-        stroke-miterlimit="4" />
-
-  <!-- Texto VIBRA (Compacto, em negrito e alinhado na mesma linha) -->
-  <text x="165" y="296" 
-        fill="#FFFFFF" 
-        font-family="'Arial Black', 'Impact', sans-serif" 
-        font-size="96" 
-        font-weight="900" 
-        font-style="italic">VIBRA</text>
-</svg>
+<!-- LOGO OFICIAL VIBRA NO CABEÇALHO -->
+<img src="logo-vibra.png" 
+     alt="Vibra Energia" 
+     class="h-[60px] w-auto object-contain rounded-lg shadow-md border border-emerald-800/50 shrink-0" />

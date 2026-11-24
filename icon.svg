@@ -17,16 +17,26 @@
         stroke-width="14" 
         stroke-linejoin="round" />
 
-  <!-- Símbolo do Capacete de Segurança do Trabalho (SMA) -->
-  <!-- Casco Principal -->
-  <path d="M160,250 C160,150 352,150 352,250 Z" fill="#FFC72C" />
-  
-  <!-- Aba do Capacete -->
-  <path d="M130,245 L382,245 C395,245 395,260 382,260 L130,260 C117,260 117,245 130,245 Z" fill="#E0AF26" />
-  
-  <!-- Nervura de reforço do topo -->
-  <path d="M241,155 L271,155 L271,230 L241,230 Z" fill="#FFF2CC" opacity="0.4" />
-  <path d="M256,150 C240,150 240,180 240,245 L272,245 C272,180 272,150 256,150 Z" fill="#F0C020" />
+  <!-- LOGO VIBRA ENERGIA (Substituindo o antigo capacete) -->
+  <g>
+    <!-- Onda / Símbolo de Energia Vibra -->
+    <path d="M 148 245 L 168 185 L 185 245 L 202 185 L 220 245" 
+          fill="none" 
+          stroke="#FFFFFF" 
+          stroke-width="13" 
+          stroke-linecap="butt" 
+          stroke-linejoin="miter" 
+          stroke-miterlimit="5" />
+    
+    <!-- Tipografia VIBRA -->
+    <text x="236" y="242" 
+          fill="#FFFFFF" 
+          font-family="system-ui, -apple-system, sans-serif" 
+          font-size="54" 
+          font-weight="900" 
+          font-style="italic" 
+          letter-spacing="2">VIBRA</text>
+  </g>
 
   <!-- Texto SSMA na base do ícone -->
   <text x="256" y="365" 

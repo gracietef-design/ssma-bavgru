@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Portal SSMA BAVGRU - Gestão de EPIs, Inspeção SPIQ & Auditoria</title>
   <meta name="theme-color" content="#008542" />
+  
+  <!-- Tailwind CSS & Bibliotecas Externas com Fallback Offline -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -26,8 +28,11 @@
       };
     }
   </script>
+
+  <!-- Estilos Embutidos Robustos (Compatibilidade Total com Google Chrome e Offline) -->
   <style>
-    body { background-color: #f1f5f9; color: #1e293b; font-family: system-ui, -apple-system, sans-serif; margin: 0; }
+    * { box-sizing: border-box; }
+    body { background-color: #f1f5f9; color: #1e293b; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
     .hidden { display: none !important; }
     .bg-vibraGreen { background-color: #008542 !important; }
     .bg-vibraDark { background-color: #00582C !important; }
@@ -37,19 +42,25 @@
     .text-vibraYellow { color: #FFC72C !important; }
     .border-vibraGreen { border-color: #008542 !important; }
     .border-vibraYellow { border-color: #FFC72C !important; }
+    
+    /* Regras de Impressão */
     @media print {
       body * { visibility: hidden; }
       #modal-print { position: static !important; display: block !important; background: none !important; padding: 0 !important; overflow: visible !important; }
-      #modal-print > div { max-height: none !important; overflow: visible !important; box-shadow: none !important; width: 100% !important; max-width: 100% !important; padding: 0 !important; }
+      #modal-print > div { max-height: none !important; overflow: visible !important; box-shadow: none !important; width: 100% !important; max-width: 100% !important; padding: 0 !important; border: none !important; }
       #print-area, #print-area * { visibility: visible; }
       #print-area { position: static !important; width: 100% !important; box-shadow: none !important; border: none !important; }
       .no-print { display: none !important; }
       tr { page-break-inside: avoid; }
     }
     canvas { touch-action: none; }
+    
+    /* Animações e componentes */
+    .btn-active-tab { background-color: #ffffff !important; color: #00582C !important; font-weight: 800 !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important; }
+    .badge-ativo { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .badge-inativo { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
   </style>
 </head>
-
 <body class="bg-gray-100 text-gray-800 font-sans min-h-screen flex flex-col">
 
   <!-- CABEÇALHO PADRÃO VIBRA -->
@@ -57,7 +68,7 @@
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 border-b border-green-700">
       <div class="flex items-center gap-3">
         <div class="flex items-center gap-2">
-          <div class="w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center shadow font-black text-vibraGreen text-lg">
+          <div class="w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center shadow font-black text-vibraDark text-lg">
             V
           </div>
           <div class="text-white font-extrabold px-1 text-2xl tracking-widest flex items-center gap-1.5">
@@ -68,7 +79,7 @@
         <div class="border-l-2 border-green-400 pl-3">
           <div class="flex items-center gap-2 flex-wrap">
             <h1 class="text-base md:text-lg font-extrabold">SSMA BAVGRU</h1>
-            <span id="badge-status-nuvem" onclick="testarEForcarSincronizacao()" class="cursor-pointer text-xs bg-green-900 text-green-200 border border-green-400 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+            <span id="badge-status-nuvem" onclick="testarEForcarSincronizacao()" class="cursor-pointer text-xs bg-green-900 text-green-200 border border-green-400 px-2 py-0.5 rounded-full font-bold flex items-center gap-1" title="Clique para sincronizar">
               <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
               <span id="texto-status-nuvem">Nuvem Conectada</span>
             </span>
@@ -80,7 +91,7 @@
 
     <div class="bg-vibraDark px-3 py-2">
       <nav class="max-w-7xl mx-auto flex flex-wrap items-center justify-start sm:justify-center gap-1.5 sm:gap-2">
-        <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="tab-btn bg-white text-vibraDark font-extrabold px-3 py-1.5 rounded-lg text-xs sm:text-sm shadow">📊 Painel</button>
+        <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="tab-btn btn-active-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm">📊 Painel</button>
         <button onclick="switchTab('dispensacao')" id="tab-btn-dispensacao" class="tab-btn bg-green-900 text-green-100 hover:bg-green-800 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold">🦺 Dispensar EPI</button>
         <button onclick="switchTab('inspecao')" id="tab-btn-inspecao" class="tab-btn bg-green-900 text-green-100 hover:bg-green-800 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold">🧗 Inspeção Cinto</button>
         <button onclick="switchTab('pendencias')" id="tab-btn-pendencias" class="tab-btn bg-yellow-600 text-white hover:bg-yellow-700 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold">⚠️ Pendências</button>
@@ -97,23 +108,23 @@
     <!-- ABA 1: DASHBOARD -->
     <section id="tab-dashboard" class="space-y-4">
       <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-        <div onclick="switchTab('colaboradores')" class="bg-white p-3.5 rounded-xl shadow border-l-4 border-vibraGreen cursor-pointer">
-          <p class="text-xs text-gray-500 uppercase font-bold">Efetivo Ativo</p>
+        <div onclick="switchTab('colaboradores')" class="bg-white p-3.5 rounded-xl shadow border-l-4 border-vibraGreen cursor-pointer hover:bg-gray-50">
+          <p class="text-xs text-gray-500 uppercase font-bold">Colaboradores Ativos</p>
           <p id="kpi-colaboradores" class="text-2xl font-extrabold text-gray-800 mt-1">0</p>
         </div>
-        <div onclick="switchTab('dashboard')" class="bg-white p-3.5 rounded-xl shadow border-l-4 border-blue-600 cursor-pointer">
+        <div onclick="switchTab('dashboard')" class="bg-white p-3.5 rounded-xl shadow border-l-4 border-blue-600 cursor-pointer hover:bg-gray-50">
           <p class="text-xs text-gray-500 uppercase font-bold">Fichas NR-06</p>
           <p id="kpi-dispensacoes" class="text-2xl font-extrabold text-gray-800 mt-1">0</p>
         </div>
-        <div onclick="switchTab('inspecao')" class="bg-white p-3.5 rounded-xl shadow border-l-4 border-green-600 cursor-pointer">
+        <div onclick="switchTab('inspecao')" class="bg-white p-3.5 rounded-xl shadow border-l-4 border-green-600 cursor-pointer hover:bg-gray-50">
           <p class="text-xs text-gray-500 uppercase font-bold">Inspeções Cinto</p>
           <p id="kpi-inspecoes" class="text-2xl font-extrabold text-gray-800 mt-1">0</p>
         </div>
-        <div onclick="switchTab('pendencias')" class="bg-white p-3.5 rounded-xl shadow border-l-4 border-yellow-500 cursor-pointer">
+        <div onclick="switchTab('pendencias')" class="bg-white p-3.5 rounded-xl shadow border-l-4 border-yellow-500 cursor-pointer hover:bg-gray-50">
           <p class="text-xs text-gray-500 uppercase font-bold">Pendências Mês</p>
           <p id="kpi-pendencias" class="text-2xl font-extrabold text-yellow-600 mt-1">0</p>
         </div>
-        <div onclick="switchTab('estoque')" class="col-span-2 md:col-span-1 bg-white p-3.5 rounded-xl shadow border-l-4 border-red-600 cursor-pointer">
+        <div onclick="switchTab('estoque')" class="col-span-2 md:col-span-1 bg-white p-3.5 rounded-xl shadow border-l-4 border-red-600 cursor-pointer hover:bg-gray-50">
           <p class="text-xs text-gray-500 uppercase font-bold">Alertas Estoque</p>
           <p id="kpi-alertas" class="text-2xl font-extrabold text-red-600 mt-1">0</p>
         </div>
@@ -124,7 +135,7 @@
           <h2 class="text-base md:text-lg font-bold text-gray-800">🗂️ Arquivo Digital de Auditoria (Fichas NR-06 & Inspeções)</h2>
           <div class="flex gap-2 w-full md:w-auto">
             <input type="text" id="busca-auditoria" oninput="renderAuditoria()" placeholder="🔎 Filtrar nome, matrícula ou CA..." class="border rounded-lg px-3 py-2 text-sm w-full md:w-64 bg-gray-50" />
-            <button onclick="exportarCSV()" class="bg-vibraGreen text-white px-3 py-2 rounded-lg text-xs font-semibold">📥 Exportar CSV</button>
+            <button onclick="exportarCSV()" class="bg-vibraGreen text-white px-3 py-2 rounded-lg text-xs font-semibold hover:bg-green-700">📥 Exportar CSV</button>
           </div>
         </div>
         <div class="overflow-x-auto">
@@ -149,26 +160,51 @@
     <!-- ABA 2: DISPENSAÇÃO DE EPI -->
     <section id="tab-dispensacao" class="hidden space-y-4">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
-        <h2 class="text-base md:text-lg font-bold text-vibraDark border-b pb-2 mb-4">🦺 Nova Dispensação de EPI com Assinatura e Foto (NR-06)</h2>
-
+        <h2 class="text-base md:text-lg font-bold text-vibraDark border-b pb-2 mb-4">🦺 Nova Dispensação de EPI com Assinatura & Foto (NR-06)</h2>
+        
+        <!-- SELEÇÃO E BUSCA DE COLABORADOR (COM DIGITAÇÃO PARA PESQUISAR) -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-          <div>
-            <label class="block text-xs font-bold uppercase text-gray-600 mb-1">1. Pesquisar e Selecionar Colaborador Ativo (BAVGRU) *</label>
-            <input type="text" id="busca-disp-colaborador" oninput="filtrarSelectColaboradorDispensacao()" placeholder="🔎 Digite o nome ou matrícula para filtrar rapidamente..." class="w-full border border-green-400 rounded-lg p-2 text-xs bg-white mb-1.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600" />
-            <select id="disp-colaborador" class="w-full border rounded-lg p-2.5 text-sm bg-gray-50 font-semibold"></select>
+          <div class="bg-gray-50 p-3 rounded-xl border border-gray-200">
+            <div class="flex justify-between items-center mb-1">
+              <label class="block text-xs font-bold uppercase text-gray-700">👤 Pesquisar Colaborador (BAVGRU) *</label>
+              <label class="text-xs text-gray-500 flex items-center gap-1 cursor-pointer">
+                <input type="checkbox" id="disp-incluir-inativos" onchange="filtrarColaboradoresDispensacao()" class="rounded" />
+                <span>Incluir Inativos</span>
+              </label>
+            </div>
+            <div class="relative mb-2">
+              <input type="text" id="disp-busca-colaborador" oninput="filtrarColaboradoresDispensacao()" placeholder="🔎 Digite o nome ou matrícula do funcionário..." class="w-full border-2 border-green-300 rounded-lg p-2 text-sm bg-white font-medium focus:outline-none focus:border-vibraGreen" />
+              <button type="button" onclick="limparBuscaDispensacao()" class="absolute right-2.5 top-2.5 text-gray-400 hover:text-gray-600 font-bold text-xs">✕</button>
+            </div>
+            <select id="disp-colaborador" onchange="aoSelecionarColaboradorDispensacao()" class="w-full border rounded-lg p-2.5 text-sm bg-white font-semibold"></select>
+            
+            <div id="disp-colab-card" class="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg text-xs hidden flex justify-between items-center">
+              <div>
+                <p id="disp-colab-info" class="font-bold text-vibraDark"></p>
+                <p id="disp-colab-cargo" class="text-gray-600"></p>
+              </div>
+              <span id="disp-colab-status-badge" class="px-2 py-0.5 rounded-full text-xs font-bold"></span>
+            </div>
           </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-gray-600 mb-1">2. Motivo Geral da Entrega *</label>
-            <select id="disp-motivo" class="w-full border rounded-lg p-2.5 text-sm bg-gray-50 mt-0 md:mt-8">
-              <option value="Substituição por Desgaste Normal">Substituição por Desgaste Normal</option>
-              <option value="Primeira Entrega / Admissão">Primeira Entrega / Admissão</option>
-              <option value="Substituição por Reprovação na Inspeção">Substituição por Reprovação em Inspeção</option>
-              <option value="Perda ou Extravio">Perda / Extravio</option>
-              <option value="Danificado em Operação">Danificado em Operação</option>
-            </select>
+
+          <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 flex flex-col justify-between">
+            <div>
+              <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Motivo Geral da Entrega *</label>
+              <select id="disp-motivo" class="w-full border rounded-lg p-2.5 text-sm bg-white">
+                <option value="Substituição por Desgaste Normal">Substituição por Desgaste Normal</option>
+                <option value="Primeira Entrega / Admissão">Primeira Entrega / Admissão</option>
+                <option value="Substituição por Reprovação na Inspeção">Substituição por Reprovação em Inspeção</option>
+                <option value="Perda ou Extravio">Perda / Extravio</option>
+                <option value="Adequação Operacional">Adequação Operacional</option>
+              </select>
+            </div>
+            <div class="mt-3 text-xs text-gray-500 bg-white p-2 rounded border">
+              <span class="font-bold text-vibraDark">ℹ️ Lembrete NR-06:</span> A entrega de EPI deve ser documentada formalmente por meio físico ou digital com comprovante inequívoco de recebimento.
+            </div>
           </div>
         </div>
 
+        <!-- MÚLTIPLOS EPIS NA MESMA ENTREGA -->
         <div class="border-2 border-green-200 bg-green-50 rounded-xl p-3 mb-4 space-y-3">
           <h3 class="text-xs md:text-sm font-bold text-vibraDark">🛒 Selecionar Equipamentos (Múltiplos EPIs na mesma entrega)</h3>
           <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-end">
@@ -181,10 +217,9 @@
               <input type="number" id="disp-qtd" value="1" min="1" class="w-full border rounded-lg p-2 text-sm bg-white" />
             </div>
             <div class="md:col-span-2">
-              <button type="button" onclick="adicionarEpiListaDispensacao()" class="w-full bg-vibraGreen text-white font-bold p-2 rounded-lg text-sm shadow">➕ Incluir EPI</button>
+              <button type="button" onclick="adicionarEpiListaDispensacao()" class="w-full bg-vibraGreen text-white font-bold p-2 rounded-lg text-sm shadow hover:bg-green-700">➕ Incluir EPI</button>
             </div>
           </div>
-
           <div class="bg-white rounded-lg border overflow-hidden">
             <table class="w-full text-xs text-left">
               <thead class="bg-gray-100 font-bold border-b">
@@ -197,63 +232,77 @@
           </div>
         </div>
 
-        <!-- TERMO DE ENTREGA DE EPI COMPLETO NR-06 & PADRÃO CORPORATIVO VIBRA -->
-        <div class="bg-green-50 border-l-4 border-vibraGreen rounded-lg p-3.5 text-xs text-gray-800 space-y-1.5 shadow-sm">
-          <p class="font-extrabold text-vibraDark uppercase text-xs md:text-sm">⚖️ Termo de Responsabilidade de Recebimento e Uso de EPI (NR-06 & Padrão Corporativo Vibra Energia)</p>
-          <p class="leading-relaxed text-justify">
-            Em cumprimento à <strong>Norma Regulamentadora NR-06 (Portaria MTP nº 672/2021 - itens 6.5.1, 6.6.1 e 6.7.1)</strong>, ao <strong>Art. 158 da CLT</strong> e às diretrizes do <strong>Padrão Corporativo de SSMA da Vibra Energia S.A. (Unidade BAVGRU)</strong>, <strong>DECLARO</strong> para todos os fins de direito que recebi gratuitamente os Equipamentos de Proteção Individual (EPIs) discriminados neste registro, novos, em perfeito estado de conservação e funcionamento, com Certificado de Aprovação (CA) válido, bem como recebi orientação e treinamento formal sobre o uso adequado, ajuste, guarda, higienização e limitações de proteção.
+        <!-- TERMO LEGAL COMPLETO NR-06 E PADRÃO CORPORATIVO VIBRA -->
+        <div class="bg-green-50 border-l-4 border-vibraGreen rounded-lg p-3 text-xs text-gray-700 space-y-2">
+          <p class="font-bold text-vibraDark uppercase tracking-wide flex items-center gap-1.5">
+            <span>⚖️</span> Termo de Responsabilidade e Entrega de EPI (NR-06 & Padrão Corporativo Vibra Energia S.A.)
           </p>
-          <p class="leading-relaxed text-justify">
-            <strong>Assumo o compromisso legal e disciplinar de:</strong>
-            <strong>(a)</strong> Utilizar o EPI apenas para a finalidade a que se destina durante toda a exposição ao risco operacional;
-            <strong>(b)</strong> Responsabilizar-me pela guarda, higienização e conservação;
-            <strong>(c)</strong> Comunicar imediatamente à Liderança ou ao SSMA BAVGRU qualquer alteração que o torne impróprio para uso;
-            <strong>(d)</strong> Cumprir as determinações do empregador sobre o uso adequado; e
-            <strong>(e)</strong> Devolver o equipamento quando da substituição ou em caso de desligamento da empresa.
-            Estou ciente de que a recusa injustificada ao uso constitui ato faltoso (Art. 158, Parágrafo Único, alínea "b" da CLT) e que, em caso de dano intencional, dolo, culpa ou extravio injustificado, autorizo o respectivo desconto nos termos do <strong>Art. 462, § 1º da CLT</strong>.
+          <p class="leading-relaxed">
+            Declaro ter recebido gratuitamente da <strong>Vibra Energia S.A. - Base de Aviação de Guarulhos (BAVGRU)</strong> os Equipamentos de Proteção Individual (EPIs) discriminados nesta ficha, novos e em perfeito estado de conservação, com Certificado de Aprovação (CA) válido expedido pelo Ministério do Trabalho e Emprego, adequados aos riscos das minhas atividades funcionais.
           </p>
+          <p class="leading-relaxed">
+            Em conformidade com a <strong>Norma Regulamentadora NR-06 (itens 6.5.1, 6.5.2 e 6.7.1)</strong>, a <strong>Consolidação das Leis do Trabalho - CLT (Artigos 158 e 462, § 1º)</strong> e as Diretrizes Corporativas de SSMA da Vibra Energia, assumo formalmente os seguintes compromissos:
+          </p>
+          <ul class="list-disc pl-5 space-y-1 text-xs text-gray-600">
+            <li><strong>Finalidade e Obrigatoriedade:</strong> Usar os EPIs fornecidos exclusivamente para a finalidade a que se destinam, durante todo o tempo de execução de minhas atividades operacionais na unidade BAVGRU;</li>
+            <li><strong>Guarda e Conservação:</strong> Responsabilizar-me pela guarda, limpeza, higienização e conservação dos equipamentos que estão sob minha posse e custódia;</li>
+            <li><strong>Comunicação de Avarias:</strong> Comunicar imediatamente à liderança operacional ou à área de SSMA qualquer alteração, desgaste excessivo, avaria, defeito, perda ou extravio que torne o EPI impróprio para uso, solicitando sua imediata substituição;</li>
+            <li><strong>Cumprimento de Normas:</strong> Cumprir integralmente todas as orientações técnicas, treinamentos e determinações da Vibra Energia sobre a utilização adequada de cada item;</li>
+            <li><strong>Devolução Obrigatória:</strong> Devolver os EPIs substituídos no ato de recebimento dos novos, bem como restituir todos os equipamentos sob minha responsabilidade no término do contrato de trabalho, desligamento ou transferência da unidade;</li>
+            <li><strong>Responsabilidade e Sanções Legais:</strong> Declaro estar plenamente ciente de que a recusa injustificada ao uso dos EPIs fornecidos constitui ato faltoso sujeito às sanções disciplinares previstas em lei (CLT, Art. 158, parágrafo único), e que o dano doloso ou por mau uso comprovado autoriza o respectivo ressarcimento conforme previsto no Artigo 462, § 1º da CLT.</li>
+          </ul>
         </div>
 
+        <!-- FOTO E ASSINATURA -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <div class="border rounded-xl p-3 bg-gray-50">
-            <div class="flex justify-between items-center mb-2">
-              <h3 class="font-bold text-xs text-gray-700">📸 1. Foto do Colaborador / EPI</h3>
-              <div class="flex gap-2">
-                <button type="button" onclick="alternarCamera('disp')" class="text-xs text-blue-600 font-bold">🔄 Inverter</button>
-                <button type="button" onclick="limparFoto('disp')" class="text-xs text-red-600 font-bold">🗑️ Limpar Foto</button>
+          <!-- 1. FOTO DO COLABORADOR / EPI -->
+          <div class="border rounded-xl p-3 bg-gray-50 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <h3 class="font-bold text-xs text-gray-700 flex items-center gap-1">📸 1. Foto do Colaborador / EPI Entregue</h3>
+                <div class="flex gap-2">
+                  <button type="button" onclick="alternarCamera('disp')" class="text-xs text-blue-600 font-bold hover:underline">🔄 Inverter</button>
+                  <button type="button" id="btn-remover-foto-disp" onclick="removerFoto('disp')" class="text-xs text-red-600 font-bold hidden hover:underline">🗑️ Remover</button>
+                </div>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="relative w-full max-w-xs h-44 bg-gray-200 rounded-lg overflow-hidden border flex items-center justify-center">
+                  <video id="video-disp" class="w-full h-full object-cover hidden" autoplay playsinline muted></video>
+                  <img id="foto-disp-preview" class="w-full h-full object-cover hidden" alt="Foto Dispensação" />
+                  <span id="foto-disp-placeholder" class="text-xs text-gray-400 text-center px-2">Nenhuma foto capturada.<br/>Ligue a câmera ou anexe um arquivo.</span>
+                </div>
               </div>
             </div>
-            <div class="flex flex-col items-center gap-2">
-              <div class="relative w-full max-w-xs h-44 bg-gray-200 rounded-lg overflow-hidden border flex items-center justify-center">
-                <video id="video-disp" class="w-full h-full object-cover hidden" autoplay playsinline muted></video>
-                <img id="foto-disp-preview" class="w-full h-full object-contain bg-black hidden" />
-                <span id="foto-disp-placeholder" class="text-xs text-gray-500 text-center px-2">Nenhuma foto capturada</span>
-              </div>
-              <div class="flex flex-wrap justify-center gap-2 w-full">
-                <button type="button" onclick="iniciarCamera('disp')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow">🎥 Ligar Câmera</button>
-                <button type="button" onclick="capturarFoto('disp')" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow">📸 Capturar</button>
-                <label class="bg-gray-700 hover:bg-gray-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow cursor-pointer">
-                  📁 Anexar / Câmera Celular
-                  <input type="file" accept="image/*" capture="environment" class="hidden" onchange="carregarFotoArquivo(event, 'disp')" />
-                </label>
-              </div>
-              <p id="status-foto-disp" class="text-xs font-bold text-gray-500">Status: Sem foto anexada</p>
+
+            <div class="flex flex-wrap gap-2 justify-center mt-3 pt-2 border-t">
+              <button type="button" onclick="iniciarCamera('disp')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-700">📸 Ligar Câmera</button>
+              <button type="button" onclick="capturarFoto('disp')" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-green-700">Tirar Foto</button>
+              <label class="bg-gray-700 hover:bg-gray-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer">
+                📁 Anexar / Arquivo
+                <input type="file" id="arquivo-foto-disp" accept="image/*" capture="environment" onchange="processarArquivoFoto('disp', event)" class="hidden" />
+              </label>
             </div>
           </div>
 
-          <div class="border rounded-xl p-3 bg-gray-50">
-            <div class="flex justify-between items-center mb-2">
-              <h3 class="font-bold text-xs text-gray-700">✍️ 2. Assinatura Digital do Colaborador</h3>
-              <button type="button" onclick="limparAssinatura('canvas-disp')" class="text-xs text-red-600 font-semibold">Limpar Assinatura</button>
+          <!-- 2. ASSINATURA DIGITAL -->
+          <div class="border rounded-xl p-3 bg-gray-50 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <h3 class="font-bold text-xs text-gray-700">✍️ 2. Assinatura Digital do Colaborador *</h3>
+                <button type="button" onclick="limparAssinatura('canvas-disp')" class="text-xs text-red-600 font-semibold hover:underline">Limpar Assinatura</button>
+              </div>
+              <div class="bg-white border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
+                <canvas id="canvas-disp" height="170" class="w-full bg-white cursor-crosshair block"></canvas>
+              </div>
             </div>
-            <div class="bg-white border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
-              <canvas id="canvas-disp" height="175" class="w-full bg-white cursor-crosshair block"></canvas>
-            </div>
+            <p class="text-xs text-gray-400 italic text-center mt-2">Assine no quadro acima com o dedo ou mouse.</p>
           </div>
         </div>
 
         <div class="mt-5 flex justify-end">
-          <button onclick="salvarDispensacao()" class="w-full md:w-auto bg-vibraGreen hover:bg-green-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm">✅ Confirmar Entrega e Gerar Ficha NR-06</button>
+          <button onclick="salvarDispensacao()" class="w-full md:w-auto bg-vibraGreen text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm hover:bg-green-700 transition">
+            ✅ Confirmar Entrega e Gerar Ficha NR-06
+          </button>
         </div>
       </div>
     </section>
@@ -265,66 +314,72 @@
           <h2 class="text-base md:text-lg font-bold text-vibraDark">🧗 Inspeção Mensal de Cinto e Talabarte (Anexo C)</h2>
           <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full">CA Padrão: 35191</span>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
           <div>
             <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Colaborador Executante *</label>
-            <input type="text" id="busca-insp-colaborador" oninput="filtrarSelectColaboradorInspecao()" placeholder="🔎 Filtrar colaborador por nome..." class="w-full border border-green-400 rounded-lg p-1.5 text-xs bg-white mb-1" />
-            <select id="insp-colaborador" onchange="verificarAvisoCinto()" class="w-full border rounded-lg p-2 text-sm bg-gray-50 font-semibold"></select>
+            <select id="insp-colaborador" onchange="verificarAvisoCinto()" class="w-full border rounded-lg p-2.5 text-sm bg-gray-50 font-semibold"></select>
             <p id="aviso-nao-usa-cinto" class="hidden text-xs text-purple-700 font-bold mt-1">ℹ️ Cadastrado como "Não Utiliza Cinto".</p>
           </div>
           <div>
             <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Nº C.A. do Cinto *</label>
-            <input type="text" id="insp-ca" value="35191" class="w-full border rounded-lg p-2.5 text-sm mt-0 md:mt-7" />
+            <input type="text" id="insp-ca" value="35191" class="w-full border rounded-lg p-2.5 text-sm" />
           </div>
           <div>
             <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Data da Inspeção *</label>
-            <input type="date" id="insp-data" class="w-full border rounded-lg p-2.5 text-sm mt-0 md:mt-7" />
+            <input type="date" id="insp-data" class="w-full border rounded-lg p-2.5 text-sm" />
           </div>
         </div>
 
         <div class="space-y-2" id="checklist-container"></div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <div class="border rounded-xl p-3 bg-gray-50">
-            <div class="flex justify-between items-center mb-2">
-              <h3 class="font-bold text-xs text-gray-700">📸 1. Foto da Inspeção</h3>
-              <div class="flex gap-2">
-                <button type="button" onclick="alternarCamera('insp')" class="text-xs text-blue-600 font-bold">🔄 Inverter</button>
-                <button type="button" onclick="limparFoto('insp')" class="text-xs text-red-600 font-bold">🗑️ Limpar Foto</button>
+          <!-- FOTO INSPEÇÃO -->
+          <div class="border rounded-xl p-3 bg-gray-50 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <h3 class="font-bold text-xs text-gray-700">📸 1. Foto da Inspeção / Cinto</h3>
+                <div class="flex gap-2">
+                  <button type="button" onclick="alternarCamera('insp')" class="text-xs text-blue-600 font-bold hover:underline">🔄 Inverter</button>
+                  <button type="button" id="btn-remover-foto-insp" onclick="removerFoto('insp')" class="text-xs text-red-600 font-bold hidden hover:underline">🗑️ Remover</button>
+                </div>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="relative w-full max-w-xs h-44 bg-gray-200 rounded-lg overflow-hidden border flex items-center justify-center">
+                  <video id="video-insp" class="w-full h-full object-cover hidden" autoplay playsinline muted></video>
+                  <img id="foto-insp-preview" class="w-full h-full object-cover hidden" alt="Foto Inspeção" />
+                  <span id="foto-insp-placeholder" class="text-xs text-gray-400 text-center px-2">Câmera desligada</span>
+                </div>
               </div>
             </div>
-            <div class="flex flex-col items-center gap-2">
-              <div class="relative w-full max-w-xs h-44 bg-gray-200 rounded-lg overflow-hidden border flex items-center justify-center">
-                <video id="video-insp" class="w-full h-full object-cover hidden" autoplay playsinline muted></video>
-                <img id="foto-insp-preview" class="w-full h-full object-contain bg-black hidden" />
-                <span id="foto-insp-placeholder" class="text-xs text-gray-500 text-center px-2">Nenhuma foto capturada</span>
-              </div>
-              <div class="flex flex-wrap justify-center gap-2 w-full">
-                <button type="button" onclick="iniciarCamera('insp')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow">🎥 Ligar Câmera</button>
-                <button type="button" onclick="capturarFoto('insp')" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow">📸 Capturar</button>
-                <label class="bg-gray-700 hover:bg-gray-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow cursor-pointer">
-                  📁 Anexar / Câmera Celular
-                  <input type="file" accept="image/*" capture="environment" class="hidden" onchange="carregarFotoArquivo(event, 'insp')" />
-                </label>
-              </div>
-              <p id="status-foto-insp" class="text-xs font-bold text-gray-500">Status: Sem foto anexada</p>
+            <div class="flex flex-wrap gap-2 justify-center mt-3 pt-2 border-t">
+              <button type="button" onclick="iniciarCamera('insp')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-700">Ligar Câmera</button>
+              <button type="button" onclick="capturarFoto('insp')" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-green-700">Tirar Foto</button>
+              <label class="bg-gray-700 hover:bg-gray-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer">
+                📁 Anexar Foto
+                <input type="file" id="arquivo-foto-insp" accept="image/*" capture="environment" onchange="processarArquivoFoto('insp', event)" class="hidden" />
+              </label>
             </div>
           </div>
 
-          <div class="border rounded-xl p-3 bg-gray-50">
-            <div class="flex justify-between items-center mb-2">
-              <h3 class="font-bold text-xs text-gray-700">✍️ 2. Visto Mensal / Assinatura</h3>
-              <button type="button" onclick="limparAssinatura('canvas-insp')" class="text-xs text-red-600 font-semibold">Limpar Assinatura</button>
+          <!-- ASSINATURA INSPEÇÃO -->
+          <div class="border rounded-xl p-3 bg-gray-50 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <h3 class="font-bold text-xs text-gray-700">✍️ 2. Visto Mensal / Assinatura</h3>
+                <button type="button" onclick="limparAssinatura('canvas-insp')" class="text-xs text-red-600 font-semibold hover:underline">Limpar</button>
+              </div>
+              <div class="bg-white border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
+                <canvas id="canvas-insp" height="170" class="w-full bg-white cursor-crosshair block"></canvas>
+              </div>
             </div>
-            <div class="bg-white border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
-              <canvas id="canvas-insp" height="175" class="w-full bg-white cursor-crosshair block"></canvas>
-            </div>
+            <p class="text-xs text-gray-400 italic text-center mt-2">Visto do colaborador executante.</p>
           </div>
         </div>
 
         <div class="mt-5 flex justify-end">
-          <button onclick="salvarInspecao()" class="w-full md:w-auto bg-vibraGreen text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm">🛡️ Registrar Inspeção Anexo C</button>
+          <button onclick="salvarInspecao()" class="w-full md:w-auto bg-vibraGreen text-white font-bold px-6 py-3 rounded-xl shadow-lg text-sm hover:bg-green-700">
+            🛡️ Registrar Inspeção Anexo C
+          </button>
         </div>
       </div>
     </section>
@@ -333,10 +388,10 @@
     <section id="tab-pendencias" class="hidden space-y-4">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-yellow-500">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 border-b pb-3">
-          <h2 class="text-base md:text-lg font-bold text-gray-800">⚠️ Pendências Mensais: Trava-Quedas (SPIQ - Apenas Ativos)</h2>
+          <h2 class="text-base md:text-lg font-bold text-gray-800">⚠️ Pendências Mensais: Trava-Quedas (SPIQ)</h2>
           <div class="flex gap-2">
             <input type="month" id="pendencias-mes-ano" onchange="renderPendencias()" class="border rounded-lg px-3 py-1.5 text-xs font-semibold bg-gray-50" />
-            <button onclick="exportarPendenciasCSV()" class="bg-yellow-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">📥 Exportar CSV</button>
+            <button onclick="exportarPendenciasCSV()" class="bg-yellow-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-yellow-700">📥 Exportar CSV</button>
           </div>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
@@ -371,7 +426,7 @@
         <div class="flex flex-col sm:flex-row gap-2 justify-between items-center mb-3">
           <input type="text" id="busca-nao-cinto" oninput="renderNaoUtilizaCinto()" placeholder="🔎 Filtrar colaborador..." class="w-full sm:w-80 border rounded-lg px-3 py-2 text-xs bg-gray-50" />
           <div class="flex gap-2">
-            <button onclick="filtrarTabelaNaoCinto('todos')" class="px-2.5 py-1 text-xs font-bold rounded bg-gray-200">Todos Ativos</button>
+            <button onclick="filtrarTabelaNaoCinto('todos')" class="px-2.5 py-1 text-xs font-bold rounded bg-gray-200">Todos</button>
             <button onclick="filtrarTabelaNaoCinto('isentos')" class="px-2.5 py-1 text-xs font-bold rounded bg-purple-100 text-purple-800">Não Usa</button>
             <button onclick="filtrarTabelaNaoCinto('usam')" class="px-2.5 py-1 text-xs font-bold rounded bg-green-100 text-green-800">Usa Cinto</button>
           </div>
@@ -398,21 +453,23 @@
       </div>
     </section>
 
-    <!-- ABA 7: EFETIVO (COM CONTROLE DE ATIVO / INATIVO DESLIGADO) -->
+    <!-- ABA 7: EFETIVO (COM STATUS ATIVO / INATIVO PARA DESLIGAMENTO) -->
     <section id="tab-colaboradores" class="hidden space-y-4">
       <div class="bg-white p-4 md:p-6 rounded-xl shadow">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-3 border-b pb-3">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b pb-3 mb-3">
           <div>
-            <h2 class="text-base md:text-lg font-bold text-vibraDark">👥 Banco de Colaboradores e Status de Atividade - BAVGRU</h2>
-            <p class="text-xs text-gray-500">Inative colaboradores desligados para retirá-los das listas de entrega e pendências mantendo o histórico NR-06.</p>
+            <h2 class="text-base md:text-lg font-bold text-vibraDark">👥 Banco de Colaboradores - BAVGRU</h2>
+            <p class="text-xs text-gray-500">Gestão do efetivo, status de lotação e fichas de entrega de EPI.</p>
           </div>
-          <div class="flex gap-1.5">
-            <button onclick="filtrarStatusEfetivo('ativos')" id="btn-efetivo-ativos" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-vibraGreen text-white">✅ Ativos</button>
-            <button onclick="filtrarStatusEfetivo('inativos')" id="btn-efetivo-inativos" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-gray-200 text-gray-700">🚫 Inativos / Desligados</button>
-            <button onclick="filtrarStatusEfetivo('todos')" id="btn-efetivo-todos" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-gray-200 text-gray-700">📋 Todos</button>
+          <div class="flex gap-2">
+            <button onclick="filtrarStatusEfetivo('todos')" id="btn-filtro-efetivo-todos" class="px-2.5 py-1 text-xs font-bold rounded bg-gray-200">Todos (<span id="count-efetivo-todos">0</span>)</button>
+            <button onclick="filtrarStatusEfetivo('ativos')" id="btn-filtro-efetivo-ativos" class="px-2.5 py-1 text-xs font-bold rounded bg-green-100 text-green-800 font-extrabold">🟢 Ativos (<span id="count-efetivo-ativos">0</span>)</button>
+            <button onclick="filtrarStatusEfetivo('inativos')" id="btn-filtro-efetivo-inativos" class="px-2.5 py-1 text-xs font-bold rounded bg-red-100 text-red-800">🔴 Desligados (<span id="count-efetivo-inativos">0</span>)</button>
           </div>
         </div>
-        <input type="text" id="busca-colab" oninput="renderColaboradores()" placeholder="🔍 Pesquise por nome ou matrícula..." class="w-full border rounded-lg px-3 py-2 text-xs bg-gray-50 mb-3" />
+
+        <input type="text" id="busca-colab" oninput="renderColaboradores()" placeholder="🔍 Pesquise por nome, matrícula ou função..." class="w-full border rounded-lg px-3 py-2 text-xs bg-gray-50 mb-3" />
+        
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
@@ -420,9 +477,10 @@
                 <th class="p-2.5">Matrícula</th>
                 <th class="p-2.5">Nome</th>
                 <th class="p-2.5">Função</th>
-                <th class="p-2.5 text-center">Situação na Unidade</th>
+                <th class="p-2.5 text-center">Status</th>
                 <th class="p-2.5 text-center">Cinto (SPIQ)</th>
-                <th class="p-2.5 text-right">Ações / Ficha NR-06</th>
+                <th class="p-2.5 text-center">Lotação / Desligamento</th>
+                <th class="p-2.5 text-right">Ficha NR-06</th>
               </tr>
             </thead>
             <tbody id="tabela-colaboradores" class="divide-y"></tbody>
@@ -438,14 +496,14 @@
         <p class="text-xs text-gray-500 text-center mb-4">Exclusivo Técnica de Segurança e Liderança BAVGRU.</p>
         <div class="space-y-3">
           <input type="password" id="admin-input-senha" placeholder="Senha do Administrador" class="w-full border rounded-lg p-2.5 text-sm" />
-          <button onclick="autenticarAdmin()" class="w-full bg-gray-800 text-white font-bold py-2.5 rounded-lg text-sm">Entrar no Painel</button>
+          <button onclick="autenticarAdmin()" class="w-full bg-gray-800 text-white font-bold py-2.5 rounded-lg text-sm hover:bg-gray-900">Entrar no Painel</button>
         </div>
       </div>
 
       <div id="admin-content-box" class="hidden space-y-4">
         <div class="bg-green-50 border border-green-300 p-3 rounded-xl flex justify-between items-center">
-          <span class="font-bold text-green-900 text-sm">🔓 Sessão Administrativa Ativa (Toxicológico, Estoque, Efetivo, Inativação e Ficha Única)</span>
-          <button onclick="sairAdmin()" class="bg-green-200 text-green-800 px-3 py-1 rounded-lg text-xs font-bold">Sair ✕</button>
+          <span class="font-bold text-green-900 text-sm">🔓 Sessão Administrativa Ativa (Toxicológico, Estoque, Efetivo e Ficha Única)</span>
+          <button onclick="sairAdmin()" class="bg-green-200 text-green-800 px-3 py-1 rounded-lg text-xs font-bold hover:bg-green-300">Sair ✕</button>
         </div>
 
         <!-- 1. CONTROLE DE EXAMES TOXICOLÓGICOS -->
@@ -456,8 +514,8 @@
               <p class="text-xs text-gray-500">Cadastre os funcionários e as validades dos exames toxicológicos e gere o relatório oficial em PDF ou Excel.</p>
             </div>
             <div class="flex gap-2">
-              <button type="button" onclick="gerarRelatorioToxicologicoPDF()" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow">📄 Gerar Relatório PDF</button>
-              <button type="button" onclick="exportarToxicologicoCSV()" class="bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow">📥 Exportar Excel/CSV</button>
+              <button type="button" onclick="gerarRelatorioToxicologicoPDF()" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow hover:bg-green-700">📄 Gerar Relatório PDF</button>
+              <button type="button" onclick="exportarToxicologicoCSV()" class="bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow hover:bg-blue-800">📥 Exportar Excel/CSV</button>
             </div>
           </div>
 
@@ -475,7 +533,7 @@
               <input type="date" id="tox-data-validade" class="w-full border rounded-lg p-2 text-sm bg-white" />
             </div>
             <div class="md:col-span-2">
-              <button type="button" onclick="salvarExameToxicologico()" class="w-full bg-vibraGreen text-white font-bold py-2 px-3 rounded-lg text-sm shadow">+ Salvar Exame</button>
+              <button type="button" onclick="salvarExameToxicologico()" class="w-full bg-vibraGreen text-white font-bold py-2 px-3 rounded-lg text-sm shadow hover:bg-green-700">+ Salvar Exame</button>
             </div>
           </div>
 
@@ -496,20 +554,20 @@
 
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
-              <thead><tr class="bg-gray-100 border-b font-bold"><th class="p-2">Matrícula</th><th class="p-2">Colaborador</th><th class="p-2">Função</th><th class="p-2 text-center">Realização</th><th class="p-2 text-center">Validade</th><th class="p-2 text-center">Status</th><th class="p-2 text-right">Ação</th></tr></thead>
+              <thead><tr class="bg-gray-100 border-b font-bold"><th class="p-2">Matrícula</th><th class="p-2.5">Colaborador</th><th class="p-2">Função</th><th class="p-2 text-center">Realização</th><th class="p-2 text-center">Validade</th><th class="p-2 text-center">Status</th><th class="p-2 text-right">Ação</th></tr></thead>
               <tbody id="tabela-toxicologico" class="divide-y"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- 2. FICHA ÚNICA CONSOLIDADA POR FUNCIONÁRIO (ATIVOS E INATIVOS) -->
+        <!-- 2. FICHA ÚNICA CONSOLIDADA POR FUNCIONÁRIO -->
         <div class="bg-white p-4 md:p-6 rounded-xl shadow border-t-4 border-green-600">
-          <h2 class="text-base font-bold text-vibraDark mb-2">📑 Histórico de Entrega de EPIs por Funcionário (PDF Único - Ativos e Desligados)</h2>
+          <h2 class="text-base font-bold text-vibraDark mb-2">📑 Histórico de Entrega de EPIs por Funcionário (PDF Único)</h2>
           <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
             <div class="flex-1">
               <select id="admin-historico-colab" class="w-full border rounded-lg p-2.5 text-sm bg-gray-50 font-semibold"></select>
             </div>
-            <button onclick="gerarFichaUnicaPeloSelectAdmin()" class="bg-vibraGreen text-white font-bold px-5 py-2.5 rounded-lg text-sm shadow">📄 Gerar PDF Único do Histórico</button>
+            <button onclick="gerarFichaUnicaPeloSelectAdmin()" class="bg-vibraGreen text-white font-bold px-5 py-2.5 rounded-lg text-sm shadow hover:bg-green-700">📄 Gerar PDF Único do Histórico</button>
           </div>
         </div>
 
@@ -521,7 +579,7 @@
             <div><input type="text" id="entrada-nf" placeholder="Nº NF / Lote" class="w-full border rounded-lg p-2.5 text-sm" /></div>
             <div class="flex gap-2">
               <input type="number" id="entrada-qtd" min="1" value="10" class="w-full border rounded-lg p-2.5 text-sm" />
-              <button onclick="registrarEntrada()" class="bg-blue-600 text-white font-bold px-4 py-2.5 rounded-lg text-sm">➕ Somar</button>
+              <button onclick="registrarEntrada()" class="bg-blue-600 text-white font-bold px-4 py-2.5 rounded-lg text-sm hover:bg-blue-700">➕ Somar</button>
             </div>
           </div>
           <div class="pt-3 border-t grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -530,7 +588,7 @@
             <input type="number" id="novo-epi-qtd" placeholder="Saldo Inicial" class="border rounded-lg p-2 text-sm" />
             <div class="flex gap-2">
               <input type="number" id="novo-epi-min" value="5" class="border rounded-lg p-2 text-sm flex-1" />
-              <button onclick="cadastrarNovoEpi()" class="bg-vibraGreen text-white font-bold px-4 py-2 rounded-lg text-sm">+ Criar EPI</button>
+              <button onclick="cadastrarNovoEpi()" class="bg-vibraGreen text-white font-bold px-4 py-2 rounded-lg text-sm hover:bg-green-700">+ Criar EPI</button>
             </div>
           </div>
         </div>
@@ -542,8 +600,8 @@
             <input type="text" id="novo-colab-nome" placeholder="Nome Completo" class="border rounded-lg p-2 text-sm" />
             <input type="text" id="novo-colab-matricula" placeholder="Matrícula" class="border rounded-lg p-2 text-sm" />
             <input type="text" id="novo-colab-funcao" placeholder="Função" class="border rounded-lg p-2 text-sm" />
-            <input type="email" id="novo-colab-email" placeholder="E-mail" class="border rounded-lg p-2 text-sm" />
-            <button onclick="cadastrarNovoColaborador()" class="bg-vibraGreen text-white font-bold px-4 py-2 rounded-lg text-sm">+ Incluir</button>
+            <input type="email" id="novo-colab-email" placeholder="E-mail (opcional)" class="border rounded-lg p-2 text-sm" />
+            <button onclick="cadastrarNovoColaborador()" class="bg-vibraGreen text-white font-bold px-4 py-2 rounded-lg text-sm hover:bg-green-700">+ Incluir</button>
           </div>
         </div>
 
@@ -563,7 +621,7 @@
 
         <div class="bg-white p-4 rounded-xl shadow border-t-4 border-gray-700 flex gap-2 max-w-md">
           <input type="password" id="nova-senha-admin" placeholder="Nova senha Admin" class="border rounded-lg p-2 text-sm flex-1" />
-          <button onclick="alterarSenhaAdmin()" class="bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">Salvar Senha</button>
+          <button onclick="alterarSenhaAdmin()" class="bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm hover:bg-gray-900">Salvar Senha</button>
         </div>
       </div>
     </section>
@@ -576,17 +634,32 @@
       <div class="flex justify-between items-center mb-3 pb-2 border-b no-print">
         <h3 id="modal-print-title" class="font-bold text-vibraDark text-sm">📄 Documento Oficial SSMA BAVGRU</h3>
         <div class="flex gap-2">
-          <button onclick="window.print()" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-bold">📥 Imprimir / Salvar PDF</button>
-          <button onclick="fecharModalPrint()" class="bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold">Fechar ✕</button>
+          <button onclick="window.print()" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-green-700">📥 Imprimir / PDF</button>
+          <button onclick="fecharModalPrint()" class="bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-300">Fechar ✕</button>
         </div>
       </div>
       <div id="print-area" class="p-4 border border-gray-300 rounded-lg text-xs space-y-3 bg-white"></div>
     </div>
   </div>
 
-  <script>
-    const TEXTO_TERMO_NR06_VIBRA = `Em cumprimento à Norma Regulamentadora NR-06 (Portaria MTP nº 672/2021 - itens 6.5.1, 6.6.1 e 6.7.1), ao Art. 158 da CLT e às diretrizes do Padrão Corporativo de SSMA da Vibra Energia S.A. (Unidade BAVGRU), DECLARO para todos os fins de direito que recebi gratuitamente os Equipamentos de Proteção Individual (EPIs) discriminados neste registro, novos, em perfeito estado de conservação e funcionamento, com Certificado de Aprovação (CA) válido, bem como recebi orientação e treinamento formal sobre o uso adequado, ajuste, guarda, higienização e limitações de proteção. Assumo o compromisso legal e disciplinar de: (a) Utilizar o EPI apenas para a finalidade a que se destina durante toda a exposição ao risco operacional; (b) Responsabilizar-me pela guarda, higienização e conservação; (c) Comunicar imediatamente à Liderança ou ao SSMA BAVGRU qualquer alteração que o torne impróprio para uso; (d) Cumprir as determinações do empregador sobre o uso adequado; e (e) Devolver o equipamento quando da substituição ou em caso de desligamento da empresa. Estou ciente de que a recusa injustificada ao uso constitui ato faltoso (Art. 158, Parágrafo Único, alínea "b" da CLT) e que, em caso de dano intencional, dolo, culpa ou extravio injustificado, autorizo o respectivo desconto nos termos do Art. 462, § 1º da CLT.`;
+  <!-- MODAL VISUALIZADOR DE FOTO EM ALTA RESOLUÇÃO -->
+  <div id="modal-foto-zoom" class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center p-4 z-50" onclick="fecharModalFotoZoom()">
+    <div class="bg-white rounded-xl p-3 max-w-lg w-full shadow-2xl" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center mb-2 pb-1 border-b">
+        <h4 class="font-bold text-xs text-gray-700">📸 Registro Fotográfico do EPI / Inspeção</h4>
+        <button onclick="fecharModalFotoZoom()" class="text-gray-500 hover:text-gray-800 font-bold text-sm">✕</button>
+      </div>
+      <div class="flex justify-center items-center bg-gray-100 rounded-lg overflow-hidden p-1">
+        <img id="img-zoom-foto" src="" class="max-h-96 max-w-full object-contain rounded" alt="Foto ampliada" />
+      </div>
+      <div class="mt-2 text-right">
+        <button onclick="fecharModalFotoZoom()" class="bg-gray-700 text-white text-xs px-3 py-1 rounded font-bold">Fechar</button>
+      </div>
+    </div>
+  </div>
 
+  <script>
+    // --- 1. DADOS DE CHECKLIST E EFETIVO PADRÃO BAVGRU ---
     const PERGUNTAS_ANEXO_C = [
       { id: "c1", grupo: "Cinto Paraquedista", texto: "1. As costuras apresentam boas condições sem ponto de rompimento ou desgastes?" },
       { id: "c2", grupo: "Cinto Paraquedista", texto: "2. As fitas não apresentam rompimentos ou aparência desgastadas?" },
@@ -605,16 +678,25 @@
 
     const INITIAL_COLABORADORES = DADOS_COLABS_RAW.split(';').map(item => {
       const [matricula, nome, funcao, isento] = item.split('|');
-      return { id: "c_" + matricula, matricula, nome, funcao, email: "", naoUtilizaCinto: isento === "1", inativo: false };
+      return {
+        id: "c_" + matricula,
+        matricula: matricula || "",
+        nome: nome || "",
+        funcao: funcao || "",
+        email: "",
+        naoUtilizaCinto: isento === "1",
+        ativo: true
+      };
     });
 
     const DADOS_ESTOQUE_RAW = "Luva Nitrílica|42760|15;Luva Nitrílica Manga Longa G|S/C.A.|15;Luva Nitrílica Verde M|40189|15;Luva Nitrílica Verde G|40189|15;Óculos de Segurança Incolor|18821|25;Óculos de Segurança Cinza|18821|25;Óculos de Segurança Ampla Visão|19072|20;Lente oculos ampla visão incolor|19072|15;Lente oculos ampla visão cinza|19072|15;Capacete de Segurança Branco|8304|15;Capacete de Segurança Amarelo|8304|15;Refil Abafador|92154|15;Protetor Auricular Abafador|43588|40;Mala Operação|S/C.A.|15;Carneira com jugular|S/C.A.|15;Casquete|38352|80;Calçado de Segurança 34|42374|15;Calçado de Segurança 36|42374|15;Calçado de Segurança 37|42374|15;Calçado de Segurança 38|42374|15;Calçado de Segurança 39|42374|15;Calçado de Segurança 40|42374|15;Calçado de Segurança 41|42374|15;Calçado de Segurança 42|42374|15;Calçado de Segurança 43|42374|15;Calçado de Segurança 44|42374|15;Calçado de Segurança 45|42374|15;Capa Chuva P|31884|15;Capa Chuva M|31884|15;Capa Chuva G|31884|15;Capa Chuva GG|31884|15;Capa Chuva XGG|31884|15;Cinto Trava Quedas Hercules|35191|15;Camisa RF P Masculina|49095|15;Camisa RF M Masculina|49095|40;Camisa RF G Masculina|49095|30;Camisa RF GG Masculina|49095|30;Camisa RF XXG Masculina|49095|30;Calça RF P Masculina|49093|15;Calça RF M Masculina|49093|40;Calça RF G Masculina|49093|30;Calça RF GG Masculina|49093|30;Calça RF XXG Masculina|49093|30;Camisa RF P Feminina|50427|15;Camisa RF M Feminina|50427|15;Camisa RF G Feminina|50427|15;Camisa RF GG Feminina|50427|15;Calça RF P Feminina|50428|15;Calça RF M Feminina|50428|15;Calça RF G Feminina|50428|15;Calça RF GG Feminina|50428|15;Camisa RF P Masculina (50427)|50427|15;Camisa RF M Masculina (50427)|50427|15;Camisa RF G Masculina (50427)|50427|15;Camisa RF GG Masculina (50427)|50427|15;Camisa RF XXG Masculina (50427)|50427|15;Calça RF P Masculina (50428)|50428|15;Calça RF M Masculina (50428)|50428|15;Calça RF G Masculina (50428)|50428|15;Calça RF GG Masculina (50428)|50428|15;Calça RF XXG Masculina (50428)|50428|15;Japona Operacional P|S/C.A.|15;Japona Operacional M|S/C.A.|20;Japona Operacional G|S/C.A.|20;Japona Operacional GG|S/C.A.|30;Japona Operacional XGG|S/C.A.|40;Calçado de Segurança 34 impermeável|S/C.A.|15;Calçado de Segurança 36 impermeável|S/C.A.|15;Calçado de Segurança 37 impermeável|S/C.A.|15;Calçado de Segurança 38 impermeável|S/C.A.|15;Calçado de Segurança 39 impermeável|40398|15;Calçado de Segurança 40 impermeável|40398|15;Calçado de Segurança 41 impermeável|40398|15;Calçado de Segurança 42 impermeável|S/C.A.|20;Calçado de Segurança 43 impermeável|S/C.A.|10;Calçado de Segurança 44 impermeável|S/C.A.|10;Calçado de Segurança 45 impermeável|S/C.A.|15;Óculos de Segurança Com Grau|33594|15";
 
     const INITIAL_ESTOQUE = DADOS_ESTOQUE_RAW.split(';').map((item, idx) => {
       const [nome, ca, qtd] = item.split('|');
-      return { id: "e" + (idx + 1), nome, ca, validade: "2029-12-31", qtd: parseInt(qtd, 10), min: 5 };
+      return { id: "e" + (idx + 1), nome: nome || "", ca: ca || "S/CA", validade: "2029-12-31", qtd: parseInt(qtd || "0", 10), min: 5 };
     });
 
+    // --- 2. CONFIGURAÇÃO FIREBASE NUVEM ---
     const firebaseConfig = {
       apiKey: "AIzaSyDTMDXAbh2zx7d55kwjV1LTMCZ9eNIz4hs",
       authDomain: "ssma-bavgru.firebaseapp.com",
@@ -627,23 +709,36 @@
 
     let dbNuvem = null;
     try {
-      if (typeof firebase !== 'undefined') {
+      if (typeof firebase !== 'undefined' && firebase.initializeApp) {
         firebase.initializeApp(firebaseConfig);
         dbNuvem = firebase.database();
       }
     } catch (e) {
-      console.warn("Firebase offline:", e);
+      console.warn("Firebase não inicializado:", e);
     }
 
-    let colaboradores = (JSON.parse(localStorage.getItem('bavgru_colaboradores')) || INITIAL_COLABORADORES).map(c => ({
+    // --- 3. ESTADOS E DADOS ---
+    function carregarLocalComFallback(chave, padrao) {
+      try {
+        const item = localStorage.getItem(chave);
+        if (!item) return padrao;
+        const parsed = JSON.parse(item);
+        return Array.isArray(parsed) ? parsed : padrao;
+      } catch (e) {
+        return padrao;
+      }
+    }
+
+    let colaboradores = carregarLocalComFallback('bavgru_colaboradores', INITIAL_COLABORADORES).map(c => ({
       ...c,
-      inativo: Boolean(c.inativo)
+      ativo: c.ativo !== false
     }));
-    let estoque = JSON.parse(localStorage.getItem('bavgru_estoque')) || INITIAL_ESTOQUE;
-    let auditoria = JSON.parse(localStorage.getItem('bavgru_auditoria')) || [];
-    let logExclusoes = JSON.parse(localStorage.getItem('bavgru_log_exclusoes')) || [];
-    let examesToxicologicos = JSON.parse(localStorage.getItem('bavgru_toxicologico')) || [];
+    let estoque = carregarLocalComFallback('bavgru_estoque', INITIAL_ESTOQUE);
+    let auditoria = carregarLocalComFallback('bavgru_auditoria', []);
+    let logExclusoes = carregarLocalComFallback('bavgru_log_exclusoes', []);
+    let examesToxicologicos = carregarLocalComFallback('bavgru_toxicologico', []);
     let senhaAdmin = localStorage.getItem('bavgru_senha_admin') || 'vibra@2025';
+
     let adminAutenticado = false;
     let carrinhoDispensacao = [];
     let fotosCapturadas = { disp: null, insp: null };
@@ -651,8 +746,9 @@
     let cameraFacing = { disp: 'user', insp: 'environment' };
     let filtroTabelaNaoCinto = 'todos';
     let filtroToxStatus = 'todos';
-    let filtroEfetivoStatus = 'ativos';
+    let filtroEfetivoStatus = 'todos';
 
+    // --- 4. PERSISTÊNCIA ROBUSTA LOCAL E NUVEM ---
     function limparObjetoParaFirebase(obj) {
       return JSON.parse(JSON.stringify(obj, (k, v) => (v === undefined || v === null) ? "" : v));
     }
@@ -666,9 +762,10 @@
         localStorage.setItem('bavgru_toxicologico', JSON.stringify(examesToxicologicos));
         localStorage.setItem('bavgru_senha_admin', senhaAdmin);
       } catch (e) {
-        console.warn("Aviso de quota do navegador:", e);
+        console.warn("Aviso ao salvar no localStorage (cota ou modo anônimo):", e);
       }
       atualizarTudo();
+
       if (dbNuvem) {
         const pacote = {
           'bavgru/auditoria': limparObjetoParaFirebase(auditoria),
@@ -677,61 +774,857 @@
           'bavgru/toxicologico': limparObjetoParaFirebase(examesToxicologicos),
           'bavgru/logExclusoes': limparObjetoParaFirebase(logExclusoes)
         };
-        dbNuvem.ref().update(pacote).catch(err => console.warn("Erro sync Firebase:", err));
+        dbNuvem.ref().update(pacote).catch(() => {});
       }
     }
 
-    async function testarEForcarSincronizacao() {
-      if (!dbNuvem) return alert("❌ Firebase não conectado.");
+    function testarEForcarSincronizacao() {
+      if (!dbNuvem) return alert("❌ Firebase não conectado ou offline.");
       salvarBancoLocal();
       alert("✅ Sincronização em tempo real confirmada!");
     }
 
     function iniciarSincronizacaoNuvem() {
       if (!dbNuvem) return;
-      dbNuvem.ref('bavgru/auditoria').on('value', s => {
-        if (s.val()) { auditoria = Array.isArray(s.val()) ? s.val() : Object.values(s.val()); atualizarTudo(); }
-      });
-      dbNuvem.ref('bavgru/estoque').on('value', s => {
-        if (s.val()) { estoque = Array.isArray(s.val()) ? s.val() : Object.values(s.val()); atualizarTudo(); }
-      });
-      dbNuvem.ref('bavgru/colaboradores').on('value', s => {
-        if (s.val()) {
-          colaboradores = (Array.isArray(s.val()) ? s.val() : Object.values(s.val())).map(c => ({ ...c, inativo: Boolean(c.inativo) }));
-          atualizarTudo();
-        }
-      });
-      dbNuvem.ref('bavgru/toxicologico').on('value', s => {
-        if (s.val()) { examesToxicologicos = Array.isArray(s.val()) ? s.val() : Object.values(s.val()); renderToxicologico(); }
-      });
-      dbNuvem.ref('bavgru/logExclusoes').on('value', s => {
-        if (s.val()) { logExclusoes = Array.isArray(s.val()) ? s.val() : Object.values(s.val()); atualizarTudo(); }
-      });
+      try {
+        dbNuvem.ref('bavgru/auditoria').on('value', s => { if (s.val()) { auditoria = Array.isArray(s.val()) ? s.val() : Object.values(s.val()); atualizarTudo(); } });
+        dbNuvem.ref('bavgru/estoque').on('value', s => { if (s.val()) { estoque = Array.isArray(s.val()) ? s.val() : Object.values(s.val()); atualizarTudo(); } });
+        dbNuvem.ref('bavgru/colaboradores').on('value', s => {
+          if (s.val()) {
+            const arr = Array.isArray(s.val()) ? s.val() : Object.values(s.val());
+            colaboradores = arr.map(c => ({ ...c, ativo: c.ativo !== false }));
+            atualizarTudo();
+          }
+        });
+        dbNuvem.ref('bavgru/toxicologico').on('value', s => { if (s.val()) { examesToxicologicos = Array.isArray(s.val()) ? s.val() : Object.values(s.val()); renderToxicologico(); } });
+        dbNuvem.ref('bavgru/logExclusoes').on('value', s => { if (s.val()) { logExclusoes = Array.isArray(s.val()) ? s.val() : Object.values(s.val()); atualizarTudo(); } });
+      } catch (err) {
+        console.warn("Erro no listener Firebase:", err);
+      }
     }
 
+    // --- 5. NAVEGAÇÃO ENTRE ABAS ---
     function switchTab(tab) {
-      ['dashboard', 'dispensacao', 'inspecao', 'pendencias', 'nao-cinto', 'estoque', 'colaboradores', 'admin'].forEach(t => {
-        document.getElementById('tab-' + t)?.classList.add('hidden');
+      const tabs = ['dashboard', 'dispensacao', 'inspecao', 'pendencias', 'nao-cinto', 'estoque', 'colaboradores', 'admin'];
+      tabs.forEach(t => {
+        const el = document.getElementById('tab-' + t);
+        if (el) el.classList.add('hidden');
         const btn = document.getElementById('tab-btn-' + t);
         if (btn) {
+          btn.classList.remove('btn-active-tab');
           if (t === 'admin') btn.className = "tab-btn bg-gray-800 text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold";
           else if (t === 'pendencias') btn.className = "tab-btn bg-yellow-600 text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold";
           else if (t === 'nao-cinto') btn.className = "tab-btn bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold";
           else btn.className = "tab-btn bg-green-900 text-green-100 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold";
         }
       });
-      document.getElementById('tab-' + tab)?.classList.remove('hidden');
+
+      const targetEl = document.getElementById('tab-' + tab);
+      if (targetEl) targetEl.classList.remove('hidden');
       const targetBtn = document.getElementById('tab-btn-' + tab);
-      if (targetBtn) targetBtn.className = "tab-btn bg-white text-vibraDark font-extrabold px-3 py-1.5 rounded-lg text-xs sm:text-sm shadow";
+      if (targetBtn) {
+        targetBtn.className = "tab-btn btn-active-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm";
+      }
 
       if (tab === 'admin') renderAdminState();
       else if (tab === 'pendencias') renderPendencias();
       else if (tab === 'nao-cinto') renderNaoUtilizaCinto();
-      else if (tab === 'dispensacao' || tab === 'inspecao') {
-        setTimeout(redimensionarCanvas, 60);
+      else if (tab === 'colaboradores') renderColaboradores();
+      else if (tab === 'dispensacao') {
+        filtrarColaboradoresDispensacao();
+        redimensionarCanvas();
+      } else if (tab === 'inspecao') {
+        redimensionarCanvas();
       }
     }
 
+    // --- 6. GERENCIAMENTO DE FOTOS ROBUSTO ---
+    function comprimirImagemBase64(imgElement, maxDim = 800, quality = 0.7) {
+      const c = document.createElement('canvas');
+      let w = imgElement.naturalWidth || imgElement.videoWidth || imgElement.width || 640;
+      let h = imgElement.naturalHeight || imgElement.videoHeight || imgElement.height || 480;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) {
+          h = Math.round((h * maxDim) / w);
+          w = maxDim;
+        } else {
+          w = Math.round((w * maxDim) / h);
+          h = maxDim;
+        }
+      }
+      c.width = w;
+      c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(imgElement, 0, 0, w, h);
+      return c.toDataURL('image/jpeg', quality);
+    }
+
+    async function iniciarCamera(tipo) {
+      try {
+        if (streamsCamera[tipo]) {
+          streamsCamera[tipo].getTracks().forEach(t => t.stop());
+        }
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          alert('Câmera direta indisponível neste navegador ou protocolo. Use o botão "Anexar / Arquivo" para tirar foto pelo aparelho.');
+          return;
+        }
+        const v = document.getElementById('video-' + tipo);
+        streamsCamera[tipo] = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: cameraFacing[tipo] }
+        });
+        v.srcObject = streamsCamera[tipo];
+        v.classList.remove('hidden');
+        document.getElementById('foto-' + tipo + '-preview')?.classList.add('hidden');
+        document.getElementById('foto-' + tipo + '-placeholder')?.classList.add('hidden');
+      } catch (e) {
+        alert('Não foi possível acessar a câmera (' + (e.message || 'permissão negada') + '). Utilize a opção "Anexar / Arquivo" para tirar foto.');
+      }
+    }
+
+    function alternarCamera(tipo) {
+      cameraFacing[tipo] = cameraFacing[tipo] === 'user' ? 'environment' : 'user';
+      iniciarCamera(tipo);
+    }
+
+    function capturarFoto(tipo) {
+      const v = document.getElementById('video-' + tipo);
+      if (!streamsCamera[tipo]) {
+        alert('Ligue a câmera antes de tirar a foto, ou use "Anexar / Arquivo".');
+        return;
+      }
+      try {
+        const fotoBase64 = comprimirImagemBase64(v, 800, 0.70);
+        fotosCapturadas[tipo] = fotoBase64;
+        const img = document.getElementById('foto-' + tipo + '-preview');
+        img.src = fotoBase64;
+        img.classList.remove('hidden');
+        v.classList.add('hidden');
+        document.getElementById('foto-' + tipo + '-placeholder')?.classList.add('hidden');
+        document.getElementById('btn-remover-foto-' + tipo)?.classList.remove('hidden');
+
+        streamsCamera[tipo].getTracks().forEach(t => t.stop());
+        streamsCamera[tipo] = null;
+      } catch (err) {
+        alert('Erro ao capturar foto: ' + err.message);
+      }
+    }
+
+    function processarArquivoFoto(tipo, event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const tempImg = new Image();
+        tempImg.onload = function() {
+          const comprimida = comprimirImagemBase64(tempImg, 800, 0.70);
+          fotosCapturadas[tipo] = comprimida;
+          const preview = document.getElementById('foto-' + tipo + '-preview');
+          preview.src = comprimida;
+          preview.classList.remove('hidden');
+          document.getElementById('video-' + tipo)?.classList.add('hidden');
+          document.getElementById('foto-' + tipo + '-placeholder')?.classList.add('hidden');
+          document.getElementById('btn-remover-foto-' + tipo)?.classList.remove('hidden');
+
+          if (streamsCamera[tipo]) {
+            streamsCamera[tipo].getTracks().forEach(t => t.stop());
+            streamsCamera[tipo] = null;
+          }
+        };
+        tempImg.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removerFoto(tipo) {
+      fotosCapturadas[tipo] = null;
+      const preview = document.getElementById('foto-' + tipo + '-preview');
+      if (preview) { preview.src = ''; preview.classList.add('hidden'); }
+      document.getElementById('foto-' + tipo + '-placeholder')?.classList.remove('hidden');
+      document.getElementById('btn-remover-foto-' + tipo)?.classList.add('hidden');
+      const fileInput = document.getElementById('arquivo-foto-' + tipo);
+      if (fileInput) fileInput.value = '';
+    }
+
+    function visualizarFotoModal(fotoUrl) {
+      if (!fotoUrl) return;
+      const img = document.getElementById('img-zoom-foto');
+      img.src = fotoUrl;
+      const m = document.getElementById('modal-foto-zoom');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+
+    function fecharModalFotoZoom() {
+      const m = document.getElementById('modal-foto-zoom');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    // --- 7. ASSINATURA DIGITAL CANVAS ---
+    function redimensionarCanvas() {
+      ['canvas-disp', 'canvas-insp'].forEach(id => {
+        const c = document.getElementById(id);
+        if (!c) return;
+        const rect = c.getBoundingClientRect();
+        if (rect.width > 0 && c.width !== rect.width) {
+          c.width = rect.width;
+          c.height = 170;
+        }
+      });
+    }
+
+    function configurarCanvasAssinatura(id) {
+      const c = document.getElementById(id);
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      let desenhando = false;
+
+      const pos = e => {
+        const r = c.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: (clientX - r.left) * (c.width / r.width),
+          y: (clientY - r.top) * (c.height / r.height)
+        };
+      };
+
+      const ini = e => {
+        desenhando = true;
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#00582C';
+        const p = pos(e);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        c.dataset.assinado = "true";
+      };
+
+      const mov = e => {
+        if (!desenhando) return;
+        if (e.cancelable) e.preventDefault();
+        const p = pos(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      };
+
+      const par = () => { desenhando = false; };
+
+      c.addEventListener('mousedown', ini);
+      c.addEventListener('mousemove', mov);
+      window.addEventListener('mouseup', par);
+      c.addEventListener('touchstart', ini, { passive: true });
+      c.addEventListener('touchmove', mov, { passive: false });
+      window.addEventListener('touchend', par);
+    }
+
+    function limparAssinatura(id) {
+      const c = document.getElementById(id);
+      if (c) {
+        c.getContext('2d').clearRect(0, 0, c.width, c.height);
+        c.dataset.assinado = "false";
+      }
+    }
+
+    // --- 8. DISPENSAÇÃO DE EPI COM BUSCA E SELEÇÃO INTELIGENTE ---
+    function filtrarColaboradoresDispensacao() {
+      const busca = (document.getElementById('disp-busca-colaborador')?.value || '').toLowerCase().trim();
+      const incluirInativos = document.getElementById('disp-incluir-inativos')?.checked;
+      const select = document.getElementById('disp-colaborador');
+      if (!select) return;
+
+      let lista = colaboradores.filter(c => {
+        if (!incluirInativos && c.ativo === false) return false;
+        if (!busca) return true;
+        return (c.nome || '').toLowerCase().includes(busca) || String(c.matricula || '').includes(busca);
+      });
+
+      lista.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+
+      if (!lista.length) {
+        select.innerHTML = `<option value="">Nenhum colaborador encontrado para a busca</option>`;
+        document.getElementById('disp-colab-card')?.classList.add('hidden');
+        return;
+      }
+
+      select.innerHTML = lista.map(c => `
+        <option value="${c.id}">
+          ${c.ativo === false ? '[DESLIGADO] ' : ''}${c.nome} (${c.matricula}) - ${c.funcao}
+        </option>
+      `).join('');
+
+      aoSelecionarColaboradorDispensacao();
+    }
+
+    function limparBuscaDispensacao() {
+      const inp = document.getElementById('disp-busca-colaborador');
+      if (inp) {
+        inp.value = '';
+        filtrarColaboradoresDispensacao();
+      }
+    }
+
+    function aoSelecionarColaboradorDispensacao() {
+      const colabId = document.getElementById('disp-colaborador')?.value;
+      const c = colaboradores.find(x => x.id === colabId);
+      const card = document.getElementById('disp-colab-card');
+      if (!c) {
+        if (card) card.classList.add('hidden');
+        return;
+      }
+      card.classList.remove('hidden');
+      document.getElementById('disp-colab-info').textContent = `👤 ${c.nome} (Matrícula: ${c.matricula})`;
+      document.getElementById('disp-colab-cargo').textContent = `Função: ${c.funcao}`;
+      const badge = document.getElementById('disp-colab-status-badge');
+      if (c.ativo !== false) {
+        badge.className = "px-2 py-0.5 rounded-full text-xs font-bold badge-ativo";
+        badge.textContent = "🟢 Colaborador Ativo";
+      } else {
+        badge.className = "px-2 py-0.5 rounded-full text-xs font-bold badge-inativo";
+        badge.textContent = "🔴 Desligado / Inativo";
+      }
+    }
+
+    function adicionarEpiListaDispensacao() {
+      const epiId = document.getElementById('disp-epi').value;
+      const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
+      const est = estoque.find(e => e.id === epiId);
+      if (!est || qtd <= 0) return alert('Selecione um EPI válido e quantidade maior que zero.');
+      const ex = carrinhoDispensacao.find(i => i.id === epiId);
+      if (ex) ex.qtd += qtd;
+      else carrinhoDispensacao.push({ id: est.id, nome: est.nome, ca: est.ca, qtd });
+      renderCarrinhoDispensacao();
+    }
+
+    function removerEpiListaDispensacao(i) {
+      carrinhoDispensacao.splice(i, 1);
+      renderCarrinhoDispensacao();
+    }
+
+    function renderCarrinhoDispensacao() {
+      const tbody = document.getElementById('lista-epis-dispensacao');
+      if (!tbody) return;
+      tbody.innerHTML = carrinhoDispensacao.length ? carrinhoDispensacao.map((it, idx) => `
+        <tr>
+          <td class="p-2 font-semibold">${it.nome}</td>
+          <td class="p-2">CA ${it.ca}</td>
+          <td class="p-2 text-center font-bold">${it.qtd}</td>
+          <td class="p-2 text-right"><button type="button" onclick="removerEpiListaDispensacao(${idx})" class="text-red-600 font-bold hover:underline">✕ Remover</button></td>
+        </tr>
+      `).join('') : `<tr><td colspan="4" class="p-3 text-center text-gray-400 italic">Nenhum EPI adicionado na lista.</td></tr>`;
+    }
+
+    function salvarDispensacao() {
+      const colab = colaboradores.find(c => c.id === document.getElementById('disp-colaborador').value);
+      const canvas = document.getElementById('canvas-disp');
+
+      if (!carrinhoDispensacao.length) {
+        const est = estoque.find(e => e.id === document.getElementById('disp-epi').value);
+        const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
+        if (est && qtd > 0) {
+          carrinhoDispensacao.push({ id: est.id, nome: est.nome, ca: est.ca, qtd });
+        }
+      }
+
+      if (!colab) return alert('Selecione o colaborador destinatário.');
+      if (!carrinhoDispensacao.length) return alert('Adicione pelo menos um EPI à entrega.');
+      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.disp) {
+        return alert('É obrigatória a assinatura digital ou a foto da entrega para comprovação legal.');
+      }
+
+      for (const it of carrinhoDispensacao) {
+        const e = estoque.find(x => x.id === it.id);
+        if (!e || e.qtd < it.qtd) {
+          return alert(`Saldo insuficiente em estoque para o item: ${it.nome} (Saldo atual: ${e ? e.qtd : 0}).`);
+        }
+      }
+
+      for (const it of carrinhoDispensacao) {
+        const e = estoque.find(x => x.id === it.id);
+        if (e) e.qtd -= it.qtd;
+      }
+
+      const assinaturaData = canvas.dataset.assinado === "true" ? canvas.toDataURL('image/png') : "";
+      const fotoSalva = fotosCapturadas.disp || "";
+
+      const reg = {
+        id: 'NR06-' + Date.now(),
+        tipo: 'Dispensação EPI (NR-06)',
+        dataHora: new Date().toLocaleString('pt-BR'),
+        colaborador: colab.nome,
+        matricula: colab.matricula,
+        funcao: colab.funcao,
+        equipamento: carrinhoDispensacao.map(i => `${i.nome} (${i.qtd}x)`).join('; '),
+        ca: carrinhoDispensacao.map(i => i.ca).join(', '),
+        quantidade: carrinhoDispensacao.reduce((a, b) => a + b.qtd, 0),
+        itens: [...carrinhoDispensacao],
+        motivo: document.getElementById('disp-motivo').value,
+        status: 'ENTREGUE',
+        foto: fotoSalva,
+        assinatura: assinaturaData,
+        hash: 'VIBRA-NR06-' + Date.now()
+      };
+
+      auditoria.unshift(reg);
+      carrinhoDispensacao = [];
+      renderCarrinhoDispensacao();
+      limparAssinatura('canvas-disp');
+      removerFoto('disp');
+      salvarBancoLocal();
+      abrirComprovante(reg.id);
+    }
+
+    // --- 9. INSPEÇÃO DE CINTO (ANEXO C) ---
+    function renderChecklistForm() {
+      const container = document.getElementById('checklist-container');
+      if (!container) return;
+      container.innerHTML = PERGUNTAS_ANEXO_C.map(p => `
+        <div class="p-2.5 border rounded-lg bg-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+          <p class="text-xs font-medium text-gray-800"><strong class="text-vibraDark">[${p.grupo}]</strong> ${p.texto}</p>
+          <div class="flex gap-2 shrink-0 text-xs font-bold">
+            <label class="bg-white border px-2 py-1 rounded cursor-pointer"><input type="radio" name="${p.id}" value="Conforme" checked /> ✅ Conf.</label>
+            <label class="bg-white border px-2 py-1 rounded text-red-600 cursor-pointer"><input type="radio" name="${p.id}" value="Não Conforme" /> ❌ N.C.</label>
+            <label class="bg-white border px-2 py-1 rounded text-gray-500 cursor-pointer"><input type="radio" name="${p.id}" value="Não Aplicável" /> N/A</label>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function verificarAvisoCinto() {
+      const colab = colaboradores.find(x => x.id === document.getElementById('insp-colaborador')?.value);
+      document.getElementById('aviso-nao-usa-cinto')?.classList.toggle('hidden', !(colab && colab.naoUtilizaCinto));
+    }
+
+    function salvarInspecao() {
+      const colab = colaboradores.find(c => c.id === document.getElementById('insp-colaborador').value);
+      const canvas = document.getElementById('canvas-insp');
+      if (!colab) return alert('Selecione o colaborador executante.');
+      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.insp) {
+        return alert('Assinatura digital ou foto da inspeção é obrigatória.');
+      }
+
+      let reprovado = false;
+      const respostas = PERGUNTAS_ANEXO_C.map(p => {
+        const checked = document.querySelector(`input[name="${p.id}"]:checked`);
+        const val = checked ? checked.value : 'Conforme';
+        if (val === 'Não Conforme') reprovado = true;
+        return { pergunta: p.texto, resposta: val };
+      });
+
+      const reg = {
+        id: 'ANEXOC-' + Date.now(),
+        tipo: 'Inspeção Cinto (Anexo C)',
+        dataHora: new Date().toLocaleString('pt-BR'),
+        dataReferencia: document.getElementById('insp-data').value,
+        colaborador: colab.nome,
+        matricula: colab.matricula,
+        funcao: colab.funcao,
+        equipamento: 'Cinto Paraquedista / Trava-Quedas',
+        ca: document.getElementById('insp-ca').value || '35191',
+        quantidade: 1,
+        status: reprovado ? 'INTERDITADO / SUBSTITUIR' : 'APROVADO PARA USO',
+        respostasChecklist: respostas,
+        foto: fotosCapturadas.insp || "",
+        assinatura: canvas.dataset.assinado === "true" ? canvas.toDataURL('image/png') : "",
+        hash: 'ANEXOC-' + Date.now()
+      };
+
+      auditoria.unshift(reg);
+      limparAssinatura('canvas-insp');
+      removerFoto('insp');
+      salvarBancoLocal();
+      abrirComprovante(reg.id);
+    }
+
+    function abrirInspecaoDireta(id) {
+      switchTab('inspecao');
+      const el = document.getElementById('insp-colaborador');
+      if (el) { el.value = id; verificarAvisoCinto(); }
+    }
+
+    // --- 10. EFETIVO: GESTÃO DE ATIVOS / DESLIGADOS ---
+    function alternarStatusAtivoColab(colabId) {
+      const c = colaboradores.find(x => x.id === colabId);
+      if (!c) return;
+      const novoStatus = !(c.ativo !== false);
+      const msg = novoStatus
+        ? `Reativar o colaborador ${c.nome} no efetivo operacional da BAVGRU?`
+        : `Deseja marcar o colaborador ${c.nome} (Matrícula: ${c.matricula}) como DESLIGADO / INATIVO da unidade BAVGRU?\n\nEle não aparecerá nas pendências de inspeção nem nas novas dispensações.`;
+      
+      if (!confirm(msg)) return;
+      c.ativo = novoStatus;
+      salvarBancoLocal();
+      alert(`Status do colaborador atualizado para: ${novoStatus ? 'ATIVO' : 'DESLIGADO / INATIVO'}`);
+    }
+
+    function filtrarStatusEfetivo(tipo) {
+      filtroEfetivoStatus = tipo;
+      ['todos', 'ativos', 'inativos'].forEach(t => {
+        const btn = document.getElementById('btn-filtro-efetivo-' + t);
+        if (btn) {
+          if (t === tipo) btn.className = "px-2.5 py-1 text-xs font-extrabold rounded bg-vibraGreen text-white shadow";
+          else btn.className = "px-2.5 py-1 text-xs font-bold rounded bg-gray-200 text-gray-700";
+        }
+      });
+      renderColaboradores();
+    }
+
+    function renderColaboradores() {
+      const tbody = document.getElementById('tabela-colaboradores');
+      if (!tbody) return;
+      const termo = (document.getElementById('busca-colab')?.value || '').toLowerCase().trim();
+
+      const totalTodos = colaboradores.length;
+      const totalAtivos = colaboradores.filter(c => c.ativo !== false).length;
+      const totalInativos = totalTodos - totalAtivos;
+
+      document.getElementById('count-efetivo-todos').textContent = totalTodos;
+      document.getElementById('count-efetivo-ativos').textContent = totalAtivos;
+      document.getElementById('count-efetivo-inativos').textContent = totalInativos;
+      document.getElementById('kpi-colaboradores').textContent = `${totalAtivos} ativos`;
+
+      let filtrados = colaboradores.filter(c => {
+        if (filtroEfetivoStatus === 'ativos' && c.ativo === false) return false;
+        if (filtroEfetivoStatus === 'inativos' && c.ativo !== false) return false;
+        if (!termo) return true;
+        return (c.nome || '').toLowerCase().includes(termo) || String(c.matricula || '').includes(termo) || (c.funcao || '').toLowerCase().includes(termo);
+      });
+
+      filtrados.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+
+      tbody.innerHTML = filtrados.length ? filtrados.map(c => `
+        <tr class="border-b hover:bg-gray-50 ${c.ativo === false ? 'bg-red-50' : ''}">
+          <td class="p-2.5 font-mono font-bold">${c.matricula}</td>
+          <td class="p-2.5 font-semibold text-gray-900">${c.nome}</td>
+          <td class="p-2.5 text-gray-600">${c.funcao}</td>
+          <td class="p-2.5 text-center">
+            ${c.ativo !== false
+              ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold badge-ativo">🟢 Ativo</span>'
+              : '<span class="px-2 py-0.5 rounded-full text-xs font-bold badge-inativo">🔴 Desligado</span>'
+            }
+          </td>
+          <td class="p-2.5 text-center">
+            ${c.naoUtilizaCinto
+              ? '<span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full text-xs font-bold">🚫 Isento</span>'
+              : '<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs font-bold">🧗 Sim</span>'
+            }
+          </td>
+          <td class="p-2.5 text-center">
+            ${c.ativo !== false
+              ? `<button onclick="alternarStatusAtivoColab('${c.id}')" class="bg-red-100 text-red-700 hover:bg-red-200 border border-red-300 px-2 py-1 rounded text-xs font-bold" title="Marcar como Desligado da BAVGRU">Inativar / Desligar</button>`
+              : `<button onclick="alternarStatusAtivoColab('${c.id}')" class="bg-green-100 text-green-700 hover:bg-green-200 border border-green-300 px-2 py-1 rounded text-xs font-bold" title="Reativar colaborador">Reativar</button>`
+            }
+          </td>
+          <td class="p-2.5 text-right">
+            <button onclick="gerarFichaUnicaColaborador('${c.matricula}')" class="bg-vibraGreen hover:bg-green-700 text-white px-2.5 py-1 rounded text-xs font-bold shadow">📄 Ficha Única</button>
+          </td>
+        </tr>
+      `).join('') : `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Nenhum colaborador encontrado.</td></tr>`;
+    }
+
+    // --- 11. PENDÊNCIAS MENSAIS SPIQ (TRAVA-QUEDAS) ---
+    function renderPendencias() {
+      const mes = document.getElementById('pendencias-mes-ano').value || new Date().toISOString().slice(0, 7);
+      const termo = (document.getElementById('busca-pendencias')?.value || '').toLowerCase();
+      const inspecionadosSet = new Set();
+
+      auditoria.forEach(r => {
+        if ((r.tipo || '').includes('Inspeção Cinto') && (r.dataReferencia || '').startsWith(mes)) {
+          inspecionadosSet.add(String(r.matricula));
+        }
+      });
+
+      const obrigatorios = colaboradores.filter(c => (c.ativo !== false) && !c.naoUtilizaCinto);
+      const pendentes = obrigatorios.filter(c => !inspecionadosSet.has(String(c.matricula)));
+
+      document.getElementById('total-pendentes-num').textContent = pendentes.length;
+      document.getElementById('total-inspecionados-num').textContent = obrigatorios.length - pendentes.length;
+      document.getElementById('taxa-adesao-num').textContent = (obrigatorios.length ? Math.round(((obrigatorios.length - pendentes.length) / obrigatorios.length) * 100) : 100) + '%';
+      document.getElementById('total-isentos-cinto-num').textContent = colaboradores.filter(c => c.ativo !== false && c.naoUtilizaCinto).length;
+      document.getElementById('kpi-pendencias').textContent = pendentes.length;
+
+      const tbody = document.getElementById('tabela-pendencias');
+      if (!tbody) return;
+      tbody.innerHTML = pendentes.filter(c => (c.nome || '').toLowerCase().includes(termo) || String(c.matricula).includes(termo)).map(c => `
+        <tr class="border-b hover:bg-gray-50">
+          <td class="p-2.5 font-mono font-bold">${c.matricula}</td>
+          <td class="p-2.5 font-semibold">${c.nome}</td>
+          <td class="p-2.5 text-gray-600">${c.funcao}</td>
+          <td class="p-2.5 text-center"><span class="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full text-xs font-bold">⚠️ Pendente</span></td>
+          <td class="p-2.5 text-right"><button onclick="abrirInspecaoDireta('${c.id}')" class="bg-vibraGreen hover:bg-green-700 text-white px-2.5 py-1 rounded text-xs font-bold">Inspecionar ↗</button></td>
+        </tr>
+      `).join('');
+    }
+
+    function exportarPendenciasCSV() {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob(['\uFEFFMatricula;Nome;Funcao\n'], { type: 'text/csv' }));
+      a.download = 'Pendencias_Cinto_BAVGRU.csv';
+      a.click();
+    }
+
+    // --- 12. NÃO UTILIZA CINTO (ADMIN) ---
+    function solicitarAcessoAdminNaoCinto() {
+      const s = prompt("🔒 Senha do Administrador:");
+      if (s === senhaAdmin) {
+        adminAutenticado = true;
+        renderAdminState();
+        renderNaoUtilizaCinto();
+      } else if (s !== null) {
+        alert("❌ Senha incorreta.");
+      }
+    }
+
+    function alternarStatusCinto(colabId) {
+      if (!adminAutenticado) return alert("🔒 Exclusivo para Administrador.");
+      const c = colaboradores.find(x => x.id === colabId);
+      if (c) {
+        c.naoUtilizaCinto = !c.naoUtilizaCinto;
+        salvarBancoLocal();
+      }
+    }
+
+    function filtrarTabelaNaoCinto(t) {
+      filtroTabelaNaoCinto = t;
+      renderNaoUtilizaCinto();
+    }
+
+    function renderNaoUtilizaCinto() {
+      const tbody = document.getElementById('tabela-nao-cinto');
+      if (!tbody) return;
+      const badge = document.getElementById('badge-lock-nao-cinto');
+      if (badge) badge.textContent = adminAutenticado ? "🔓 Edição Liberada (Admin)" : "🔒 Somente Leitura";
+      const termo = (document.getElementById('busca-nao-cinto')?.value || '').toLowerCase();
+      let f = colaboradores.filter(c => (c.nome || '').toLowerCase().includes(termo) || String(c.matricula).includes(termo));
+      if (filtroTabelaNaoCinto === 'isentos') f = f.filter(c => c.naoUtilizaCinto);
+      else if (filtroTabelaNaoCinto === 'usam') f = f.filter(c => !c.naoUtilizaCinto);
+
+      tbody.innerHTML = f.map(c => `
+        <tr class="border-b hover:bg-gray-50">
+          <td class="p-2.5 font-bold font-mono text-xs">${c.matricula}</td>
+          <td class="p-2.5 font-semibold">${c.nome}</td>
+          <td class="p-2.5 text-xs text-gray-600">${c.funcao}</td>
+          <td class="p-2.5 text-center">${c.naoUtilizaCinto ? '<span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full text-xs font-bold">🚫 Isento</span>' : '<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs font-bold">🧗 Utiliza Cinto</span>'}</td>
+          <td class="p-2.5 text-right"><button onclick="alternarStatusCinto('${c.id}')" class="bg-purple-700 hover:bg-purple-800 text-white px-3 py-1 rounded text-xs font-bold">Alternar</button></td>
+        </tr>
+      `).join('');
+    }
+
+    // --- 13. AUDITORIA E COMPROVANTES (COM FOTO RENDERIZADA) ---
+    function renderAuditoria() {
+      const t = (document.getElementById('busca-auditoria')?.value || '').toLowerCase().trim();
+      const tbody = document.getElementById('tabela-auditoria');
+      if (!tbody) return;
+
+      const filtrados = auditoria.filter(r =>
+        (r.colaborador || '').toLowerCase().includes(t) ||
+        String(r.matricula || '').includes(t) ||
+        (r.ca || '').toLowerCase().includes(t) ||
+        (r.equipamento || '').toLowerCase().includes(t)
+      );
+
+      tbody.innerHTML = filtrados.length ? filtrados.map(r => `
+        <tr class="border-b hover:bg-gray-50">
+          <td class="p-2.5 font-mono">${r.dataHora}</td>
+          <td class="p-2.5 font-semibold">${r.tipo}</td>
+          <td class="p-2.5">${r.colaborador} (${r.matricula})</td>
+          <td class="p-2.5">${r.equipamento} ${r.ca ? `(CA ${r.ca})` : ''}</td>
+          <td class="p-2.5 text-center">
+            ${r.foto ? `<button onclick="visualizarFotoModal('${r.foto}')" class="text-xs bg-blue-100 text-blue-800 hover:bg-blue-200 px-2 py-0.5 rounded font-bold">📸 Ver Foto</button>` : '<span class="text-gray-400 text-xs">-</span>'}
+          </td>
+          <td class="p-2.5 font-bold text-xs">${r.status}</td>
+          <td class="p-2.5 text-right flex gap-1 justify-end">
+            <button onclick="abrirComprovante('${r.id}')" class="bg-vibraDark text-white px-2 py-1 rounded text-xs font-bold hover:bg-green-900">PDF / Imprimir</button>
+            <button onclick="gerarFichaUnicaColaborador('${r.matricula}')" class="bg-vibraGreen text-white px-2 py-1 rounded text-xs font-bold hover:bg-green-700">Ficha Única</button>
+            <button onclick="excluirRegistro('${r.id}')" class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold hover:bg-red-700">🗑️</button>
+          </td>
+        </tr>
+      `).join('') : `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Nenhum registro de auditoria encontrado.</td></tr>`;
+    }
+
+    function abrirComprovante(id) {
+      const r = auditoria.find(x => x.id === id);
+      if (!r) return;
+      document.getElementById('modal-print-title').textContent = `📄 Comprovante Oficial - ${r.tipo} (Nº ${r.id})`;
+      document.getElementById('print-area').innerHTML = `
+        <div class="border-b-2 border-vibraGreen pb-3 flex justify-between items-start">
+          <div>
+            <h2 class="text-base font-black text-vibraDark">VIBRA ENERGIA S.A. - UNIDADE BAVGRU</h2>
+            <p class="text-xs font-bold text-gray-700">${r.tipo} | Protocolo: ${r.id}</p>
+            <p class="text-xs text-gray-500">Data e Hora de Registro: ${r.dataHora}</p>
+          </div>
+          <div class="text-right text-xs">
+            <span class="bg-vibraDark text-white px-2 py-1 rounded font-bold">${r.status}</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 p-2 bg-gray-50 border rounded text-xs mt-3">
+          <div><strong>Colaborador:</strong> ${r.colaborador} (Matrícula: ${r.matricula})</div>
+          <div><strong>Função / Cargo:</strong> ${r.funcao || 'OPERADOR'}</div>
+          <div><strong>Equipamento(s):</strong> ${r.equipamento}</div>
+          <div><strong>C.A. (Certificado de Aprovação):</strong> ${r.ca || 'N/A'}</div>
+          ${r.motivo ? `<div class="col-span-2"><strong>Motivo da Entrega:</strong> ${r.motivo}</div>` : ''}
+        </div>
+
+        <!-- TERMO LEGAL OFICIAL NR-06 NO COMPROVANTE -->
+        <div class="p-3 bg-green-50 border border-green-300 rounded text-xs space-y-1 mt-3">
+          <p class="font-bold text-vibraDark uppercase">TERMO LEGAL NR-06 (6.5.1 / 6.7.1), CLT (ART. 158 / 462) & PADRÃO VIBRA ENERGIA:</p>
+          <p class="text-gray-700 leading-normal">
+            Declaro ter recebido da Vibra Energia S.A. (BAVGRU) os EPIs acima discriminados, com CA válido, comprometendo-me ao uso exclusivo no trabalho, guarda, higienização, comunicação imediata de qualquer avaria e restituição dos mesmos na substituição ou rescisão contratual, ciente das penalidades do Art. 158 da CLT e dos termos do Art. 462 da CLT.
+          </p>
+        </div>
+
+        <!-- FOTO SALVA E ASSINATURA -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+          <div class="border p-2 rounded text-center bg-gray-50 flex flex-col justify-between">
+            <p class="text-xs font-bold text-gray-700 mb-1">📸 Registro Fotográfico do EPI / Entrega</p>
+            ${r.foto ? `
+              <img src="${r.foto}" class="max-h-48 mx-auto rounded border object-contain shadow-sm cursor-pointer" onclick="visualizarFotoModal('${r.foto}')" alt="Foto do EPI" />
+            ` : `<div class="h-32 flex items-center justify-center text-gray-400 italic text-xs">Sem foto anexada</div>`}
+          </div>
+          <div class="border p-2 rounded text-center bg-gray-50 flex flex-col justify-between">
+            <p class="text-xs font-bold text-gray-700 mb-1">✍️ Assinatura Digital do Colaborador</p>
+            ${r.assinatura ? `
+              <img src="${r.assinatura}" class="max-h-24 mx-auto object-contain my-auto" alt="Assinatura" />
+            ` : `<div class="h-32 flex items-center justify-center text-gray-400 italic text-xs">Visto registrado eletronicamente</div>`}
+            <p class="text-xs text-gray-500 mt-1 font-mono">${r.colaborador} - Matrícula ${r.matricula}</p>
+          </div>
+        </div>
+
+        <div class="pt-2 text-center text-gray-400 text-xs border-t mt-3">
+          Autenticação Digital: ${r.hash || 'VIBRA-SSMA-BAVGRU'} | Base de Aviação de Guarulhos
+        </div>
+      `;
+      document.getElementById('modal-print').classList.remove('hidden');
+      document.getElementById('modal-print').classList.add('flex');
+    }
+
+    function gerarFichaUnicaPeloSelectAdmin() {
+      const c = colaboradores.find(x => x.id === document.getElementById('admin-historico-colab').value);
+      if (c) gerarFichaUnicaColaborador(c.matricula);
+    }
+
+    function gerarFichaUnicaColaborador(matricula) {
+      const colab = colaboradores.find(c => String(c.matricula) === String(matricula));
+      if (!colab) return;
+      const entregas = auditoria.filter(r => String(r.matricula) === String(matricula) && (r.tipo || '').includes('NR-06'));
+
+      document.getElementById('modal-print-title').textContent = `📄 Ficha Individual de EPI (NR-06) - ${colab.nome}`;
+      document.getElementById('print-area').innerHTML = `
+        <div class="border-b-2 border-vibraGreen pb-2 flex justify-between items-start">
+          <div>
+            <h2 class="text-base font-black text-vibraDark">VIBRA ENERGIA S.A. - BAVGRU</h2>
+            <p class="text-xs font-bold text-gray-800">FICHA INDIVIDUAL DE CONTROLE E ENTREGA DE EPI (NR-06 & PADRÃO CORPORATIVO)</p>
+          </div>
+          <div class="text-right text-xs">
+            <p><strong>Colaborador:</strong> ${colab.nome}</p>
+            <p><strong>Matrícula:</strong> ${colab.matricula} | <strong>Função:</strong> ${colab.funcao}</p>
+            <p><strong>Status:</strong> ${colab.ativo !== false ? '🟢 Ativo' : '🔴 Desligado'}</p>
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-green-50 border border-green-300 rounded text-xs space-y-1 mt-2">
+          <p class="font-bold text-vibraDark uppercase">TERMO DE RESPONSABILIDADE LEGAL - NR-06 (6.5.1 / 6.7.1) E CLT (ART. 158 / 462):</p>
+          <p class="text-gray-700 leading-relaxed">
+            Declaro ter recebido gratuitamente da Vibra Energia S.A. os EPIs discriminados abaixo, em perfeito estado e com Certificado de Aprovação (CA) válido, assumindo o compromisso de utilizá-los estritamente para os fins a que se destinam, zelar por sua guarda e conservação, comunicar qualquer dano e devolvê-los no caso de substituição ou rescisão contratual.
+          </p>
+        </div>
+
+        <table class="w-full text-xs border-collapse border mt-3">
+          <thead>
+            <tr class="bg-gray-100 border-b font-bold">
+              <th class="p-1.5 border-r text-left">Data/Hora</th>
+              <th class="p-1.5 border-r text-left">Equipamento / C.A.</th>
+              <th class="p-1.5 border-r text-left">Motivo</th>
+              <th class="p-1.5 border-r text-center">Foto</th>
+              <th class="p-1.5 text-center">Assinatura</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${entregas.length ? entregas.map(e => `
+              <tr class="border-b">
+                <td class="p-1.5 border-r font-mono">${e.dataHora}</td>
+                <td class="p-1.5 border-r font-semibold">${e.equipamento} ${e.ca ? `(CA: ${e.ca})` : ''}</td>
+                <td class="p-1.5 border-r">${e.motivo || '-'}</td>
+                <td class="p-1.5 border-r text-center">
+                  ${e.foto ? `<img src="${e.foto}" class="h-9 w-9 object-cover rounded mx-auto border cursor-pointer" onclick="visualizarFotoModal('${e.foto}')" title="Ver foto ampliada" />` : '-'}
+                </td>
+                <td class="p-1.5 text-center">
+                  ${e.assinatura ? `<img src="${e.assinatura}" class="h-8 mx-auto object-contain" />` : 'Assinado digitalmente'}
+                </td>
+              </tr>
+            `).join('') : `<tr><td colspan="5" class="p-4 text-center text-gray-400 italic">Nenhuma entrega de EPI registrada até o momento.</td></tr>`}
+          </tbody>
+        </table>
+
+        <div class="mt-4 pt-3 border-t text-xs text-gray-500 flex justify-between">
+          <span>SSMA BAVGRU - Gestão de Segurança Operacional</span>
+          <span>Emissão: ${new Date().toLocaleString('pt-BR')}</span>
+        </div>
+      `;
+      document.getElementById('modal-print').classList.remove('hidden');
+      document.getElementById('modal-print').classList.add('flex');
+    }
+
+    function fecharModalPrint() {
+      const m = document.getElementById('modal-print');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function excluirRegistro(id) {
+      if (prompt("🔒 Senha Admin:") !== senhaAdmin) return alert("❌ Senha incorreta.");
+      const idx = auditoria.findIndex(r => r.id === id);
+      if (idx === -1) return;
+      const just = prompt("Motivo da exclusão:");
+      if (!just) return;
+      logExclusoes.unshift({
+        dataHoraExclusao: new Date().toLocaleString('pt-BR'),
+        idOriginal: id,
+        colaboradorAfetado: auditoria[idx].colaborador,
+        itemAfetado: auditoria[idx].equipamento,
+        responsavelExclusao: 'Admin',
+        justificativa: just
+      });
+      auditoria.splice(idx, 1);
+      salvarBancoLocal();
+    }
+
+    function renderLogExclusoes() {
+      const el = document.getElementById('tabela-log-exclusoes');
+      if (el) {
+        el.innerHTML = logExclusoes.map(l => `
+          <tr>
+            <td class="p-2">${l.dataHoraExclusao}</td>
+            <td class="p-2">${l.idOriginal}</td>
+            <td class="p-2">${l.colaboradorAfetado}</td>
+            <td class="p-2">${l.itemAfetado}</td>
+            <td class="p-2">${l.responsavelExclusao}</td>
+            <td class="p-2">${l.justificativa}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function exportarLogExclusoesCSV() {
+      const h = ['Data', 'ID', 'Colaborador', 'Item', 'Justificativa'];
+      const l = logExclusoes.map(x => [x.dataHoraExclusao, x.idOriginal, x.colaboradorAfetado, x.itemAfetado, x.justificativa].join(';'));
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob(['\uFEFF' + [h.join(';'), ...l].join('\n')], { type: 'text/csv' }));
+      a.download = 'Log_Exclusoes.csv';
+      a.click();
+    }
+
+    function exportarCSV() {
+      const h = ['ID', 'Data', 'Tipo', 'Colaborador', 'Matricula', 'EPI', 'CA', 'Status'];
+      const l = auditoria.map(r => [r.id, r.dataHora, r.tipo, r.colaborador, r.matricula, r.equipamento, r.ca, r.status].join(';'));
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob(['\uFEFF' + [h.join(';'), ...l].join('\n')], { type: 'text/csv' }));
+      a.download = 'Auditoria_BAVGRU.csv';
+      a.click();
+    }
+
+    // --- 14. ADMINISTRAÇÃO E EXAME TOXICOLÓGICO ---
     function autenticarAdmin() {
       if (document.getElementById('admin-input-senha').value === senhaAdmin) {
         adminAutenticado = true;
@@ -739,76 +1632,40 @@
         renderAdminState();
         renderNaoUtilizaCinto();
         atualizarTudo();
-      } else alert('❌ Senha incorreta.');
+      } else {
+        alert('❌ Senha incorreta.');
+      }
     }
 
-    function sairAdmin() { adminAutenticado = false; renderAdminState(); renderNaoUtilizaCinto(); renderColaboradores(); }
+    function sairAdmin() {
+      adminAutenticado = false;
+      renderAdminState();
+      renderNaoUtilizaCinto();
+    }
 
     function renderAdminState() {
-      document.getElementById('admin-login-box').classList.toggle('hidden', adminAutenticado);
-      document.getElementById('admin-content-box').classList.toggle('hidden', !adminAutenticado);
-      if (adminAutenticado) { renderLogExclusoes(); renderToxicologico(); }
+      document.getElementById('admin-login-box')?.classList.toggle('hidden', adminAutenticado);
+      document.getElementById('admin-content-box')?.classList.toggle('hidden', !adminAutenticado);
+      if (adminAutenticado) {
+        renderLogExclusoes();
+        renderToxicologico();
+      }
     }
 
     function alterarSenhaAdmin() {
       const nova = document.getElementById('nova-senha-admin').value.trim();
-      if (!nova || nova.length < 4) return alert('Mínimo 4 caracteres.');
+      if (!nova || nova.length < 4) return alert('A nova senha deve ter no mínimo 4 caracteres.');
       senhaAdmin = nova;
       salvarBancoLocal();
-      alert('✅ Senha alterada!');
+      alert('✅ Senha alterada com sucesso!');
     }
 
-    // FILTROS DE PESQUISA POR NOME NOS SELECTS DE ENTREGA E INSPEÇÃO
-    function filtrarSelectColaboradorDispensacao() {
-      const termo = (document.getElementById('busca-disp-colaborador')?.value || '').toLowerCase().trim();
-      const select = document.getElementById('disp-colaborador');
-      if (!select) return;
-      const ativos = colaboradores.filter(c => !c.inativo && (c.nome.toLowerCase().includes(termo) || String(c.matricula).toLowerCase().includes(termo)));
-      select.innerHTML = ativos.length
-        ? ativos.map(c => `<option value="${c.id}">${c.nome} (${c.matricula})</option>`).join('')
-        : `<option value="">Nenhum colaborador ativo encontrado com "${termo}"</option>`;
+    function formatarDataBR(iso) {
+      if (!iso || !iso.includes('-')) return iso || '-';
+      const [a, m, d] = iso.split('-');
+      return `${d}/${m}/${a}`;
     }
 
-    function filtrarSelectColaboradorInspecao() {
-      const termo = (document.getElementById('busca-insp-colaborador')?.value || '').toLowerCase().trim();
-      const select = document.getElementById('insp-colaborador');
-      if (!select) return;
-      const ativos = colaboradores.filter(c => !c.inativo && (c.nome.toLowerCase().includes(termo) || String(c.matricula).toLowerCase().includes(termo)));
-      select.innerHTML = ativos.length
-        ? ativos.map(c => `<option value="${c.id}">${c.nome} (${c.matricula})</option>`).join('')
-        : `<option value="">Nenhum colaborador ativo encontrado</option>`;
-      verificarAvisoCinto();
-    }
-
-    // GESTÃO DE COLABORADOR ATIVO / INATIVO (DESLIGADO)
-    function alternarStatusAtivoColaborador(colabId) {
-      if (!adminAutenticado) {
-        const s = prompt("🔒 Digite a senha de Administrador para alterar o status (Ativo / Desligado):");
-        if (s !== senhaAdmin) return alert("❌ Senha incorreta.");
-        adminAutenticado = true;
-        renderAdminState();
-      }
-      const c = colaboradores.find(x => x.id === colabId);
-      if (!c) return;
-      const acao = c.inativo ? "REATIVAR" : "INATIVAR (Desligamento da Unidade)";
-      if (!confirm(`Confirma ${acao} o colaborador ${c.nome} (${c.matricula})?`)) return;
-      c.inativo = !c.inativo;
-      if (c.inativo) c.dataInativacao = new Date().toLocaleDateString('pt-BR');
-      salvarBancoLocal();
-    }
-
-    function filtrarStatusEfetivo(status) {
-      filtroEfetivoStatus = status;
-      ['ativos', 'inativos', 'todos'].forEach(k => {
-        const b = document.getElementById('btn-efetivo-' + k);
-        if (b) b.className = (k === status)
-          ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-vibraGreen text-white shadow"
-          : "px-3 py-1.5 rounded-lg text-xs font-bold bg-gray-200 text-gray-700";
-      });
-      renderColaboradores();
-    }
-
-    // EXAME TOXICOLÓGICO NO ADMIN
     function calcularSugestaoValidadeTox() {
       const ex = document.getElementById('tox-data-exame');
       const val = document.getElementById('tox-data-validade');
@@ -817,12 +1674,6 @@
         d.setMonth(d.getMonth() + 30);
         val.value = d.toISOString().slice(0, 10);
       }
-    }
-
-    function formatarDataBR(iso) {
-      if (!iso || !iso.includes('-')) return iso || '-';
-      const [a, m, d] = iso.split('-');
-      return `${d}/${m}/${a}`;
     }
 
     function obterStatusValidadeTox(dataValidadeStr) {
@@ -842,17 +1693,24 @@
       if (!colabId || !dataExame || !dataValidade) return alert('Preencha funcionário, data do exame e validade.');
       const colab = colaboradores.find(c => c.id === colabId);
       if (!colab) return;
+
       const idx = examesToxicologicos.findIndex(x => x.matricula === colab.matricula);
       const reg = {
         id: idx !== -1 ? examesToxicologicos[idx].id : 'TOX-' + Date.now(),
-        colabId: colab.id, matricula: colab.matricula, nome: colab.nome, funcao: colab.funcao, dataExame, dataValidade
+        colabId: colab.id,
+        matricula: colab.matricula,
+        nome: colab.nome,
+        funcao: colab.funcao,
+        dataExame,
+        dataValidade
       };
       if (idx !== -1) examesToxicologicos[idx] = reg;
       else examesToxicologicos.push(reg);
+
       document.getElementById('tox-data-exame').value = '';
       document.getElementById('tox-data-validade').value = '';
       salvarBancoLocal();
-      alert(`✅ Exame Toxicológico de ${colab.nome} salvo!`);
+      alert(`✅ Exame Toxicológico de ${colab.nome} salvo com sucesso!`);
     }
 
     function removerExameToxicologico(id) {
@@ -861,7 +1719,10 @@
       salvarBancoLocal();
     }
 
-    function filtrarStatusTox(tipo) { filtroToxStatus = tipo; renderToxicologico(); }
+    function filtrarStatusTox(tipo) {
+      filtroToxStatus = tipo;
+      renderToxicologico();
+    }
 
     function renderToxicologico() {
       const tbody = document.getElementById('tabela-toxicologico');
@@ -877,11 +1738,13 @@
       document.getElementById('tox-kpi-validos').textContent = validos;
       document.getElementById('tox-kpi-avencer').textContent = avencer;
       document.getElementById('tox-kpi-vencidos').textContent = vencidos;
+
       const termo = (document.getElementById('busca-toxicologico')?.value || '').toLowerCase();
-      let filtrados = lista.filter(x => x.nome.toLowerCase().includes(termo) || x.matricula.toLowerCase().includes(termo));
+      let filtrados = lista.filter(x => (x.nome || '').toLowerCase().includes(termo) || String(x.matricula).includes(termo));
       if (filtroToxStatus === 'vencidos') filtrados = filtrados.filter(x => x.infoStatus.codigo === 'vencido' || x.infoStatus.codigo === 'avencer');
       else if (filtroToxStatus === 'validos') filtrados = filtrados.filter(x => x.infoStatus.codigo === 'valido');
-      filtrados.sort((a, b) => a.dataValidade.localeCompare(b.dataValidade));
+      filtrados.sort((a, b) => (a.dataValidade || '').localeCompare(b.dataValidade || ''));
+
       tbody.innerHTML = filtrados.length ? filtrados.map(x => `
         <tr class="border-b hover:bg-gray-50">
           <td class="p-2 font-mono font-bold">${x.matricula}</td>
@@ -897,7 +1760,7 @@
 
     function gerarRelatorioToxicologicoPDF() {
       if (!examesToxicologicos.length) return alert('Nenhum exame cadastrado.');
-      const lista = examesToxicologicos.map(item => ({ ...item, infoStatus: obterStatusValidadeTox(item.dataValidade) })).sort((a, b) => a.dataValidade.localeCompare(b.dataValidade));
+      const lista = examesToxicologicos.map(item => ({ ...item, infoStatus: obterStatusValidadeTox(item.dataValidade) })).sort((a, b) => (a.dataValidade || '').localeCompare(b.dataValidade || ''));
       document.getElementById('modal-print-title').textContent = '📄 Relatório Oficial de Exames Toxicológicos - BAVGRU';
       document.getElementById('print-area').innerHTML = `
         <div class="border-b-2 border-vibraGreen pb-2 flex justify-between items-center">
@@ -928,626 +1791,103 @@
       link.click();
     }
 
-    // DEMAIS FUNÇÕES DO SISTEMA
-    function solicitarAcessoAdminNaoCinto() {
-      const s = prompt("🔒 Senha do Administrador:");
-      if (s === senhaAdmin) { adminAutenticado = true; renderAdminState(); renderNaoUtilizaCinto(); }
-      else if (s !== null) alert("❌ Senha incorreta.");
-    }
-
-    function alternarStatusCinto(colabId) {
-      if (!adminAutenticado) return alert("🔒 Exclusivo para Administrador.");
-      const c = colaboradores.find(x => x.id === colabId);
-      if (c) { c.naoUtilizaCinto = !c.naoUtilizaCinto; salvarBancoLocal(); }
-    }
-
-    function filtrarTabelaNaoCinto(t) { filtroTabelaNaoCinto = t; renderNaoUtilizaCinto(); }
-
-    function renderNaoUtilizaCinto() {
-      const tbody = document.getElementById('tabela-nao-cinto');
-      if (!tbody) return;
-      const badge = document.getElementById('badge-lock-nao-cinto');
-      if (badge) badge.textContent = adminAutenticado ? "🔓 Edição Liberada (Admin)" : "🔒 Somente Leitura";
-      const termo = (document.getElementById('busca-nao-cinto')?.value || '').toLowerCase();
-      let f = colaboradores.filter(c => !c.inativo && (c.nome.toLowerCase().includes(termo) || c.matricula.toLowerCase().includes(termo)));
-      if (filtroTabelaNaoCinto === 'isentos') f = f.filter(c => c.naoUtilizaCinto);
-      else if (filtroTabelaNaoCinto === 'usam') f = f.filter(c => !c.naoUtilizaCinto);
-      tbody.innerHTML = f.map(c => `
-        <tr class="border-b hover:bg-gray-50">
-          <td class="p-2.5 font-bold font-mono text-xs">${c.matricula}</td>
-          <td class="p-2.5 font-semibold">${c.nome}</td>
-          <td class="p-2.5 text-xs text-gray-600">${c.funcao}</td>
-          <td class="p-2.5 text-center">${c.naoUtilizaCinto ? '<span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full text-xs font-bold">🚫 Isento</span>' : '<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs font-bold">🧗 Utiliza Cinto</span>'}</td>
-          <td class="p-2.5 text-right"><button onclick="alternarStatusCinto('${c.id}')" class="bg-purple-700 text-white px-3 py-1 rounded text-xs font-bold">Alternar</button></td>
-        </tr>
-      `).join('');
-    }
-
-    function verificarAvisoCinto() {
-      const c = colaboradores.find(x => x.id === document.getElementById('insp-colaborador')?.value);
-      document.getElementById('aviso-nao-usa-cinto')?.classList.toggle('hidden', !(c && c.naoUtilizaCinto));
-    }
-
-    function adicionarEpiListaDispensacao() {
-      const epiId = document.getElementById('disp-epi').value;
-      const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
-      const est = estoque.find(e => e.id === epiId);
-      if (!est || qtd <= 0) return;
-      const ex = carrinhoDispensacao.find(i => i.id === epiId);
-      if (ex) ex.qtd += qtd;
-      else carrinhoDispensacao.push({ id: est.id, nome: est.nome, ca: est.ca, qtd });
-      renderCarrinhoDispensacao();
-    }
-
-    function removerEpiListaDispensacao(i) { carrinhoDispensacao.splice(i, 1); renderCarrinhoDispensacao(); }
-
-    function renderCarrinhoDispensacao() {
-      const tbody = document.getElementById('lista-epis-dispensacao');
-      if (!tbody) return;
-      tbody.innerHTML = carrinhoDispensacao.length ? carrinhoDispensacao.map((it, idx) => `
-        <tr><td class="p-2 font-semibold">${it.nome}</td><td class="p-2">CA ${it.ca}</td><td class="p-2 text-center font-bold">${it.qtd}</td><td class="p-2 text-right"><button type="button" onclick="removerEpiListaDispensacao(${idx})" class="text-red-600 font-bold">✕</button></td></tr>
-      `).join('') : `<tr><td colspan="4" class="p-3 text-center text-gray-400 italic">Nenhum EPI adicionado na lista.</td></tr>`;
-    }
-
-    function renderChecklistForm() {
-      document.getElementById('checklist-container').innerHTML = PERGUNTAS_ANEXO_C.map(p => `
-        <div class="p-2.5 border rounded-lg bg-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-          <p class="text-xs font-medium text-gray-800"><strong class="text-vibraDark">[${p.grupo}]</strong> ${p.texto}</p>
-          <div class="flex gap-2 shrink-0 text-xs font-bold">
-            <label class="bg-white border px-2 py-1 rounded"><input type="radio" name="${p.id}" value="Conforme" checked /> ✅ Conf.</label>
-            <label class="bg-white border px-2 py-1 rounded text-red-600"><input type="radio" name="${p.id}" value="Não Conforme" /> ❌ N.C.</label>
-            <label class="bg-white border px-2 py-1 rounded text-gray-500"><input type="radio" name="${p.id}" value="Não Aplicável" /> N/A</label>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // CAPTURA E UPLOAD CONFIÁVEL DE FOTOS (CHROME DESKTOP E MOBILE)
-    async function iniciarCamera(tipo) {
-      try {
-        if (streamsCamera[tipo]) streamsCamera[tipo].getTracks().forEach(t => t.stop());
-        const v = document.getElementById('video-' + tipo);
-        streamsCamera[tipo] = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: cameraFacing[tipo], width: { ideal: 640 }, height: { ideal: 480 } }
-        });
-        v.srcObject = streamsCamera[tipo];
-        await v.play();
-        v.classList.remove('hidden');
-        document.getElementById('foto-' + tipo + '-preview').classList.add('hidden');
-        document.getElementById('foto-' + tipo + '-placeholder')?.classList.add('hidden');
-      } catch (e) {
-        alert('Não foi possível abrir a webcam diretamente (no Chrome em arquivo local, use o botão "📁 Anexar / Câmera Celular" logo ao lado).');
-      }
-    }
-
-    function alternarCamera(tipo) {
-      cameraFacing[tipo] = cameraFacing[tipo] === 'user' ? 'environment' : 'user';
-      iniciarCamera(tipo);
-    }
-
-    function capturarFoto(tipo) {
-      const v = document.getElementById('video-' + tipo);
-      if (!streamsCamera[tipo]) return alert('Ligue a câmera primeiro ou use "📁 Anexar / Câmera Celular".');
-      const c = document.createElement('canvas');
-      c.width = 400;
-      c.height = 300;
-      c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
-      fotosCapturadas[tipo] = c.toDataURL('image/jpeg', 0.7);
-      exibirPreviewFoto(tipo, fotosCapturadas[tipo]);
-      streamsCamera[tipo].getTracks().forEach(t => t.stop());
-      streamsCamera[tipo] = null;
-    }
-
-    function carregarFotoArquivo(event, tipo) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(ev) {
-        const img = new Image();
-        img.onload = function() {
-          const c = document.createElement('canvas');
-          const maxW = 400;
-          const scale = Math.min(1, maxW / img.width);
-          c.width = Math.round(img.width * scale);
-          c.height = Math.round(img.height * scale);
-          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-          fotosCapturadas[tipo] = c.toDataURL('image/jpeg', 0.7);
-          exibirPreviewFoto(tipo, fotosCapturadas[tipo]);
-        };
-        img.src = ev.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function exibirPreviewFoto(tipo, dataUrl) {
-      const v = document.getElementById('video-' + tipo);
-      const img = document.getElementById('foto-' + tipo + '-preview');
-      const ph = document.getElementById('foto-' + tipo + '-placeholder');
-      const st = document.getElementById('status-foto-' + tipo);
-      if (v) v.classList.add('hidden');
-      if (ph) ph.classList.add('hidden');
-      if (img) {
-        img.src = dataUrl;
-        img.classList.remove('hidden');
-      }
-      if (st) {
-        st.textContent = "✅ Foto capturada e pronta para salvar!";
-        st.className = "text-xs font-bold text-green-700";
-      }
-    }
-
-    function limparFoto(tipo) {
-      fotosCapturadas[tipo] = null;
-      if (streamsCamera[tipo]) {
-        streamsCamera[tipo].getTracks().forEach(t => t.stop());
-        streamsCamera[tipo] = null;
-      }
-      document.getElementById('video-' + tipo)?.classList.add('hidden');
-      const img = document.getElementById('foto-' + tipo + '-preview');
-      if (img) { img.src = ''; img.classList.add('hidden'); }
-      document.getElementById('foto-' + tipo + '-placeholder')?.classList.remove('hidden');
-      const st = document.getElementById('status-foto-' + tipo);
-      if (st) {
-        st.textContent = "Status: Sem foto anexada";
-        st.className = "text-xs font-bold text-gray-500";
-      }
-    }
-
-    function redimensionarCanvas() {
-      ['canvas-disp', 'canvas-insp'].forEach(id => {
-        const c = document.getElementById(id);
-        if (!c) return;
-        const r = c.getBoundingClientRect();
-        if (r.width > 0 && c.width !== Math.floor(r.width)) {
-          c.width = Math.floor(r.width);
-          c.height = 175;
-        }
-      });
-    }
-
-    function configurarCanvasAssinatura(id) {
-      const c = document.getElementById(id);
-      if (!c) return;
-      const ctx = c.getContext('2d');
-      let d = false;
-      const pos = e => {
-        const r = c.getBoundingClientRect();
-        const x = e.touches ? e.touches[0].clientX : e.clientX;
-        const y = e.touches ? e.touches[0].clientY : e.clientY;
-        return {
-          x: (x - r.left) * (c.width / (r.width || 1)),
-          y: (y - r.top) * (c.height / (r.height || 1))
-        };
-      };
-      const ini = e => {
-        d = true;
-        ctx.lineWidth = 2.5;
-        ctx.lineCap = 'round';
-        ctx.strokeStyle = '#00582C';
-        const p = pos(e);
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        c.dataset.assinado = "true";
-      };
-      const mov = e => {
-        if (!d) return;
-        if (e.cancelable) e.preventDefault();
-        const p = pos(e);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
-      };
-      const par = () => { d = false; };
-      c.addEventListener('mousedown', ini);
-      c.addEventListener('mousemove', mov);
-      window.addEventListener('mouseup', par);
-      c.addEventListener('touchstart', ini, { passive: true });
-      c.addEventListener('touchmove', mov, { passive: false });
-      window.addEventListener('touchend', par);
-    }
-
-    function limparAssinatura(id) {
-      const c = document.getElementById(id);
-      if (!c) return;
-      c.getContext('2d').clearRect(0, 0, c.width, c.height);
-      c.dataset.assinado = "false";
-    }
-
-    function salvarDispensacao() {
-      const colab = colaboradores.find(c => c.id === document.getElementById('disp-colaborador').value);
-      const canvas = document.getElementById('canvas-disp');
-      if (!colab) return alert('Selecione um colaborador válido.');
-      if (colab.inativo) return alert('Este colaborador está INATIVO / DESLIGADO.');
-
-      if (!carrinhoDispensacao.length) {
-        const est = estoque.find(e => e.id === document.getElementById('disp-epi').value);
-        const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
-        if (est && qtd > 0) carrinhoDispensacao.push({ id: est.id, nome: est.nome, ca: est.ca, qtd });
-      }
-      if (!carrinhoDispensacao.length) return alert('Adicione pelo menos 1 EPI.');
-      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.disp) {
-        return alert('É obrigatório coletar a Assinatura Digital e/ou Foto do colaborador.');
-      }
-
-      for (const it of carrinhoDispensacao) {
-        const e = estoque.find(x => x.id === it.id);
-        if (!e || e.qtd < it.qtd) return alert(`Sem saldo suficiente para ${it.nome}`);
-      }
-      for (const it of carrinhoDispensacao) {
-        const e = estoque.find(x => x.id === it.id);
-        if (e) e.qtd -= it.qtd;
-      }
-
-      const fotoSalva = fotosCapturadas.disp || "";
-      const assinaturaSalva = canvas.dataset.assinado === "true" ? canvas.toDataURL('image/png') : "";
-
-      const reg = {
-        id: 'NR06-' + Date.now(),
-        tipo: 'Dispensação EPI (NR-06)',
-        dataHora: new Date().toLocaleString('pt-BR'),
-        colaborador: colab.nome,
-        matricula: colab.matricula,
-        funcao: colab.funcao,
-        equipamento: carrinhoDispensacao.map(i => `${i.nome} (${i.qtd}x)`).join('; '),
-        ca: carrinhoDispensacao.map(i => i.ca).join(', '),
-        quantidade: carrinhoDispensacao.reduce((a, b) => a + b.qtd, 0),
-        itens: [...carrinhoDispensacao],
-        motivo: document.getElementById('disp-motivo').value,
-        status: 'ENTREGUE',
-        termoLegal: TEXTO_TERMO_NR06_VIBRA,
-        foto: fotoSalva,
-        assinatura: assinaturaSalva,
-        hash: 'VIBRA-' + Date.now()
-      };
-
-      auditoria.unshift(reg);
-      carrinhoDispensacao = [];
-      renderCarrinhoDispensacao();
-      limparAssinatura('canvas-disp');
-      limparFoto('disp');
-      document.getElementById('busca-disp-colaborador').value = '';
-      salvarBancoLocal();
-      abrirComprovante(reg.id);
-    }
-
-    function salvarInspecao() {
-      const colab = colaboradores.find(c => c.id === document.getElementById('insp-colaborador').value);
-      const canvas = document.getElementById('canvas-insp');
-      if (!colab) return alert('Selecione um colaborador.');
-      if (canvas.dataset.assinado !== "true" && !fotosCapturadas.insp) {
-        return alert('Assinatura ou Foto obrigatória.');
-      }
-      let rep = false;
-      const resp = PERGUNTAS_ANEXO_C.map(p => {
-        const v = document.querySelector(`input[name="${p.id}"]:checked`).value;
-        if (v === 'Não Conforme') rep = true;
-        return { pergunta: p.texto, resposta: v };
-      });
-
-      const fotoSalva = fotosCapturadas.insp || "";
-      const assinaturaSalva = canvas.dataset.assinado === "true" ? canvas.toDataURL('image/png') : "";
-
-      const reg = {
-        id: 'ANEXOC-' + Date.now(),
-        tipo: 'Inspeção Cinto (Anexo C)',
-        dataHora: new Date().toLocaleString('pt-BR'),
-        dataReferencia: document.getElementById('insp-data').value,
-        colaborador: colab.nome,
-        matricula: colab.matricula,
-        funcao: colab.funcao,
-        equipamento: 'Cinto Paraquedista / Trava-Quedas',
-        ca: document.getElementById('insp-ca').value,
-        quantidade: 1,
-        status: rep ? 'INTERDITADO / SUBSTITUIR' : 'APROVADO PARA USO',
-        respostasChecklist: resp,
-        foto: fotoSalva,
-        assinatura: assinaturaSalva,
-        hash: 'ANEXOC-' + Date.now()
-      };
-
-      auditoria.unshift(reg);
-      limparAssinatura('canvas-insp');
-      limparFoto('insp');
-      salvarBancoLocal();
-      abrirComprovante(reg.id);
-    }
-
-    function abrirInspecaoDireta(id) {
-      switchTab('inspecao');
-      document.getElementById('insp-colaborador').value = id;
-      verificarAvisoCinto();
-    }
-
     function registrarEntrada() {
       const e = estoque.find(x => x.id === document.getElementById('entrada-epi').value);
       const q = parseInt(document.getElementById('entrada-qtd').value || '0', 10);
-      if (e && q > 0) { e.qtd += q; salvarBancoLocal(); alert(`Novo saldo: ${e.qtd}`); }
-    }
-
-    function excluirRegistro(id) {
-      if (prompt("🔒 Senha Admin:") !== senhaAdmin) return alert("❌ Senha incorreta.");
-      const idx = auditoria.findIndex(r => r.id === id);
-      if (idx === -1) return;
-      const just = prompt("Motivo da exclusão:");
-      if (!just) return;
-      logExclusoes.unshift({
-        dataHoraExclusao: new Date().toLocaleString('pt-BR'),
-        idOriginal: id,
-        colaboradorAfetado: auditoria[idx].colaborador,
-        itemAfetado: auditoria[idx].equipamento,
-        responsavelExclusao: 'Admin',
-        justificativa: just
-      });
-      auditoria.splice(idx, 1);
-      salvarBancoLocal();
-    }
-
-    function renderLogExclusoes() {
-      const el = document.getElementById('tabela-log-exclusoes');
-      if (el) el.innerHTML = logExclusoes.map(l => `<tr><td class="p-2">${l.dataHoraExclusao}</td><td class="p-2">${l.idOriginal}</td><td class="p-2">${l.colaboradorAfetado}</td><td class="p-2">${l.itemAfetado}</td><td class="p-2">${l.responsavelExclusao}</td><td class="p-2">${l.justificativa}</td></tr>`).join('');
-    }
-
-    function exportarLogExclusoesCSV() {
-      const h = ['Data', 'ID', 'Colaborador', 'Item', 'Justificativa'];
-      const l = logExclusoes.map(x => [x.dataHoraExclusao, x.idOriginal, x.colaboradorAfetado, x.itemAfetado, x.justificativa].join(';'));
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob(['\uFEFF' + [h.join(';'), ...l].join('\n')], { type: 'text/csv' }));
-      a.download = 'Log_Exclusoes.csv';
-      a.click();
-    }
-
-    function renderPendencias() {
-      const mes = document.getElementById('pendencias-mes-ano').value || new Date().toISOString().slice(0, 7);
-      const termo = (document.getElementById('busca-pendencias')?.value || '').toLowerCase();
-      const insp = new Set();
-      auditoria.forEach(r => {
-        if (r.tipo.includes('Inspeção Cinto') && (r.dataReferencia || '').startsWith(mes)) insp.add(r.matricula);
-      });
-      const ativos = colaboradores.filter(c => !c.inativo);
-      const obrig = ativos.filter(c => !c.naoUtilizaCinto);
-      const pend = obrig.filter(c => !insp.has(c.matricula));
-
-      document.getElementById('total-pendentes-num').textContent = pend.length;
-      document.getElementById('total-inspecionados-num').textContent = obrig.length - pend.length;
-      document.getElementById('taxa-adesao-num').textContent = (obrig.length ? Math.round(((obrig.length - pend.length) / obrig.length) * 100) : 100) + '%';
-      document.getElementById('total-isentos-cinto-num').textContent = ativos.length - obrig.length;
-      document.getElementById('kpi-pendencias').textContent = pend.length;
-
-      document.getElementById('tabela-pendencias').innerHTML = pend.filter(c => c.nome.toLowerCase().includes(termo) || c.matricula.includes(termo)).map(c => `
-        <tr class="border-b"><td class="p-2.5 font-mono font-bold">${c.matricula}</td><td class="p-2.5 font-semibold">${c.nome}</td><td class="p-2.5">${c.funcao}</td><td class="p-2.5 text-center"><span class="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full text-xs font-bold">⚠️ Pendente</span></td><td class="p-2.5 text-right"><button onclick="abrirInspecaoDireta('${c.id}')" class="bg-vibraGreen text-white px-2.5 py-1 rounded text-xs font-bold">Inspecionar ↗</button></td></tr>
-      `).join('');
-    }
-
-    function exportarPendenciasCSV() {
-      const mes = document.getElementById('pendencias-mes-ano').value || new Date().toISOString().slice(0, 7);
-      const insp = new Set();
-      auditoria.forEach(r => {
-        if (r.tipo.includes('Inspeção Cinto') && (r.dataReferencia || '').startsWith(mes)) insp.add(r.matricula);
-      });
-      const pend = colaboradores.filter(c => !c.inativo && !c.naoUtilizaCinto && !insp.has(c.matricula));
-      const linhas = pend.map(c => `${c.matricula};${c.nome};${c.funcao}`);
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob(['\uFEFFMatricula;Nome;Funcao\n' + linhas.join('\n')], { type: 'text/csv' }));
-      a.download = `Pendencias_${mes}.csv`;
-      a.click();
-    }
-
-    function gerarFichaUnicaPeloSelectAdmin() {
-      const c = colaboradores.find(x => x.id === document.getElementById('admin-historico-colab').value);
-      if (c) gerarFichaUnicaColaborador(c.matricula);
-    }
-
-    function gerarFichaUnicaColaborador(matricula) {
-      const colab = colaboradores.find(c => String(c.matricula) === String(matricula));
-      if (!colab) return;
-      const entregas = auditoria.filter(r => String(r.matricula) === String(matricula) && r.tipo.includes('NR-06'));
-      document.getElementById('modal-print-title').textContent = `📄 Ficha Individual NR-06 - ${colab.nome}`;
-      document.getElementById('print-area').innerHTML = `
-        <div class="border-b-2 border-vibraGreen pb-2 flex justify-between items-start">
-          <div>
-            <h2 class="text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A. - UNIDADE BAVGRU</h2>
-            <p class="text-xs font-bold">FICHA INDIVIDUAL DE CONTROLE E ENTREGA DE EPI (NR-06 & PADRÃO CORPORATIVO VIBRA)</p>
-          </div>
-          <div class="text-right text-xs">
-            <p><strong>Colaborador:</strong> ${colab.nome}</p>
-            <p><strong>Matrícula:</strong> ${colab.matricula} | <strong>Situação:</strong> ${colab.inativo ? 'INATIVO / DESLIGADO' : 'ATIVO'}</p>
-            <p><strong>Função:</strong> ${colab.funcao}</p>
-          </div>
-        </div>
-        <div class="p-2.5 bg-gray-50 border rounded text-xs mt-2 text-justify leading-relaxed">
-          <strong>TERMO DE RESPONSABILIDADE NR-06 & PADRÃO CORPORATIVO VIBRA ENERGIA:</strong><br/>
-          ${TEXTO_TERMO_NR06_VIBRA}
-        </div>
-        <table class="w-full text-xs border-collapse border mt-3">
-          <thead>
-            <tr class="bg-gray-100 border-b font-bold">
-              <th class="p-1.5 border-r text-left">Data/Hora</th>
-              <th class="p-1.5 border-r text-left">Equipamento(s) / Nº CA</th>
-              <th class="p-1.5 border-r text-left">Motivo</th>
-              <th class="p-1.5 border-r text-center">Foto Evidência</th>
-              <th class="p-1.5 text-center">Assinatura</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${entregas.length ? entregas.map(e => `
-              <tr class="border-b">
-                <td class="p-1.5 border-r">${e.dataHora}</td>
-                <td class="p-1.5 border-r font-semibold">${e.equipamento} (CA: ${e.ca})</td>
-                <td class="p-1.5 border-r">${e.motivo || '-'}</td>
-                <td class="p-1.5 border-r text-center">${e.foto ? `<img src="${e.foto}" class="h-12 mx-auto object-contain rounded border" />` : '-'}</td>
-                <td class="p-1.5 text-center">${e.assinatura ? `<img src="${e.assinatura}" class="h-10 mx-auto object-contain" />` : 'Confirmado'}</td>
-              </tr>
-            `).join('') : `<tr><td colspan="5" class="p-4 text-center">Nenhuma entrega registrada para este colaborador.</td></tr>`}
-          </tbody>
-        </table>
-      `;
-      document.getElementById('modal-print').classList.remove('hidden');
-      document.getElementById('modal-print').classList.add('flex');
-    }
-
-    function abrirComprovante(id) {
-      const r = auditoria.find(x => x.id === id);
-      if (!r) return;
-      const isNR06 = r.tipo.includes('NR-06');
-      document.getElementById('modal-print-title').textContent = `📄 Comprovante ${r.id}`;
-      document.getElementById('print-area').innerHTML = `
-        <div class="border-b-2 border-vibraGreen pb-2 flex justify-between">
-          <div>
-            <h2 class="text-base font-extrabold text-vibraDark">VIBRA ENERGIA S.A. - UNIDADE BAVGRU</h2>
-            <p class="text-xs font-bold">${r.tipo} | Protocolo: ${r.id}</p>
-          </div>
-          <div class="text-right text-xs"><p><strong>Data/Hora:</strong> ${r.dataHora}</p><p><strong>Status:</strong> ${r.status}</p></div>
-        </div>
-        <div class="p-2.5 bg-gray-50 border rounded text-xs mt-2 space-y-1">
-          <p><strong>Colaborador:</strong> ${r.colaborador} (Matrícula: ${r.matricula}) — <strong>Função:</strong> ${r.funcao}</p>
-          <p><strong>Equipamento(s):</strong> ${r.equipamento} | <strong>Nº CA:</strong> ${r.ca}</p>
-          ${r.motivo ? `<p><strong>Motivo da Entrega:</strong> ${r.motivo}</p>` : ''}
-        </div>
-        ${isNR06 ? `
-          <div class="p-2.5 bg-green-50 border border-green-300 rounded text-xs mt-2 text-justify leading-relaxed">
-            <strong>TERMO LEGAL DE RECEBIMENTO E RESPONSABILIDADE (NR-06 & PADRÃO VIBRA):</strong><br/>
-            ${TEXTO_TERMO_NR06_VIBRA}
-          </div>
-        ` : ''}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
-          <div class="text-center border p-2 rounded">
-            <p class="text-xs font-bold mb-1">📸 Registro Fotográfico</p>
-            ${r.foto ? `<img src="${r.foto}" class="h-32 mx-auto object-contain rounded" />` : `<p class="text-xs text-gray-400 py-8">Sem foto anexada</p>`}
-          </div>
-          <div class="text-center border p-2 rounded">
-            <p class="text-xs font-bold mb-1">✍️ Assinatura Digital do Colaborador</p>
-            ${r.assinatura ? `<img src="${r.assinatura}" class="h-28 mx-auto object-contain" />` : `<p class="text-xs text-gray-400 py-8">Validado por foto</p>`}
-          </div>
-        </div>
-      `;
-      document.getElementById('modal-print').classList.remove('hidden');
-      document.getElementById('modal-print').classList.add('flex');
-    }
-
-    function fecharModalPrint() {
-      document.getElementById('modal-print').classList.add('hidden');
-      document.getElementById('modal-print').classList.remove('flex');
-    }
-
-    function renderColaboradores() {
-      const t = (document.getElementById('busca-colab')?.value || '').toLowerCase();
-      let lista = colaboradores.filter(c => c.nome.toLowerCase().includes(t) || c.matricula.includes(t));
-      if (filtroEfetivoStatus === 'ativos') lista = lista.filter(c => !c.inativo);
-      else if (filtroEfetivoStatus === 'inativos') lista = lista.filter(c => c.inativo);
-
-      document.getElementById('tabela-colaboradores').innerHTML = lista.length ? lista.map(c => `
-        <tr class="border-b ${c.inativo ? 'bg-red-50 text-gray-500' : 'hover:bg-gray-50'}">
-          <td class="p-2.5 font-mono font-bold">${c.matricula}</td>
-          <td class="p-2.5 font-semibold">${c.nome}</td>
-          <td class="p-2.5">${c.funcao}</td>
-          <td class="p-2.5 text-center">
-            ${c.inativo
-              ? `<span class="bg-red-100 text-red-800 px-2 py-0.5 rounded-full text-xs font-bold">🚫 Inativo / Desligado</span>`
-              : `<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs font-bold">✅ Ativo</span>`
-            }
-          </td>
-          <td class="p-2.5 text-center">${c.naoUtilizaCinto ? '🚫 Isento' : '🧗 Sim'}</td>
-          <td class="p-2.5 text-right flex gap-1.5 justify-end">
-            <button onclick="gerarFichaUnicaColaborador('${c.matricula}')" class="bg-vibraGreen text-white px-2.5 py-1 rounded text-xs font-bold">📄 Ficha NR-06</button>
-            <button onclick="alternarStatusAtivoColaborador('${c.id}')" class="${c.inativo ? 'bg-blue-600' : 'bg-red-600'} text-white px-2.5 py-1 rounded text-xs font-bold">
-              ${c.inativo ? '🔄 Reativar' : '🚫 Inativar'}
-            </button>
-          </td>
-        </tr>
-      `).join('') : `<tr><td colspan="6" class="p-4 text-center text-gray-400 italic">Nenhum colaborador encontrado neste filtro.</td></tr>`;
-    }
-
-    function renderAuditoria() {
-      const t = (document.getElementById('busca-auditoria')?.value || '').toLowerCase();
-      document.getElementById('tabela-auditoria').innerHTML = auditoria.filter(r =>
-        (r.colaborador || '').toLowerCase().includes(t) ||
-        (r.matricula || '').includes(t) ||
-        (r.ca || '').toLowerCase().includes(t)
-      ).map(r => `
-        <tr class="border-b hover:bg-gray-50">
-          <td class="p-2.5 font-mono">${r.dataHora}</td>
-          <td class="p-2.5 font-semibold">${r.tipo}</td>
-          <td class="p-2.5">${r.colaborador} (${r.matricula})</td>
-          <td class="p-2.5">${r.equipamento} (CA ${r.ca})</td>
-          <td class="p-2.5 text-center">${r.foto ? `<img src="${r.foto}" onclick="abrirComprovante('${r.id}')" class="h-9 w-12 object-cover rounded mx-auto border cursor-pointer" title="Clique para ampliar" />` : '<span class="text-gray-400 text-xs">-</span>'}</td>
-          <td class="p-2.5 font-bold">${r.status}</td>
-          <td class="p-2.5 text-right flex gap-1 justify-end">
-            <button onclick="abrirComprovante('${r.id}')" class="bg-vibraDark text-white px-2 py-1 rounded text-xs font-bold">PDF</button>
-            <button onclick="gerarFichaUnicaColaborador('${r.matricula}')" class="bg-vibraGreen text-white px-2 py-1 rounded text-xs font-bold">Ficha Única</button>
-            <button onclick="excluirRegistro('${r.id}')" class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold">🗑️</button>
-          </td>
-        </tr>
-      `).join('');
+      if (e && q > 0) {
+        e.qtd += q;
+        salvarBancoLocal();
+        alert(`Entrada realizada! Novo saldo de ${e.nome}: ${e.qtd}`);
+      }
     }
 
     function cadastrarNovoColaborador() {
-      const nome = document.getElementById('novo-colab-nome').value.trim().toUpperCase();
+      const nome = document.getElementById('novo-colab-nome').value.trim();
       const mat = document.getElementById('novo-colab-matricula').value.trim();
       if (!nome || !mat) return alert('Preencha Nome e Matrícula.');
       colaboradores.push({
         id: 'c_' + Date.now(),
         matricula: mat,
-        nome,
-        funcao: (document.getElementById('novo-colab-funcao').value || 'OPERADOR').toUpperCase(),
-        email: document.getElementById('novo-colab-email').value || '',
+        nome: nome.toUpperCase(),
+        funcao: (document.getElementById('novo-colab-funcao').value.trim() || 'OPERADOR DE ABASTECIMENTO JR').toUpperCase(),
+        email: document.getElementById('novo-colab-email').value.trim(),
         naoUtilizaCinto: false,
-        inativo: false
+        ativo: true
       });
       document.getElementById('novo-colab-nome').value = '';
       document.getElementById('novo-colab-matricula').value = '';
-      document.getElementById('novo-colab-funcao').value = '';
-      document.getElementById('novo-colab-email').value = '';
       salvarBancoLocal();
-      alert(`✅ Colaborador ${nome} incluído com sucesso!`);
+      alert(`✅ Colaborador ${nome} cadastrado com sucesso!`);
     }
 
     function cadastrarNovoEpi() {
       const nome = document.getElementById('novo-epi-nome').value.trim();
-      if (!nome) return;
+      if (!nome) return alert('Preencha o nome do novo EPI.');
       estoque.push({
         id: 'e_' + Date.now(),
         nome,
-        ca: document.getElementById('novo-epi-ca').value || 'S/CA',
+        ca: document.getElementById('novo-epi-ca').value.trim() || 'S/CA',
         qtd: parseInt(document.getElementById('novo-epi-qtd').value || '10', 10),
         min: parseInt(document.getElementById('novo-epi-min').value || '5', 10)
       });
       document.getElementById('novo-epi-nome').value = '';
       document.getElementById('novo-epi-ca').value = '';
       salvarBancoLocal();
-      alert(`✅ EPI ${nome} cadastrado!`);
+      alert(`✅ EPI ${nome} criado no estoque!`);
     }
 
+    // --- 15. ATUALIZAR TODOS OS DADOS DA INTERFACE ---
     function atualizarTudo() {
-      const colabsAtivos = colaboradores.filter(c => !c.inativo);
-      document.getElementById('kpi-colaboradores').textContent = colabsAtivos.length;
-      document.getElementById('kpi-dispensacoes').textContent = auditoria.filter(a => a.tipo.includes('NR-06')).length;
-      document.getElementById('kpi-inspecoes').textContent = auditoria.filter(a => a.tipo.includes('Anexo C')).length;
+      // 1. KPIs
+      const ativos = colaboradores.filter(c => c.ativo !== false);
+      document.getElementById('kpi-colaboradores').textContent = `${ativos.length} ativos`;
+      document.getElementById('kpi-dispensacoes').textContent = auditoria.filter(a => (a.tipo || '').includes('NR-06')).length;
+      document.getElementById('kpi-inspecoes').textContent = auditoria.filter(a => (a.tipo || '').includes('Anexo C')).length;
       document.getElementById('kpi-alertas').textContent = estoque.filter(e => e.qtd <= e.min).length;
 
-      colaboradores.sort((a, b) => a.nome.localeCompare(b.nome));
+      // 2. Selects de Colaboradores
+      ativos.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+      const opColabAtivos = ativos.map(c => `<option value="${c.id}">${c.nome} (${c.matricula})</option>`).join('');
 
-      // Selects operacionais recebem apenas colaboradores ATIVOS
-      filtrarSelectColaboradorDispensacao();
-      filtrarSelectColaboradorInspecao();
+      ['insp-colaborador', 'admin-historico-colab', 'tox-colaborador'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          const v = el.value;
+          el.innerHTML = opColabAtivos;
+          if (v) el.value = v;
+        }
+      });
 
-      const opColabAtivos = colabsAtivos.map(c => `<option value="${c.id}">${c.nome} (${c.matricula})</option>`).join('');
-      const elTox = document.getElementById('tox-colaborador');
-      if (elTox) { const v = elTox.value; elTox.innerHTML = opColabAtivos; if (v) elTox.value = v; }
+      // Atualiza o select de dispensação com busca
+      filtrarColaboradoresDispensacao();
 
-      // Histórico Admin mostra TODOS (inclusive desligados para auditoria)
-      const opColabTodos = colaboradores.map(c => `<option value="${c.id}">${c.nome} (${c.matricula})${c.inativo ? ' [INATIVO/DESLIGADO]' : ''}</option>`).join('');
-      const elHist = document.getElementById('admin-historico-colab');
-      if (elHist) { const v = elHist.value; elHist.innerHTML = opColabTodos; if (v) elHist.value = v; }
-
+      // 3. Selects de Estoque
+      estoque.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
       const opEpi = estoque.map(e => `<option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>`).join('');
       ['disp-epi', 'entrada-epi'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) { const v = el.value; el.innerHTML = opEpi; if (v) el.value = v; }
+        if (el) {
+          const v = el.value;
+          el.innerHTML = opEpi;
+          if (v) el.value = v;
+        }
       });
 
-      document.getElementById('tabela-estoque').innerHTML = estoque.map(e => `
-        <tr class="border-b"><td class="p-2.5 font-medium">${e.nome}</td><td class="p-2.5 font-bold">${e.ca}</td><td class="p-2.5 font-extrabold">${e.qtd} un.</td><td class="p-2.5">${e.min} un.</td><td class="p-2.5">${e.qtd <= e.min ? '<span class="text-red-600 font-bold">⚠️ Repor</span>' : '<span class="text-green-700 font-bold">✔ Regular</span>'}</td></tr>
-      `).join('');
+      // 4. Tabela de Estoque
+      const tabEstoque = document.getElementById('tabela-estoque');
+      if (tabEstoque) {
+        tabEstoque.innerHTML = estoque.map(e => `
+          <tr class="border-b hover:bg-gray-50">
+            <td class="p-2.5 font-medium">${e.nome}</td>
+            <td class="p-2.5 font-bold">${e.ca}</td>
+            <td class="p-2.5 font-extrabold ${e.qtd <= e.min ? 'text-red-600' : 'text-green-700'}">${e.qtd} un.</td>
+            <td class="p-2.5">${e.min} un.</td>
+            <td class="p-2.5">${e.qtd <= e.min ? '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded font-bold">⚠️ Repor</span>' : '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold">✔ Regular</span>'}</td>
+          </tr>
+        `).join('');
+      }
 
+      // 5. Renderização das seções
       renderColaboradores();
       renderAuditoria();
       renderLogExclusoes();
@@ -1556,27 +1896,33 @@
       renderToxicologico();
     }
 
-    function exportarCSV() {
-      const h = ['ID', 'Data', 'Tipo', 'Colaborador', 'Matricula', 'EPI', 'CA', 'Status'];
-      const l = auditoria.map(r => [r.id, r.dataHora, r.tipo, r.colaborador, r.matricula, r.equipamento, r.ca, r.status].join(';'));
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob(['\uFEFF' + [h.join(';'), ...l].join('\n')], { type: 'text/csv' }));
-      a.download = 'Auditoria_BAVGRU.csv';
-      a.click();
+    // --- 16. INICIALIZAÇÃO SEGURA (COMPATIBILIDADE GOOGLE CHROME) ---
+    function initApp() {
+      try {
+        const hoje = new Date();
+        const inspDataEl = document.getElementById('insp-data');
+        if (inspDataEl) inspDataEl.value = hoje.toISOString().slice(0, 10);
+        const pendMesEl = document.getElementById('pendencias-mes-ano');
+        if (pendMesEl) pendMesEl.value = hoje.toISOString().slice(0, 7);
+
+        renderChecklistForm();
+        configurarCanvasAssinatura('canvas-disp');
+        configurarCanvasAssinatura('canvas-insp');
+        atualizarTudo();
+        iniciarSincronizacaoNuvem();
+
+        window.addEventListener('resize', redimensionarCanvas);
+        redimensionarCanvas();
+      } catch (err) {
+        console.error("Erro na inicialização da aplicação:", err);
+      }
     }
 
-    window.onload = () => {
-      const d = new Date();
-      document.getElementById('insp-data').value = d.toISOString().slice(0, 10);
-      document.getElementById('pendencias-mes-ano').value = d.toISOString().slice(0, 7);
-      renderChecklistForm();
-      configurarCanvasAssinatura('canvas-disp');
-      configurarCanvasAssinatura('canvas-insp');
-      atualizarTudo();
-      iniciarSincronizacaoNuvem();
-      window.addEventListener('resize', redimensionarCanvas);
-      redimensionarCanvas();
-    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
   </script>
 </body>
 </html>

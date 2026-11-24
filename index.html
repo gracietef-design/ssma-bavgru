@@ -6,6 +6,11 @@
   <title>Portal SSMA BAVGRU - Gestão de EPIs, Inspeção SPIQ & Auditoria</title>
   <meta name="theme-color" content="#008542" />
   
+  <!-- Ícones para Favicon, Celular e Barra de Tarefas do Windows -->
+  <link rel="icon" type="image/png" href="logo-vibra.png" />
+  <link rel="shortcut icon" type="image/png" href="logo-vibra.png" />
+  <link rel="apple-touch-icon" href="logo-vibra.png" />
+
   <!-- Tailwind CSS & Bibliotecas Externas com Fallback Offline -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -63,18 +68,39 @@
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans min-h-screen flex flex-col">
 
+  <!-- BARRA DE INSTALAÇÃO DO APLICATIVO (PWA) COM BOTÃO DE FECHAR -->
+  <div id="pwa-install-bar" class="bg-gradient-to-r from-vibraDark via-green-900 to-gray-900 text-white px-4 py-2.5 border-b-2 border-vibraYellow flex flex-wrap items-center justify-between text-xs md:text-sm shadow-md transition-all duration-300 no-print">
+    <div class="flex items-center gap-2">
+      <span class="p-1 bg-white/20 text-yellow-300 rounded">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+        </svg>
+      </span>
+      <span>Deseja baixar e instalar o <strong>App SSMA Vibra</strong> para acesso rápido na sua Barra de Tarefas ou Celular?</span>
+    </div>
+    <div class="flex items-center gap-2 mt-1 sm:mt-0">
+      <button id="btn-install-app" type="button" onclick="acionarInstalacaoPWA()" class="bg-vibraYellow hover:bg-yellow-400 text-vibraDark font-extrabold px-3 py-1 rounded-lg text-xs shadow flex items-center gap-1.5 transition">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+        </svg>
+        Baixar Aplicativo
+      </button>
+      <button id="btn-close-install" type="button" onclick="fecharAvisoInstalacao()" title="Não quero baixar agora" class="text-gray-300 hover:text-white px-2 py-0.5 rounded text-sm font-bold transition">
+        ✕
+      </button>
+    </div>
+  </div>
+
   <!-- CABEÇALHO PADRÃO VIBRA -->
   <header class="bg-vibraGreen text-white shadow-lg border-b-4 border-vibraYellow no-print">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 border-b border-green-700">
       <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2">
-          <div class="w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center shadow font-black text-vibraDark text-lg">
-            V
-          </div>
-          <div class="text-white font-extrabold px-1 text-2xl tracking-widest flex items-center gap-1.5">
-            <span>VIBRA</span>
-            <span class="text-xs bg-vibraYellow text-vibraDark px-1.5 py-0.5 rounded font-black uppercase">App</span>
-          </div>
+        <!-- NOVO SÍMBOLO OFICIAL VIBRA -->
+        <div class="flex items-center gap-2 shrink-0">
+          <img src="logo-vibra.png" 
+               alt="Vibra Energia" 
+               class="h-10 md:h-12 w-auto object-contain rounded-lg shadow border border-green-800 bg-vibraDark px-1 shrink-0" 
+               onerror="this.onerror=null; this.src='C:/Users/AF4U/.gemini/antigravity/brain/3d697abf-ffb1-4add-bfad-d945f5441bf1/.user_uploaded/media_1795523983381_a4925a22.png';" />
         </div>
         <div class="border-l-2 border-green-400 pl-3">
           <div class="flex items-center gap-2 flex-wrap">
@@ -86,6 +112,16 @@
           </div>
           <p class="text-xs text-green-100 hidden sm:block">Gestão Integrada de EPIs (NR-06), Inspeção Trava-Quedas (Anexo C) & Auditoria</p>
         </div>
+      </div>
+
+      <!-- BOTÃO DE BAIXAR APP NO CABEÇALHO -->
+      <div class="flex items-center gap-2">
+        <button id="btn-header-install" type="button" onclick="acionarInstalacaoPWA()" class="bg-vibraYellow hover:bg-yellow-400 text-vibraDark text-xs font-black px-2.5 py-1.5 rounded-lg shadow flex items-center gap-1.5 transition" title="Instalar aplicativo na máquina ou celular">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+          <span>Baixar App</span>
+        </button>
       </div>
     </div>
 
@@ -659,6 +695,82 @@
   </div>
 
   <script>
+    // --- 0. GERENCIAMENTO DE INSTALAÇÃO DO APLICATIVO (PWA) ---
+    let deferredPrompt = null;
+
+    function ocultarOpcaoInstalacao() {
+      const bar = document.getElementById('pwa-install-bar');
+      if (bar) bar.style.display = 'none';
+      const btnHeader = document.getElementById('btn-header-install');
+      if (btnHeader) btnHeader.style.display = 'none';
+    }
+
+    function fecharAvisoInstalacao() {
+      const bar = document.getElementById('pwa-install-bar');
+      if (bar) bar.style.display = 'none';
+      sessionStorage.setItem('vibra_pwa_dismissed', 'true');
+    }
+
+    function acionarInstalacaoPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(choiceResult => {
+          if (choiceResult.outcome === 'accepted') {
+            ocultarOpcaoInstalacao();
+          }
+          deferredPrompt = null;
+        });
+      } else {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (isIOS) {
+          alert("📲 Para instalar no iPhone/iPad:\n\n1. Toque no botão Compartilhar do Safari (ícone de quadrado com seta para cima);\n2. Selecione 'Adicionar à Tela de Início'.");
+        } else {
+          alert("📲 Para baixar o aplicativo no seu computador ou celular:\n\n1. Clique no ícone de instalação (computador com setinha para baixo) na barra de endereços do seu navegador;\nOU\n2. Abra o menu do navegador (três pontinhos ⋮) e selecione 'Instalar aplicativo' ou 'Criar atalho'.");
+        }
+      }
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const bar = document.getElementById('pwa-install-bar');
+      if (bar && sessionStorage.getItem('vibra_pwa_dismissed') !== 'true') {
+        bar.style.display = 'flex';
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      ocultarOpcaoInstalacao();
+      deferredPrompt = null;
+    });
+
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+      ocultarOpcaoInstalacao();
+    }
+
+    // Configura Manifesto PWA Dinâmico para Fixar na Barra de Tarefas do Windows
+    try {
+      const manifestData = {
+        name: "Portal SSMA BAVGRU - Vibra",
+        short_name: "SSMA Vibra",
+        start_url: window.location.href,
+        display: "standalone",
+        background_color: "#00582C",
+        theme_color: "#008542",
+        icons: [
+          { src: "logo-vibra.png", sizes: "192x192 512x512", type: "image/png" }
+        ]
+      };
+      const blob = new Blob([JSON.stringify(manifestData)], { type: 'application/manifest+json' });
+      let link = document.querySelector('link[rel="manifest"]');
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'manifest';
+        document.head.appendChild(link);
+      }
+      link.href = URL.createObjectURL(blob);
+    } catch(e) {}
+
     // --- 1. DADOS DE CHECKLIST E EFETIVO PADRÃO BAVGRU ---
     const PERGUNTAS_ANEXO_C = [
       { id: "c1", grupo: "Cinto Paraquedista", texto: "1. As costuras apresentam boas condições sem ponto de rompimento ou desgastes?" },

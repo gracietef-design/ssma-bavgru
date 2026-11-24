@@ -1,23 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
-  <!-- Fundo Verde Oficial da Vibra (Cantos Arredondados) -->
-  <rect width="512" height="512" rx="96" fill="#004822"/>
+  <!-- Fundo Verde Oficial Vibra -->
+  <rect width="512" height="512" rx="90" fill="#004822"/>
 
-  <!-- Símbolo Oficial / Onda de Energia da Vibra -->
-  <path d="M 52,320 L 90,192 L 124,320 L 158,192 L 188,320" 
+  <!-- Símbolo da Vibra (Na mesma proporção e altura exata do texto) -->
+  <path d="M 46,296 L 72,220 L 96,296 L 120,220 L 144,296" 
         fill="none" 
         stroke="#FFFFFF" 
-        stroke-width="20" 
+        stroke-width="14" 
         stroke-linecap="butt" 
         stroke-linejoin="miter" 
-        stroke-miterlimit="6" />
+        stroke-miterlimit="4" />
 
-  <!-- Tipografia VIBRA (Travada no tamanho correto, não corta e não vaza) -->
-  <text x="216" y="314" 
+  <!-- Texto VIBRA (Compacto, em negrito e alinhado na mesma linha) -->
+  <text x="165" y="296" 
         fill="#FFFFFF" 
-        font-family="system-ui, -apple-system, 'Segoe UI', 'Arial Black', sans-serif" 
-        font-size="94" 
+        font-family="'Arial Black', 'Impact', sans-serif" 
+        font-size="96" 
         font-weight="900" 
-        font-style="italic" 
-        textLength="244" 
-        lengthAdjust="spacing">VIBRA</text>
+        font-style="italic">VIBRA</text>
 </svg>

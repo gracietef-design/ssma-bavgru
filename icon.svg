@@ -1,58 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
-  <defs>
-    <!-- Gradiente de fundo com as cores corporativas da Vibra Energia -->
-    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00582C" />
-      <stop offset="100%" stop-color="#008542" />
-    </linearGradient>
-  </defs>
+  <!-- Fundo Verde Oficial Vibra (Formato App / Ícone) -->
+  <rect width="512" height="512" rx="90" fill="#004822"/>
 
-  <!-- Fundo do ícone (quadrado arredondado padrão para Apps de Celular) -->
-  <rect width="512" height="512" rx="112" fill="url(#bg-grad)" />
-
-  <!-- Escudo de Proteção de Fundo (Segurança/SSMA) -->
-  <path d="M256,70 C310,70 390,95 405,115 C410,195 385,340 256,430 C127,340 102,195 107,115 C122,95 202,70 256,70 Z" 
-        fill="none" 
-        stroke="#FFC72C" 
-        stroke-width="14" 
-        stroke-linejoin="round" />
-
-  <!-- LOGO VIBRA ENERGIA (Substituindo o antigo capacete) -->
-  <g>
+  <!-- LOGO VIBRA ENERGIA 100% VETORIZADO -->
+  <g fill="#FFFFFF" transform="translate(42, 176)">
     <!-- Onda / Símbolo de Energia Vibra -->
-    <path d="M 148 245 L 168 185 L 185 245 L 202 185 L 220 245" 
-          fill="none" 
-          stroke="#FFFFFF" 
-          stroke-width="13" 
-          stroke-linecap="butt" 
-          stroke-linejoin="miter" 
-          stroke-miterlimit="5" />
-    
-    <!-- Tipografia VIBRA -->
-    <text x="236" y="242" 
-          fill="#FFFFFF" 
-          font-family="system-ui, -apple-system, sans-serif" 
-          font-size="54" 
-          font-weight="900" 
-          font-style="italic" 
-          letter-spacing="2">VIBRA</text>
-  </g>
+    <path d="M 0,160 L 46,0 L 78,0 L 42,126 L 68,36 L 94,126 L 126,14 L 148,14 L 108,160 L 80,160 L 55,70 L 30,160 Z"/>
 
-  <!-- Texto SSMA na base do ícone -->
-  <text x="256" y="365" 
-        fill="#FFFFFF" 
-        font-family="system-ui, -apple-system, sans-serif" 
-        font-size="62" 
-        font-weight="900" 
-        text-anchor="middle" 
-        letter-spacing="4">SSMA</text>
-        
-  <!-- Tag BAVGRU secundária -->
-  <text x="256" y="405" 
-        fill="#FFC72C" 
-        font-family="system-ui, -apple-system, sans-serif" 
-        font-size="30" 
-        font-weight="900" 
-        text-anchor="middle" 
-        letter-spacing="2">BAVGRU</text>
+    <!-- Letra V -->
+    <path d="M 170,0 L 206,160 L 236,160 L 260,0 L 230,0 L 216,110 L 195,0 Z"/>
+
+    <!-- Letra I -->
+    <path d="M 268,0 L 296,0 L 262,160 L 234,160 Z"/>
+
+    <!-- Letra B -->
+    <path d="M 302,0 L 358,0 C 382,0 395,14 390,38 C 386,58 370,72 352,76 C 370,80 376,96 371,118 C 365,146 348,160 320,160 L 266,160 Z M 316,30 L 302,90 L 334,90 C 348,90 354,82 356,68 C 358,54 352,30 338,30 Z M 310,120 L 298,136 L 328,136 C 342,136 348,130 350,118 C 352,106 346,96 332,96 Z"/>
+
+    <!-- Letra R -->
+    <path d="M 390,0 L 442,0 C 468,0 480,16 476,42 C 471,68 454,86 432,90 L 444,160 L 414,160 L 404,96 L 388,96 L 374,160 L 346,160 L 380,0 Z M 404,28 L 392,72 L 418,72 C 434,72 444,64 446,50 C 448,36 440,28 424,28 Z"/>
+
+    <!-- Letra A (Estilo Oficial Vibra) -->
+    <path d="M 474,0 L 510,160 L 480,160 L 472,120 L 452,120 L 434,160 L 406,160 L 446,0 Z M 464,40 L 456,92 L 468,92 Z"/>
+  </g>
 </svg>

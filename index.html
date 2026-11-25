@@ -37,7 +37,7 @@
     }
   </script>
 
-  <!-- Estilos Embutidos Robustos (Compatibilidade Total com Google Chrome e Offline) -->
+  <!-- Estilos Embutidos Robustos -->
   <style>
     * { box-sizing: border-box; }
     body { background-color: #f1f5f9; color: #1e293b; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
@@ -95,7 +95,6 @@
           <p class="text-xs text-green-100 hidden sm:block">Gestão Integrada de EPIs (NR-06), Inspeção Trava-Quedas (Anexo C) & Auditoria</p>
         </div>
       </div>
-
       <!-- BOTÃO DIRETO NO CABEÇALHO PARA BAIXAR/INSTALAR O APLICATIVO -->
       <div class="flex items-center gap-2">
         <button id="btn-header-install" onclick="executarInstalacaoApp()" class="bg-vibraYellow text-vibraDark hover:bg-yellow-400 font-extrabold px-3 py-1.5 rounded-lg text-xs shadow flex items-center gap-1.5 transition">
@@ -103,7 +102,6 @@
         </button>
       </div>
     </div>
-
     <div class="bg-vibraDark px-3 py-2">
       <nav class="max-w-7xl mx-auto flex flex-wrap items-center justify-start sm:justify-center gap-1.5 sm:gap-2">
         <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="tab-btn btn-active-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm">📊 Painel</button>
@@ -153,6 +151,7 @@
             <button onclick="exportarCSV()" class="bg-vibraGreen text-white px-3 py-2 rounded-lg text-xs font-semibold hover:bg-green-700">📥 Exportar CSV</button>
           </div>
         </div>
+
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs md:text-sm">
             <thead>
@@ -218,21 +217,31 @@
           </div>
         </div>
 
+        <!-- MÚLTIPLOS EPIS NA MESMA ENTREGA (COM CAMPO DE BUSCA DIGITADA DE EPI) -->
         <div class="border-2 border-green-200 bg-green-50 rounded-xl p-3 mb-4 space-y-3">
           <h3 class="text-xs md:text-sm font-bold text-vibraDark">🛒 Selecionar Equipamentos (Múltiplos EPIs na mesma entrega)</h3>
           <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-end">
             <div class="md:col-span-8">
-              <label class="block text-xs font-bold text-gray-600 mb-1">EPI do Estoque:</label>
-              <select id="disp-epi" class="w-full border rounded-lg p-2 text-sm bg-white"></select>
+              <div class="flex justify-between items-center mb-1">
+                <label class="block text-xs font-bold text-gray-700 uppercase">📦 Digite para buscar o EPI ou C.A. do Estoque *</label>
+              </div>
+              <div class="relative mb-1.5">
+                <input type="text" id="disp-busca-epi" oninput="filtrarEpisDispensacao()" onkeydown="if(event.key === 'Enter') { event.preventDefault(); adicionarEpiListaDispensacao(); }" placeholder="🔎 Digite o nome do EPI ou nº do C.A. (Enter para incluir)..." class="w-full border-2 border-green-400 rounded-lg p-2.5 text-sm bg-white font-medium focus:outline-none focus:border-vibraGreen shadow-sm" />
+                <button type="button" onclick="limparBuscaEpi()" class="absolute right-2.5 top-3 text-gray-400 hover:text-gray-600 font-bold text-xs" title="Limpar busca">✕</button>
+              </div>
+              <select id="disp-epi" class="w-full border rounded-lg p-2.5 text-sm bg-white font-semibold text-gray-800"></select>
             </div>
+
             <div class="md:col-span-2">
               <label class="block text-xs font-bold text-gray-600 mb-1">Quantidade:</label>
-              <input type="number" id="disp-qtd" value="1" min="1" class="w-full border rounded-lg p-2 text-sm bg-white" />
+              <input type="number" id="disp-qtd" value="1" min="1" class="w-full border rounded-lg p-2.5 text-sm bg-white font-bold" />
             </div>
+
             <div class="md:col-span-2">
-              <button type="button" onclick="adicionarEpiListaDispensacao()" class="w-full bg-vibraGreen text-white font-bold p-2 rounded-lg text-sm shadow hover:bg-green-700">➕ Incluir EPI</button>
+              <button type="button" onclick="adicionarEpiListaDispensacao()" class="w-full bg-vibraGreen text-white font-bold p-2.5 rounded-lg text-sm shadow hover:bg-green-700 flex items-center justify-center gap-1">➕ Incluir EPI</button>
             </div>
           </div>
+
           <div class="bg-white rounded-lg border overflow-hidden">
             <table class="w-full text-xs text-left">
               <thead class="bg-gray-100 font-bold border-b">
@@ -245,13 +254,25 @@
           </div>
         </div>
 
+        <!-- TERMO LEGAL COMPLETO NR-06 E PADRÃO CORPORATIVO VIBRA NA TELA -->
         <div class="bg-green-50 border-l-4 border-vibraGreen rounded-lg p-3 text-xs text-gray-700 space-y-2">
-          <p class="font-bold text-vibraDark uppercase tracking-wide flex items-center gap-1.5">
-            <span>⚖️</span> Termo de Responsabilidade e Entrega de EPI (NR-06 & Padrão Corporativo Vibra Energia S.A.)
+          <p class="font-bold text-vibraDark uppercase tracking-wide flex items-center gap-1.5 border-b border-green-200 pb-1">
+            <span>⚖️</span> Termo de Responsabilidade e Entrega de EPI (NR-06, CLT & Padrão Corporativo Vibra Energia S.A.)
           </p>
           <p class="leading-relaxed">
             Declaro ter recebido gratuitamente da <strong>Vibra Energia S.A. - Base de Aviação de Guarulhos (BAVGRU)</strong> os Equipamentos de Proteção Individual (EPIs) discriminados nesta ficha, novos e em perfeito estado de conservação, com Certificado de Aprovação (CA) válido expedido pelo Ministério do Trabalho e Emprego, adequados aos riscos das minhas atividades funcionais.
           </p>
+          <p class="leading-relaxed">
+            Em conformidade com a <strong>Norma Regulamentadora NR-06 (itens 6.5.1, 6.5.2 e 6.7.1)</strong>, a <strong>Consolidação das Leis do Trabalho - CLT (Artigos 158 e 462, § 1º)</strong> e as Diretrizes Corporativas de SSMA da Vibra Energia, assumo formalmente os seguintes compromissos:
+          </p>
+          <ul class="list-disc pl-5 space-y-1 text-xs text-gray-600">
+            <li><strong>Finalidade e Obrigatoriedade:</strong> Usar os EPIs fornecidos exclusivamente para a finalidade a que se destinam, durante todo o tempo de execução de minhas atividades operacionais na unidade BAVGRU;</li>
+            <li><strong>Guarda e Conservação:</strong> Responsabilizar-me pela guarda, limpeza, higienização e conservação dos equipamentos que estão sob minha posse e custódia;</li>
+            <li><strong>Comunicação de Avarias:</strong> Comunicar imediatamente à liderança operacional ou à área de SSMA qualquer alteração, desgaste excessivo, avaria, defeito, perda ou extravio que torne o EPI impróprio para uso, solicitando sua imediata substituição;</li>
+            <li><strong>Cumprimento de Normas:</strong> Cumprir integralmente todas as orientações técnicas, treinamentos e determinações da Vibra Energia sobre a utilização adequada de cada item;</li>
+            <li><strong>Devolução Obrigatória:</strong> Devolver os EPIs substituídos no ato de recebimento dos novos, bem como restituir todos os equipamentos sob minha responsabilidade no término do contrato de trabalho, desligamento ou transferência da unidade;</li>
+            <li><strong>Responsabilidade e Sanções Legais:</strong> Declaro estar plenamente ciente de que a recusa injustificada ao uso dos EPIs fornecidos constitui ato faltoso sujeito às sanções disciplinares previstas em lei (CLT, Art. 158, parágrafo único), e que o dano doloso ou por mau uso comprovado autoriza o respectivo ressarcimento conforme previsto no Artigo 462, § 1º da CLT.</li>
+          </ul>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -272,7 +293,6 @@
                 </div>
               </div>
             </div>
-
             <div class="flex flex-wrap gap-2 justify-center mt-3 pt-2 border-t">
               <button type="button" onclick="iniciarCamera('disp')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-700">📸 Ligar Câmera</button>
               <button type="button" onclick="capturarFoto('disp')" class="bg-vibraGreen text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-green-700">Tirar Foto</button>
@@ -312,6 +332,7 @@
           <h2 class="text-base md:text-lg font-bold text-vibraDark">🧗 Inspeção Mensal de Cinto e Talabarte (Anexo C)</h2>
           <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full">CA Padrão: 35191</span>
         </div>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
           <div>
             <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Colaborador Executante *</label>
@@ -390,13 +411,16 @@
             <button onclick="exportarPendenciasCSV()" class="bg-yellow-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-yellow-700">📥 Exportar CSV</button>
           </div>
         </div>
+
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
           <div class="bg-yellow-50 border p-3 rounded-xl"><p class="text-xs text-yellow-800 font-bold uppercase">Pendentes</p><p id="total-pendentes-num" class="text-2xl font-extrabold text-yellow-700">0</p></div>
           <div class="bg-green-50 border p-3 rounded-xl"><p class="text-xs text-green-800 font-bold uppercase">Inspecionados</p><p id="total-inspecionados-num" class="text-2xl font-extrabold text-green-700">0</p></div>
           <div class="bg-gray-50 border p-3 rounded-xl"><p class="text-xs text-gray-600 font-bold uppercase">Conformidade</p><p id="taxa-adesao-num" class="text-2xl font-extrabold text-gray-800">0%</p></div>
           <div class="bg-purple-50 border p-3 rounded-xl"><p class="text-xs text-purple-800 font-bold uppercase">Isentos Cinto</p><p id="total-isentos-cinto-num" class="text-2xl font-extrabold text-purple-700">0</p></div>
         </div>
+
         <input type="text" id="busca-pendencias" oninput="renderPendencias()" placeholder="🔎 Filtrar colaborador pendente..." class="w-full border rounded-lg px-3 py-2 text-xs bg-gray-50 mb-3" />
+
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead><tr class="bg-gray-100 border-b"><th class="p-2.5">Matrícula</th><th class="p-2.5">Colaborador</th><th class="p-2.5">Função</th><th class="p-2.5 text-center">Status</th><th class="p-2.5 text-right">Ação</th></tr></thead>
@@ -419,6 +443,7 @@
             <button id="btn-login-rapido-admin" onclick="solicitarAcessoAdminNaoCinto()" class="bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🔑 Desbloquear (Admin)</button>
           </div>
         </div>
+
         <div class="flex flex-col sm:flex-row gap-2 justify-between items-center mb-3">
           <input type="text" id="busca-nao-cinto" oninput="renderNaoUtilizaCinto()" placeholder="🔎 Filtrar colaborador..." class="w-full sm:w-80 border rounded-lg px-3 py-2 text-xs bg-gray-50" />
           <div class="flex gap-2">
@@ -427,6 +452,7 @@
             <button onclick="filtrarTabelaNaoCinto('usam')" class="px-2.5 py-1 text-xs font-bold rounded bg-green-100 text-green-800">Usa Cinto</button>
           </div>
         </div>
+
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead><tr class="bg-gray-100 border-b"><th class="p-2.5">Matrícula</th><th class="p-2.5">Colaborador</th><th class="p-2.5">Função</th><th class="p-2.5 text-center">Status</th><th class="p-2.5 text-right">Alterar (Admin)</th></tr></thead>
@@ -621,10 +647,9 @@
         </div>
       </div>
     </section>
-
   </main>
 
-  <!-- BANNER FLUTUANTE DE INSTALAÇÃO DO APLICATIVO (COM OPÇÃO DE FECHAR) -->
+  <!-- BANNER FLUTUANTE DE INSTALAÇÃO DO APLICATIVO -->
   <div id="pwa-install-banner" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md bg-white border-2 border-vibraGreen rounded-2xl shadow-2xl p-4 z-50 transition-all duration-300 no-print flex flex-col gap-3">
     <div class="flex items-start justify-between gap-3">
       <div class="flex items-center gap-3">
@@ -636,8 +661,7 @@
           <p class="text-xs text-gray-600 mt-0.5">Acesse direto da tela inicial, mais rápido e com suporte offline!</p>
         </div>
       </div>
-      <!-- Botão Fechar / Dispensar -->
-      <button onclick="fecharBannerInstalacao()" class="text-gray-400 hover:text-gray-700 font-bold p-1 text-base leading-none rounded-lg hover:bg-gray-100 transition" title="Fechar (Não quero baixar agora)">
+      <button onclick="fecharBannerInstalacao()" class="text-gray-400 hover:text-gray-700 font-bold p-1 text-base leading-none rounded-lg hover:bg-gray-100 transition" title="Fechar">
         ✕
       </button>
     </div>
@@ -682,35 +706,51 @@
   </div>
 
   <script>
+    // --- TERMO LEGAL NR-06 E PADRÃO CORPORATIVO VIBRA ---
+    const TERMO_LEGAL_NR06_HTML = `
+      <div class="p-3 bg-green-50 border border-green-300 rounded text-xs space-y-2 mt-3 text-gray-800">
+        <p class="font-bold text-vibraDark uppercase tracking-wide flex items-center gap-1.5 border-b border-green-200 pb-1">
+          <span>⚖️</span> Termo de Responsabilidade e Entrega de EPI (NR-06, CLT & Padrão Corporativo Vibra Energia S.A.)
+        </p>
+        <p class="leading-relaxed">
+          Declaro ter recebido gratuitamente da <strong>Vibra Energia S.A. - Base de Aviação de Guarulhos (BAVGRU)</strong> os Equipamentos de Proteção Individual (EPIs) discriminados nesta ficha, novos e em perfeito estado de conservação, com Certificado de Aprovação (CA) válido expedido pelo Ministério do Trabalho e Emprego, adequados aos riscos das minhas atividades funcionais.
+        </p>
+        <p class="leading-relaxed">
+          Em conformidade com a <strong>Norma Regulamentadora NR-06 (itens 6.5.1, 6.5.2 e 6.7.1)</strong>, a <strong>Consolidação das Leis do Trabalho - CLT (Artigos 158 e 462, § 1º)</strong> e as Diretrizes Corporativas de SSMA da Vibra Energia, assumo formalmente os seguintes compromissos:
+        </p>
+        <ul class="list-disc pl-5 space-y-1 text-xs text-gray-700">
+          <li><strong>Finalidade e Obrigatoriedade:</strong> Usar os EPIs fornecidos exclusivamente para a finalidade a que se destinam, durante todo o tempo de execução de minhas atividades operacionais na unidade BAVGRU;</li>
+          <li><strong>Guarda e Conservação:</strong> Responsabilizar-me pela guarda, limpeza, higienização e conservação dos equipamentos que estão sob minha posse e custódia;</li>
+          <li><strong>Comunicação de Avarias:</strong> Comunicar imediatamente à liderança operacional ou à área de SSMA qualquer alteração, desgaste excessivo, avaria, defeito, perda ou extravio que torne o EPI impróprio para uso, solicitando sua imediata substituição;</li>
+          <li><strong>Cumprimento de Normas:</strong> Cumprir integralmente todas as orientações técnicas, treinamentos e determinações da Vibra Energia sobre a utilização adequada de cada item;</li>
+          <li><strong>Devolução Obrigatória:</strong> Devolver os EPIs substituídos no ato de recebimento dos novos, bem como restituir todos os equipamentos sob minha responsabilidade no término do contrato de trabalho, desligamento ou transferência da unidade;</li>
+          <li><strong>Responsabilidade e Sanções Legais:</strong> Declaro estar plenamente ciente de que a recusa injustificada ao uso dos EPIs fornecidos constitui ato faltoso sujeito às sanções disciplinares previstas em lei (CLT, Art. 158, parágrafo único), e que o dano doloso ou por mau uso comprovado autoriza o respectivo ressarcimento conforme previsto no Artigo 462, § 1º da CLT.</li>
+        </ul>
+      </div>
+    `;
+
     // --- 0. GERENCIAMENTO DE INSTALAÇÃO DO APLICATIVO (PWA) ---
     let deferredInstallPrompt = null;
-
-    // Registra o Service Worker (se existir sw.js no repositório)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').catch(() => {});
       });
     }
-
-    // Captura o evento nativo de instalação do Chrome / Edge / Android
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredInstallPrompt = e;
-      
       const recusado = sessionStorage.getItem('pwa_banner_fechado');
       if (!recusado) {
         document.getElementById('pwa-install-banner')?.classList.remove('hidden');
       }
       document.getElementById('btn-header-install')?.classList.remove('hidden');
     });
-
     window.addEventListener('appinstalled', () => {
       deferredInstallPrompt = null;
       fecharBannerInstalacao();
       document.getElementById('btn-header-install')?.classList.add('hidden');
       alert('🎉 Aplicativo SSMA BAVGRU instalado com sucesso na sua tela inicial!');
     });
-
     function fecharBannerInstalacao() {
       const b = document.getElementById('pwa-install-banner');
       if (b) {
@@ -718,7 +758,6 @@
       }
       sessionStorage.setItem('pwa_banner_fechado', 'true');
     }
-
     async function executarInstalacaoApp() {
       if (deferredInstallPrompt) {
         deferredInstallPrompt.prompt();
@@ -729,7 +768,6 @@
         deferredInstallPrompt = null;
         fecharBannerInstalacao();
       } else {
-        // Fallback para iOS (iPhone/iPad) ou quando já instalado
         const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS) {
           alert('📱 Para baixar no iPhone / iPad:\n\n1. Toque no botão de "Compartilhar" (ícone com quadrado e seta ⎋) na barra inferior do Safari.\n2. Role para baixo e selecione "Adicionar à Tela de Início" ➕.\n3. Toque em "Adicionar" no topo direito. Pronto!');
@@ -813,12 +851,12 @@
       ...c,
       ativo: c.ativo !== false
     }));
+
     let estoque = carregarLocalComFallback('bavgru_estoque', INITIAL_ESTOQUE);
     let auditoria = carregarLocalComFallback('bavgru_auditoria', []);
     let logExclusoes = carregarLocalComFallback('bavgru_log_exclusoes', []);
     let examesToxicologicos = carregarLocalComFallback('bavgru_toxicologico', []);
     let senhaAdmin = localStorage.getItem('bavgru_senha_admin') || 'vibra@2025';
-
     let adminAutenticado = false;
     let carrinhoDispensacao = [];
     let fotosCapturadas = { disp: null, insp: null };
@@ -845,7 +883,6 @@
         console.warn("Aviso ao salvar no localStorage (cota ou modo anônimo):", e);
       }
       atualizarTudo();
-
       if (dbNuvem) {
         const pacote = {
           'bavgru/auditoria': limparObjetoParaFirebase(auditoria),
@@ -898,20 +935,19 @@
           else btn.className = "tab-btn bg-green-900 text-green-100 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold";
         }
       });
-
       const targetEl = document.getElementById('tab-' + tab);
       if (targetEl) targetEl.classList.remove('hidden');
       const targetBtn = document.getElementById('tab-btn-' + tab);
       if (targetBtn) {
         targetBtn.className = "tab-btn btn-active-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm";
       }
-
       if (tab === 'admin') renderAdminState();
       else if (tab === 'pendencias') renderPendencias();
       else if (tab === 'nao-cinto') renderNaoUtilizaCinto();
       else if (tab === 'colaboradores') renderColaboradores();
       else if (tab === 'dispensacao') {
         filtrarColaboradoresDispensacao();
+        filtrarEpisDispensacao();
         redimensionarCanvas();
       } else if (tab === 'inspecao') {
         redimensionarCanvas();
@@ -981,7 +1017,6 @@
         v.classList.add('hidden');
         document.getElementById('foto-' + tipo + '-placeholder')?.classList.add('hidden');
         document.getElementById('btn-remover-foto-' + tipo)?.classList.remove('hidden');
-
         streamsCamera[tipo].getTracks().forEach(t => t.stop());
         streamsCamera[tipo] = null;
       } catch (err) {
@@ -1004,7 +1039,6 @@
           document.getElementById('video-' + tipo)?.classList.add('hidden');
           document.getElementById('foto-' + tipo + '-placeholder')?.classList.add('hidden');
           document.getElementById('btn-remover-foto-' + tipo)?.classList.remove('hidden');
-
           if (streamsCamera[tipo]) {
             streamsCamera[tipo].getTracks().forEach(t => t.stop());
             streamsCamera[tipo] = null;
@@ -1058,7 +1092,6 @@
       if (!c) return;
       const ctx = c.getContext('2d');
       let desenhando = false;
-
       const pos = e => {
         const r = c.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -1068,7 +1101,6 @@
           y: (clientY - r.top) * (c.height / r.height)
         };
       };
-
       const ini = e => {
         desenhando = true;
         ctx.lineWidth = 2.5;
@@ -1079,7 +1111,6 @@
         ctx.moveTo(p.x, p.y);
         c.dataset.assinado = "true";
       };
-
       const mov = e => {
         if (!desenhando) return;
         if (e.cancelable) e.preventDefault();
@@ -1087,9 +1118,7 @@
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
       };
-
       const par = () => { desenhando = false; };
-
       c.addEventListener('mousedown', ini);
       c.addEventListener('mousemove', mov);
       window.addEventListener('mouseup', par);
@@ -1106,33 +1135,28 @@
       }
     }
 
-    // --- 8. DISPENSAÇÃO DE EPI ---
+    // --- 8. DISPENSAÇÃO DE EPI COM BUSCA DIGITADA DE COLABORADOR E EPI ---
     function filtrarColaboradoresDispensacao() {
       const busca = (document.getElementById('disp-busca-colaborador')?.value || '').toLowerCase().trim();
       const incluirInativos = document.getElementById('disp-incluir-inativos')?.checked;
       const select = document.getElementById('disp-colaborador');
       if (!select) return;
-
       let lista = colaboradores.filter(c => {
         if (!incluirInativos && c.ativo === false) return false;
         if (!busca) return true;
         return (c.nome || '').toLowerCase().includes(busca) || String(c.matricula || '').includes(busca);
       });
-
       lista.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
-
       if (!lista.length) {
         select.innerHTML = `<option value="">Nenhum colaborador encontrado para a busca</option>`;
         document.getElementById('disp-colab-card')?.classList.add('hidden');
         return;
       }
-
       select.innerHTML = lista.map(c => `
         <option value="${c.id}">
           ${c.ativo === false ? '[DESLIGADO] ' : ''}${c.nome} (${c.matricula}) - ${c.funcao}
         </option>
       `).join('');
-
       aoSelecionarColaboradorDispensacao();
     }
 
@@ -1141,6 +1165,31 @@
       if (inp) {
         inp.value = '';
         filtrarColaboradoresDispensacao();
+      }
+    }
+
+    // BUSCA DIGITADA DE EPI NO ESTOQUE (FILTRA POR NOME OU C.A.)
+    function filtrarEpisDispensacao() {
+      const busca = (document.getElementById('disp-busca-epi')?.value || '').toLowerCase().trim();
+      const select = document.getElementById('disp-epi');
+      if (!select) return;
+      let lista = estoque.filter(e => {
+        if (!busca) return true;
+        return (e.nome || '').toLowerCase().includes(busca) || String(e.ca || '').toLowerCase().includes(busca);
+      });
+      lista.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+      if (!lista.length) {
+        select.innerHTML = `<option value="">Nenhum EPI encontrado com "${busca}"</option>`;
+        return;
+      }
+      select.innerHTML = lista.map(e => `<option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>`).join('');
+    }
+
+    function limparBuscaEpi() {
+      const inp = document.getElementById('disp-busca-epi');
+      if (inp) {
+        inp.value = '';
+        filtrarEpisDispensacao();
       }
     }
 
@@ -1197,7 +1246,6 @@
     function salvarDispensacao() {
       const colab = colaboradores.find(c => c.id === document.getElementById('disp-colaborador').value);
       const canvas = document.getElementById('canvas-disp');
-
       if (!carrinhoDispensacao.length) {
         const est = estoque.find(e => e.id === document.getElementById('disp-epi').value);
         const qtd = parseInt(document.getElementById('disp-qtd').value || '1', 10);
@@ -1205,28 +1253,23 @@
           carrinhoDispensacao.push({ id: est.id, nome: est.nome, ca: est.ca, qtd });
         }
       }
-
       if (!colab) return alert('Selecione o colaborador destinatário.');
       if (!carrinhoDispensacao.length) return alert('Adicione pelo menos um EPI à entrega.');
       if (canvas.dataset.assinado !== "true" && !fotosCapturadas.disp) {
         return alert('É obrigatória a assinatura digital ou a foto da entrega para comprovação legal.');
       }
-
       for (const it of carrinhoDispensacao) {
         const e = estoque.find(x => x.id === it.id);
         if (!e || e.qtd < it.qtd) {
           return alert(`Saldo insuficiente em estoque para o item: ${it.nome} (Saldo atual: ${e ? e.qtd : 0}).`);
         }
       }
-
       for (const it of carrinhoDispensacao) {
         const e = estoque.find(x => x.id === it.id);
         if (e) e.qtd -= it.qtd;
       }
-
       const assinaturaData = canvas.dataset.assinado === "true" ? canvas.toDataURL('image/png') : "";
       const fotoSalva = fotosCapturadas.disp || "";
-
       const reg = {
         id: 'NR06-' + Date.now(),
         tipo: 'Dispensação EPI (NR-06)',
@@ -1239,12 +1282,12 @@
         quantidade: carrinhoDispensacao.reduce((a, b) => a + b.qtd, 0),
         itens: [...carrinhoDispensacao],
         motivo: document.getElementById('disp-motivo').value,
+        termoLegal: TERMO_LEGAL_NR06_HTML,
         status: 'ENTREGUE',
         foto: fotoSalva,
         assinatura: assinaturaData,
         hash: 'VIBRA-NR06-' + Date.now()
       };
-
       auditoria.unshift(reg);
       carrinhoDispensacao = [];
       renderCarrinhoDispensacao();
@@ -1282,7 +1325,6 @@
       if (canvas.dataset.assinado !== "true" && !fotosCapturadas.insp) {
         return alert('Assinatura digital ou foto da inspeção é obrigatória.');
       }
-
       let reprovado = false;
       const respostas = PERGUNTAS_ANEXO_C.map(p => {
         const checked = document.querySelector(`input[name="${p.id}"]:checked`);
@@ -1290,7 +1332,6 @@
         if (val === 'Não Conforme') reprovado = true;
         return { pergunta: p.texto, resposta: val };
       });
-
       const reg = {
         id: 'ANEXOC-' + Date.now(),
         tipo: 'Inspeção Cinto (Anexo C)',
@@ -1308,7 +1349,6 @@
         assinatura: canvas.dataset.assinado === "true" ? canvas.toDataURL('image/png') : "",
         hash: 'ANEXOC-' + Date.now()
       };
-
       auditoria.unshift(reg);
       limparAssinatura('canvas-insp');
       removerFoto('insp');
@@ -1353,25 +1393,20 @@
       const tbody = document.getElementById('tabela-colaboradores');
       if (!tbody) return;
       const termo = (document.getElementById('busca-colab')?.value || '').toLowerCase().trim();
-
       const totalTodos = colaboradores.length;
       const totalAtivos = colaboradores.filter(c => c.ativo !== false).length;
       const totalInativos = totalTodos - totalAtivos;
-
       document.getElementById('count-efetivo-todos').textContent = totalTodos;
       document.getElementById('count-efetivo-ativos').textContent = totalAtivos;
       document.getElementById('count-efetivo-inativos').textContent = totalInativos;
       document.getElementById('kpi-colaboradores').textContent = `${totalAtivos} ativos`;
-
       let filtrados = colaboradores.filter(c => {
         if (filtroEfetivoStatus === 'ativos' && c.ativo === false) return false;
         if (filtroEfetivoStatus === 'inativos' && c.ativo !== false) return false;
         if (!termo) return true;
         return (c.nome || '').toLowerCase().includes(termo) || String(c.matricula || '').includes(termo) || (c.funcao || '').toLowerCase().includes(termo);
       });
-
       filtrados.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
-
       tbody.innerHTML = filtrados.length ? filtrados.map(c => `
         <tr class="border-b hover:bg-gray-50 ${c.ativo === false ? 'bg-red-50' : ''}">
           <td class="p-2.5 font-mono font-bold">${c.matricula}</td>
@@ -1407,22 +1442,18 @@
       const mes = document.getElementById('pendencias-mes-ano').value || new Date().toISOString().slice(0, 7);
       const termo = (document.getElementById('busca-pendencias')?.value || '').toLowerCase();
       const inspecionadosSet = new Set();
-
       auditoria.forEach(r => {
         if ((r.tipo || '').includes('Inspeção Cinto') && (r.dataReferencia || '').startsWith(mes)) {
           inspecionadosSet.add(String(r.matricula));
         }
       });
-
       const obrigatorios = colaboradores.filter(c => (c.ativo !== false) && !c.naoUtilizaCinto);
       const pendentes = obrigatorios.filter(c => !inspecionadosSet.has(String(c.matricula)));
-
       document.getElementById('total-pendentes-num').textContent = pendentes.length;
       document.getElementById('total-inspecionados-num').textContent = obrigatorios.length - pendentes.length;
       document.getElementById('taxa-adesao-num').textContent = (obrigatorios.length ? Math.round(((obrigatorios.length - pendentes.length) / obrigatorios.length) * 100) : 100) + '%';
       document.getElementById('total-isentos-cinto-num').textContent = colaboradores.filter(c => c.ativo !== false && c.naoUtilizaCinto).length;
       document.getElementById('kpi-pendencias').textContent = pendentes.length;
-
       const tbody = document.getElementById('tabela-pendencias');
       if (!tbody) return;
       tbody.innerHTML = pendentes.filter(c => (c.nome || '').toLowerCase().includes(termo) || String(c.matricula).includes(termo)).map(c => `
@@ -1478,7 +1509,6 @@
       let f = colaboradores.filter(c => (c.nome || '').toLowerCase().includes(termo) || String(c.matricula).includes(termo));
       if (filtroTabelaNaoCinto === 'isentos') f = f.filter(c => c.naoUtilizaCinto);
       else if (filtroTabelaNaoCinto === 'usam') f = f.filter(c => !c.naoUtilizaCinto);
-
       tbody.innerHTML = f.map(c => `
         <tr class="border-b hover:bg-gray-50">
           <td class="p-2.5 font-bold font-mono text-xs">${c.matricula}</td>
@@ -1490,19 +1520,17 @@
       `).join('');
     }
 
-    // --- 13. AUDITORIA E COMPROVANTES ---
+    // --- 13. AUDITORIA E COMPROVANTES (COM DIZERES NR-06 E PADRÃO VIBRA SALVOS) ---
     function renderAuditoria() {
       const t = (document.getElementById('busca-auditoria')?.value || '').toLowerCase().trim();
       const tbody = document.getElementById('tabela-auditoria');
       if (!tbody) return;
-
       const filtrados = auditoria.filter(r =>
         (r.colaborador || '').toLowerCase().includes(t) ||
         String(r.matricula || '').includes(t) ||
         (r.ca || '').toLowerCase().includes(t) ||
         (r.equipamento || '').toLowerCase().includes(t)
       );
-
       tbody.innerHTML = filtrados.length ? filtrados.map(r => `
         <tr class="border-b hover:bg-gray-50">
           <td class="p-2.5 font-mono">${r.dataHora}</td>
@@ -1525,6 +1553,7 @@
     function abrirComprovante(id) {
       const r = auditoria.find(x => x.id === id);
       if (!r) return;
+      const isNR06 = (r.tipo || '').includes('NR-06');
       document.getElementById('modal-print-title').textContent = `📄 Comprovante Oficial - ${r.tipo} (Nº ${r.id})`;
       document.getElementById('print-area').innerHTML = `
         <div class="border-b-2 border-vibraGreen pb-3 flex justify-between items-start">
@@ -1537,7 +1566,6 @@
             <span class="bg-vibraDark text-white px-2 py-1 rounded font-bold">${r.status}</span>
           </div>
         </div>
-
         <div class="grid grid-cols-2 gap-2 p-2 bg-gray-50 border rounded text-xs mt-3">
           <div><strong>Colaborador:</strong> ${r.colaborador} (Matrícula: ${r.matricula})</div>
           <div><strong>Função / Cargo:</strong> ${r.funcao || 'OPERADOR'}</div>
@@ -1546,12 +1574,8 @@
           ${r.motivo ? `<div class="col-span-2"><strong>Motivo da Entrega:</strong> ${r.motivo}</div>` : ''}
         </div>
 
-        <div class="p-3 bg-green-50 border border-green-300 rounded text-xs space-y-1 mt-3">
-          <p class="font-bold text-vibraDark uppercase">TERMO LEGAL NR-06 (6.5.1 / 6.7.1), CLT (ART. 158 / 462) & PADRÃO VIBRA ENERGIA:</p>
-          <p class="text-gray-700 leading-normal">
-            Declaro ter recebido da Vibra Energia S.A. (BAVGRU) os EPIs acima discriminados, com CA válido, comprometendo-me ao uso exclusivo no trabalho, guarda, higienização, comunicação imediata de qualquer avaria e restituição dos mesmos na substituição ou rescisão contratual, ciente das penalidades do Art. 158 da CLT e dos termos do Art. 462 da CLT.
-          </p>
-        </div>
+        <!-- TERMO LEGAL DA NR-06 E PADRÃO CORPORATIVO VIBRA NA FICHA SALVA -->
+        ${isNR06 ? (r.termoLegal || TERMO_LEGAL_NR06_HTML) : ''}
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
           <div class="border p-2 rounded text-center bg-gray-50 flex flex-col justify-between">
@@ -1586,7 +1610,6 @@
       const colab = colaboradores.find(c => String(c.matricula) === String(matricula));
       if (!colab) return;
       const entregas = auditoria.filter(r => String(r.matricula) === String(matricula) && (r.tipo || '').includes('NR-06'));
-
       document.getElementById('modal-print-title').textContent = `📄 Ficha Individual de EPI (NR-06) - ${colab.nome}`;
       document.getElementById('print-area').innerHTML = `
         <div class="border-b-2 border-vibraGreen pb-2 flex justify-between items-start">
@@ -1601,12 +1624,8 @@
           </div>
         </div>
 
-        <div class="p-2.5 bg-green-50 border border-green-300 rounded text-xs space-y-1 mt-2">
-          <p class="font-bold text-vibraDark uppercase">TERMO DE RESPONSABILIDADE LEGAL - NR-06 (6.5.1 / 6.7.1) E CLT (ART. 158 / 462):</p>
-          <p class="text-gray-700 leading-relaxed">
-            Declaro ter recebido gratuitamente da Vibra Energia S.A. os EPIs discriminados abaixo, em perfeito estado e com Certificado de Aprovação (CA) válido, assumindo o compromisso de utilizá-los estritamente para os fins a que se destinam, zelar por sua guarda e conservação, comunicar qualquer dano e devolvê-los no caso de substituição ou rescisão contratual.
-          </p>
-        </div>
+        <!-- TERMO LEGAL COMPLETO NR-06 E PADRÃO CORPORATIVO VIBRA NA FICHA HISTÓRICA SALVA -->
+        ${TERMO_LEGAL_NR06_HTML}
 
         <table class="w-full text-xs border-collapse border mt-3">
           <thead>
@@ -1771,7 +1790,6 @@
       if (!colabId || !dataExame || !dataValidade) return alert('Preencha funcionário, data do exame e validade.');
       const colab = colaboradores.find(c => c.id === colabId);
       if (!colab) return;
-
       const idx = examesToxicologicos.findIndex(x => x.matricula === colab.matricula);
       const reg = {
         id: idx !== -1 ? examesToxicologicos[idx].id : 'TOX-' + Date.now(),
@@ -1784,7 +1802,6 @@
       };
       if (idx !== -1) examesToxicologicos[idx] = reg;
       else examesToxicologicos.push(reg);
-
       document.getElementById('tox-data-exame').value = '';
       document.getElementById('tox-data-validade').value = '';
       salvarBancoLocal();
@@ -1816,13 +1833,11 @@
       document.getElementById('tox-kpi-validos').textContent = validos;
       document.getElementById('tox-kpi-avencer').textContent = avencer;
       document.getElementById('tox-kpi-vencidos').textContent = vencidos;
-
       const termo = (document.getElementById('busca-toxicologico')?.value || '').toLowerCase();
       let filtrados = lista.filter(x => (x.nome || '').toLowerCase().includes(termo) || String(x.matricula).includes(termo));
       if (filtroToxStatus === 'vencidos') filtrados = filtrados.filter(x => x.infoStatus.codigo === 'vencido' || x.infoStatus.codigo === 'avencer');
       else if (filtroToxStatus === 'validos') filtrados = filtrados.filter(x => x.infoStatus.codigo === 'valido');
       filtrados.sort((a, b) => (a.dataValidade || '').localeCompare(b.dataValidade || ''));
-
       tbody.innerHTML = filtrados.length ? filtrados.map(x => `
         <tr class="border-b hover:bg-gray-50">
           <td class="p-2 font-mono font-bold">${x.matricula}</td>
@@ -1921,10 +1936,8 @@
       document.getElementById('kpi-dispensacoes').textContent = auditoria.filter(a => (a.tipo || '').includes('NR-06')).length;
       document.getElementById('kpi-inspecoes').textContent = auditoria.filter(a => (a.tipo || '').includes('Anexo C')).length;
       document.getElementById('kpi-alertas').textContent = estoque.filter(e => e.qtd <= e.min).length;
-
       ativos.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
       const opColabAtivos = ativos.map(c => `<option value="${c.id}">${c.nome} (${c.matricula})</option>`).join('');
-
       ['insp-colaborador', 'admin-historico-colab', 'tox-colaborador'].forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -1933,20 +1946,16 @@
           if (v) el.value = v;
         }
       });
-
       filtrarColaboradoresDispensacao();
-
+      filtrarEpisDispensacao();
       estoque.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
-      const opEpi = estoque.map(e => `<option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>`).join('');
-      ['disp-epi', 'entrada-epi'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-          const v = el.value;
-          el.innerHTML = opEpi;
-          if (v) el.value = v;
-        }
-      });
-
+      const opEpiEntrada = estoque.map(e => `<option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>`).join('');
+      const elEntrada = document.getElementById('entrada-epi');
+      if (elEntrada) {
+        const v = elEntrada.value;
+        elEntrada.innerHTML = opEpiEntrada;
+        if (v) elEntrada.value = v;
+      }
       const tabEstoque = document.getElementById('tabela-estoque');
       if (tabEstoque) {
         tabEstoque.innerHTML = estoque.map(e => `
@@ -1959,7 +1968,6 @@
           </tr>
         `).join('');
       }
-
       renderColaboradores();
       renderAuditoria();
       renderLogExclusoes();
@@ -1976,13 +1984,11 @@
         if (inspDataEl) inspDataEl.value = hoje.toISOString().slice(0, 10);
         const pendMesEl = document.getElementById('pendencias-mes-ano');
         if (pendMesEl) pendMesEl.value = hoje.toISOString().slice(0, 7);
-
         renderChecklistForm();
         configurarCanvasAssinatura('canvas-disp');
         configurarCanvasAssinatura('canvas-insp');
         atualizarTudo();
         iniciarSincronizacaoNuvem();
-
         window.addEventListener('resize', redimensionarCanvas);
         redimensionarCanvas();
       } catch (err) {

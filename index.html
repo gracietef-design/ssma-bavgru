@@ -218,19 +218,12 @@
           </div>
         </div>
 
-        <!-- MÚLTIPLOS EPIS NA MESMA ENTREGA (COM CAMPO DE BUSCA DIGITADA DE EPI) -->
         <div class="border-2 border-green-200 bg-green-50 rounded-xl p-3 mb-4 space-y-3">
           <h3 class="text-xs md:text-sm font-bold text-vibraDark">🛒 Selecionar Equipamentos (Múltiplos EPIs na mesma entrega)</h3>
           <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-end">
             <div class="md:col-span-8">
-              <div class="flex justify-between items-center mb-1">
-                <label class="block text-xs font-bold text-gray-700 uppercase">📦 Pesquisar e Selecionar EPI do Estoque *</label>
-              </div>
-              <div class="relative mb-1.5">
-                <input type="text" id="disp-busca-epi" oninput="filtrarEpisDispensacao()" placeholder="🔎 Digite o nome do EPI ou nº do C.A. para filtrar..." class="w-full border-2 border-green-300 rounded-lg p-2 text-sm bg-white font-medium focus:outline-none focus:border-vibraGreen" />
-                <button type="button" onclick="limparBuscaEpi()" class="absolute right-2.5 top-2.5 text-gray-400 hover:text-gray-600 font-bold text-xs" title="Limpar busca">✕</button>
-              </div>
-              <select id="disp-epi" class="w-full border rounded-lg p-2 text-sm bg-white font-semibold"></select>
+              <label class="block text-xs font-bold text-gray-600 mb-1">EPI do Estoque:</label>
+              <select id="disp-epi" class="w-full border rounded-lg p-2 text-sm bg-white"></select>
             </div>
             <div class="md:col-span-2">
               <label class="block text-xs font-bold text-gray-600 mb-1">Quantidade:</label>
@@ -252,25 +245,13 @@
           </div>
         </div>
 
-        <!-- TERMO LEGAL COMPLETO NR-06 E PADRÃO CORPORATIVO VIBRA NA TELA -->
         <div class="bg-green-50 border-l-4 border-vibraGreen rounded-lg p-3 text-xs text-gray-700 space-y-2">
-          <p class="font-bold text-vibraDark uppercase tracking-wide flex items-center gap-1.5 border-b border-green-200 pb-1">
-            <span>⚖️</span> Termo de Responsabilidade e Entrega de EPI (NR-06, CLT & Padrão Corporativo Vibra Energia S.A.)
+          <p class="font-bold text-vibraDark uppercase tracking-wide flex items-center gap-1.5">
+            <span>⚖️</span> Termo de Responsabilidade e Entrega de EPI (NR-06 & Padrão Corporativo Vibra Energia S.A.)
           </p>
           <p class="leading-relaxed">
             Declaro ter recebido gratuitamente da <strong>Vibra Energia S.A. - Base de Aviação de Guarulhos (BAVGRU)</strong> os Equipamentos de Proteção Individual (EPIs) discriminados nesta ficha, novos e em perfeito estado de conservação, com Certificado de Aprovação (CA) válido expedido pelo Ministério do Trabalho e Emprego, adequados aos riscos das minhas atividades funcionais.
           </p>
-          <p class="leading-relaxed">
-            Em conformidade com a <strong>Norma Regulamentadora NR-06 (itens 6.5.1, 6.5.2 e 6.7.1)</strong>, a <strong>Consolidação das Leis do Trabalho - CLT (Artigos 158 e 462, § 1º)</strong> e as Diretrizes Corporativas de SSMA da Vibra Energia, assumo formalmente os seguintes compromissos:
-          </p>
-          <ul class="list-disc pl-5 space-y-1 text-xs text-gray-600">
-            <li><strong>Finalidade e Obrigatoriedade:</strong> Usar os EPIs fornecidos exclusivamente para a finalidade a que se destinam, durante todo o tempo de execução de minhas atividades operacionais na unidade BAVGRU;</li>
-            <li><strong>Guarda e Conservação:</strong> Responsabilizar-me pela guarda, limpeza, higienização e conservação dos equipamentos que estão sob minha posse e custódia;</li>
-            <li><strong>Comunicação de Avarias:</strong> Comunicar imediatamente à liderança operacional ou à área de SSMA qualquer alteração, desgaste excessivo, avaria, defeito, perda ou extravio que torne o EPI impróprio para uso, solicitando sua imediata substituição;</li>
-            <li><strong>Cumprimento de Normas:</strong> Cumprir integralmente todas as orientações técnicas, treinamentos e determinações da Vibra Energia sobre a utilização adequada de cada item;</li>
-            <li><strong>Devolução Obrigatória:</strong> Devolver os EPIs substituídos no ato de recebimento dos novos, bem como restituir todos os equipamentos sob minha responsabilidade no término do contrato de trabalho, desligamento ou transferência da unidade;</li>
-            <li><strong>Responsabilidade e Sanções Legais:</strong> Declaro estar plenamente ciente de que a recusa injustificada ao uso dos EPIs fornecidos constitui ato faltoso sujeito às sanções disciplinares previstas em lei (CLT, Art. 158, parágrafo único), e que o dano doloso ou por mau uso comprovado autoriza o respectivo ressarcimento conforme previsto no Artigo 462, § 1º da CLT.</li>
-          </ul>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -704,12 +685,14 @@
     // --- 0. GERENCIAMENTO DE INSTALAÇÃO DO APLICATIVO (PWA) ---
     let deferredInstallPrompt = null;
 
+    // Registra o Service Worker (se existir sw.js no repositório)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').catch(() => {});
       });
     }
 
+    // Captura o evento nativo de instalação do Chrome / Edge / Android
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredInstallPrompt = e;
@@ -746,6 +729,7 @@
         deferredInstallPrompt = null;
         fecharBannerInstalacao();
       } else {
+        // Fallback para iOS (iPhone/iPad) ou quando já instalado
         const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS) {
           alert('📱 Para baixar no iPhone / iPad:\n\n1. Toque no botão de "Compartilhar" (ícone com quadrado e seta ⎋) na barra inferior do Safari.\n2. Role para baixo e selecione "Adicionar à Tela de Início" ➕.\n3. Toque em "Adicionar" no topo direito. Pronto!');
@@ -928,7 +912,6 @@
       else if (tab === 'colaboradores') renderColaboradores();
       else if (tab === 'dispensacao') {
         filtrarColaboradoresDispensacao();
-        filtrarEpisDispensacao();
         redimensionarCanvas();
       } else if (tab === 'inspecao') {
         redimensionarCanvas();
@@ -1123,7 +1106,7 @@
       }
     }
 
-    // --- 8. DISPENSAÇÃO DE EPI COM BUSCA DIGITADA DE COLABORADOR E EPI ---
+    // --- 8. DISPENSAÇÃO DE EPI ---
     function filtrarColaboradoresDispensacao() {
       const busca = (document.getElementById('disp-busca-colaborador')?.value || '').toLowerCase().trim();
       const incluirInativos = document.getElementById('disp-incluir-inativos')?.checked;
@@ -1158,35 +1141,6 @@
       if (inp) {
         inp.value = '';
         filtrarColaboradoresDispensacao();
-      }
-    }
-
-    // BUSCA DIGITADA DE EPI NO ESTOQUE
-    function filtrarEpisDispensacao() {
-      const busca = (document.getElementById('disp-busca-epi')?.value || '').toLowerCase().trim();
-      const select = document.getElementById('disp-epi');
-      if (!select) return;
-
-      let lista = estoque.filter(e => {
-        if (!busca) return true;
-        return (e.nome || '').toLowerCase().includes(busca) || String(e.ca || '').toLowerCase().includes(busca);
-      });
-
-      lista.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
-
-      if (!lista.length) {
-        select.innerHTML = `<option value="">Nenhum EPI encontrado com "${busca}"</option>`;
-        return;
-      }
-
-      select.innerHTML = lista.map(e => `<option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>`).join('');
-    }
-
-    function limparBuscaEpi() {
-      const inp = document.getElementById('disp-busca-epi');
-      if (inp) {
-        inp.value = '';
-        filtrarEpisDispensacao();
       }
     }
 
@@ -1536,7 +1490,7 @@
       `).join('');
     }
 
-    // --- 13. AUDITORIA E COMPROVANTES (COM TERMO COMPLETO NR-06 E PADRÃO VIBRA) ---
+    // --- 13. AUDITORIA E COMPROVANTES ---
     function renderAuditoria() {
       const t = (document.getElementById('busca-auditoria')?.value || '').toLowerCase().trim();
       const tbody = document.getElementById('tabela-auditoria');
@@ -1592,25 +1546,11 @@
           ${r.motivo ? `<div class="col-span-2"><strong>Motivo da Entrega:</strong> ${r.motivo}</div>` : ''}
         </div>
 
-        <!-- TERMO LEGAL COMPLETO NR-06 E PADRÃO CORPORATIVO VIBRA NO COMPROVANTE SALVO -->
-        <div class="p-3 bg-green-50 border border-green-300 rounded text-xs space-y-2 mt-3 text-gray-800">
-          <p class="font-bold text-vibraDark uppercase tracking-wide flex items-center gap-1.5 border-b border-green-200 pb-1">
-            <span>⚖️</span> Termo de Responsabilidade e Entrega de EPI (NR-06, CLT & Padrão Corporativo Vibra Energia S.A.)
+        <div class="p-3 bg-green-50 border border-green-300 rounded text-xs space-y-1 mt-3">
+          <p class="font-bold text-vibraDark uppercase">TERMO LEGAL NR-06 (6.5.1 / 6.7.1), CLT (ART. 158 / 462) & PADRÃO VIBRA ENERGIA:</p>
+          <p class="text-gray-700 leading-normal">
+            Declaro ter recebido da Vibra Energia S.A. (BAVGRU) os EPIs acima discriminados, com CA válido, comprometendo-me ao uso exclusivo no trabalho, guarda, higienização, comunicação imediata de qualquer avaria e restituição dos mesmos na substituição ou rescisão contratual, ciente das penalidades do Art. 158 da CLT e dos termos do Art. 462 da CLT.
           </p>
-          <p class="leading-relaxed">
-            Declaro ter recebido gratuitamente da <strong>Vibra Energia S.A. - Base de Aviação de Guarulhos (BAVGRU)</strong> os Equipamentos de Proteção Individual (EPIs) discriminados nesta ficha, novos e em perfeito estado de conservação, com Certificado de Aprovação (CA) válido expedido pelo Ministério do Trabalho e Emprego, adequados aos riscos das minhas atividades funcionais.
-          </p>
-          <p class="leading-relaxed">
-            Em conformidade com a <strong>Norma Regulamentadora NR-06 (itens 6.5.1, 6.5.2 e 6.7.1)</strong>, a <strong>Consolidação das Leis do Trabalho - CLT (Artigos 158 e 462, § 1º)</strong> e as Diretrizes Corporativas de SSMA da Vibra Energia, assumo formalmente os seguintes compromissos:
-          </p>
-          <ul class="list-disc pl-5 space-y-1 text-xs text-gray-700">
-            <li><strong>Finalidade e Obrigatoriedade:</strong> Usar os EPIs fornecidos exclusivamente para a finalidade a que se destinam, durante todo o tempo de execução de minhas atividades operacionais na unidade BAVGRU;</li>
-            <li><strong>Guarda e Conservação:</strong> Responsabilizar-me pela guarda, limpeza, higienização e conservação dos equipamentos que estão sob minha posse e custódia;</li>
-            <li><strong>Comunicação de Avarias:</strong> Comunicar imediatamente à liderança operacional ou à área de SSMA qualquer alteração, desgaste excessivo, avaria, defeito, perda ou extravio que torne o EPI impróprio para uso, solicitando sua imediata substituição;</li>
-            <li><strong>Cumprimento de Normas:</strong> Cumprir integralmente todas as orientações técnicas, treinamentos e determinações da Vibra Energia sobre a utilização adequada de cada item;</li>
-            <li><strong>Devolução Obrigatória:</strong> Devolver os EPIs substituídos no ato de recebimento dos novos, bem como restituir todos os equipamentos sob minha responsabilidade no término do contrato de trabalho, desligamento ou transferência da unidade;</li>
-            <li><strong>Responsabilidade e Sanções Legais:</strong> Declaro estar plenamente ciente de que a recusa injustificada ao uso dos EPIs fornecidos constitui ato faltoso sujeito às sanções disciplinares previstas em lei (CLT, Art. 158, parágrafo único), e que o dano doloso ou por mau uso comprovado autoriza o respectivo ressarcimento conforme previsto no Artigo 462, § 1º da CLT.</li>
-          </ul>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
@@ -1661,24 +1601,11 @@
           </div>
         </div>
 
-        <!-- TERMO LEGAL COMPLETO NR-06 E PADRÃO CORPORATIVO VIBRA NA FICHA HISTÓRICA -->
-        <div class="p-3 bg-green-50 border border-green-300 rounded text-xs space-y-2 mt-2 text-gray-800">
-          <p class="font-bold text-vibraDark uppercase tracking-wide flex items-center gap-1.5 border-b border-green-200 pb-1">
-            <span>⚖️</span> Termo de Responsabilidade e Guarda de EPI (NR-06, CLT & Diretrizes Corporativas Vibra Energia)
+        <div class="p-2.5 bg-green-50 border border-green-300 rounded text-xs space-y-1 mt-2">
+          <p class="font-bold text-vibraDark uppercase">TERMO DE RESPONSABILIDADE LEGAL - NR-06 (6.5.1 / 6.7.1) E CLT (ART. 158 / 462):</p>
+          <p class="text-gray-700 leading-relaxed">
+            Declaro ter recebido gratuitamente da Vibra Energia S.A. os EPIs discriminados abaixo, em perfeito estado e com Certificado de Aprovação (CA) válido, assumindo o compromisso de utilizá-los estritamente para os fins a que se destinam, zelar por sua guarda e conservação, comunicar qualquer dano e devolvê-los no caso de substituição ou rescisão contratual.
           </p>
-          <p class="leading-relaxed">
-            Declaro ter recebido gratuitamente da <strong>Vibra Energia S.A. (BAVGRU)</strong> os Equipamentos de Proteção Individual (EPIs) discriminados nesta ficha, novos e em perfeito estado de conservação, com Certificado de Aprovação (CA) válido pelo Ministério do Trabalho e Emprego, adequados aos riscos operacionais de minhas funções.
-          </p>
-          <p class="leading-relaxed">
-            Conforme determina a <strong>NR-06 (itens 6.5.1, 6.5.2 e 6.7.1)</strong> e os <strong>Artigos 158 e 462 (§ 1º) da CLT</strong>, assumo total responsabilidade por:
-          </p>
-          <ul class="list-disc pl-5 space-y-1 text-xs text-gray-700">
-            <li><strong>Uso Efetivo e Obrigatório:</strong> Utilizar os equipamentos apenas para a finalidade a que se destinam durante toda a jornada de trabalho na unidade BAVGRU;</li>
-            <li><strong>Guarda e Conservação:</strong> Responsabilizar-me pela guarda, asseio e conservação dos EPIs sob minha custódia;</li>
-            <li><strong>Comunicação de Danos:</strong> Informar imediatamente à liderança ou ao setor de SSMA qualquer alteração ou avaria que torne o EPI impróprio para uso;</li>
-            <li><strong>Devolução de Itens:</strong> Devolver os EPIs desgastados para substituição e restituir todos os equipamentos por ocasião do término do contrato de trabalho ou transferência;</li>
-            <li><strong>Sanções Legais:</strong> Estar ciente de que a recusa injustificada ao uso constitui ato faltoso passível de punição disciplinar (Art. 158 da CLT), e o extravio ou dano doloso por mau uso autoriza o devido ressarcimento (Art. 462, § 1º da CLT).</li>
-          </ul>
         </div>
 
         <table class="w-full text-xs border-collapse border mt-3">
@@ -2008,16 +1935,17 @@
       });
 
       filtrarColaboradoresDispensacao();
-      filtrarEpisDispensacao();
 
       estoque.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
-      const opEpiEntrada = estoque.map(e => `<option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>`).join('');
-      const elEntrada = document.getElementById('entrada-epi');
-      if (elEntrada) {
-        const v = elEntrada.value;
-        elEntrada.innerHTML = opEpiEntrada;
-        if (v) elEntrada.value = v;
-      }
+      const opEpi = estoque.map(e => `<option value="${e.id}">${e.nome} | CA: ${e.ca} (Saldo: ${e.qtd})</option>`).join('');
+      ['disp-epi', 'entrada-epi'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          const v = el.value;
+          el.innerHTML = opEpi;
+          if (v) el.value = v;
+        }
+      });
 
       const tabEstoque = document.getElementById('tabela-estoque');
       if (tabEstoque) {
